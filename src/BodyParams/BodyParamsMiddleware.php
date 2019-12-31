@@ -1,15 +1,16 @@
 <?php
+
 /**
- * @see       http://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Expressive\Helper\BodyParams;
+namespace Mezzio\Helper\BodyParams;
 
+use Mezzio\Helper\Exception\MalformedRequestBodyException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Expressive\Helper\Exception\MalformedRequestBodyException;
 
 class BodyParamsMiddleware
 {
