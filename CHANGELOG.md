@@ -28,17 +28,17 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#70](https://github.com/zendframework/zend-expressive-helpers/pull/70) adds `Zend\Expressive\Helper\Template\TemplateVariableContainer`, which
+- [zendframework/zend-expressive-helpers#70](https://github.com/zendframework/zend-expressive-helpers/pull/70) adds `Mezzio\Helper\Template\TemplateVariableContainer`, which
   can be used to aggregate template variables within a pipeline, and as a
   stateless alternative to using `TemplateRendererInterface::addDefaultParam()`.
   Please review the `README.me` for more details.
 
-- [#70](https://github.com/zendframework/zend-expressive-helpers/pull/70) adds `Zend\Expressive\Helper\Template\TemplateVariableContainerMiddleware`,
+- [zendframework/zend-expressive-helpers#70](https://github.com/zendframework/zend-expressive-helpers/pull/70) adds `Mezzio\Helper\Template\TemplateVariableContainerMiddleware`,
   which will register an empty `TemplateVariableContainer` under that class's name
   as a request attribute, if one is not already present.
 
-- [#70](https://github.com/zendframework/zend-expressive-helpers/pull/70) adds `Zend\Expressive\Helper\Template\RouteTemplateVariableMiddleware`,
-  which will register the return value of any discovered `Zend\Expressive\Router\RouteResult`
+- [zendframework/zend-expressive-helpers#70](https://github.com/zendframework/zend-expressive-helpers/pull/70) adds `Mezzio\Helper\Template\RouteTemplateVariableMiddleware`,
+  which will register the return value of any discovered `Mezzio\Router\RouteResult`
   request attribute as the "route" variable of a `TemplateVariableContainer`
   request attribute, when present. This middleware can be used in place of the
   `UrlHelperMiddleware`, as long as you **always** provide the route name to the
@@ -68,7 +68,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- [#71](https://github.com/zendframework/zend-expressive-helpers/pull/71) changes the visibility of `Zend\Expressive\UrlHelper::getRouteResult()` to
+- [zendframework/zend-expressive-helpers#71](https://github.com/zendframework/zend-expressive-helpers/pull/71) changes the visibility of `Mezzio\UrlHelper::getRouteResult()` to
   `public`, allowing it to be consulted in order to retrieve the matched route
   name and route parameters.
 
@@ -88,11 +88,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#69](https://github.com/zendframework/zend-expressive-helpers/pull/69) adds support for PHP 7.3.
+- [zendframework/zend-expressive-helpers#69](https://github.com/zendframework/zend-expressive-helpers/pull/69) adds support for PHP 7.3.
 
 ### Changed
 
-- [#68](https://github.com/zendframework/zend-expressive-helpers/pull/68) replaces a ternary using `array_key_exists` with a null coalesce operation
+- [zendframework/zend-expressive-helpers#68](https://github.com/zendframework/zend-expressive-helpers/pull/68) replaces a ternary using `array_key_exists` with a null coalesce operation
   as a microoptimization.
 
 ### Deprecated
@@ -127,7 +127,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#66](https://github.com/zendframework/zend-expressive-helpers/pull/66) updates the `Content-Type` header matching to be more robust, preventing invalid matches.
+- [zendframework/zend-expressive-helpers#66](https://github.com/zendframework/zend-expressive-helpers/pull/66) updates the `Content-Type` header matching to be more robust, preventing invalid matches.
 
 ## 5.1.1 - 2018-07-25
 
@@ -149,7 +149,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#64](https://github.com/zendframework/zend-expressive-helpers/pull/64) prevents an unnecessary `json_decode()` call when the request contains
+- [zendframework/zend-expressive-helpers#64](https://github.com/zendframework/zend-expressive-helpers/pull/64) prevents an unnecessary `json_decode()` call when the request contains
   no body or an empty body.
 
 ## 5.1.0 - 2018-06-05
@@ -160,11 +160,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- [#62](https://github.com/zendframework/zend-expressive-helpers/pull/62) modifies the `UrlHelperFactory` to allow specifying both a string `$basePath` as well as a string `$routerServiceName`
+- [zendframework/zend-expressive-helpers#62](https://github.com/zendframework/zend-expressive-helpers/pull/62) modifies the `UrlHelperFactory` to allow specifying both a string `$basePath` as well as a string `$routerServiceName`
   to its constructor. This change allows having discrete factory instances for generating helpers
   that use different router instances and/or which operate under path-segregated middleware.
 
-- [#62](https://github.com/zendframework/zend-expressive-helpers/pull/62) modifies the `UrlHelperMiddlewareFactory` to allow specifying a string `$urlHelperServiceName` to its constructor.
+- [zendframework/zend-expressive-helpers#62](https://github.com/zendframework/zend-expressive-helpers/pull/62) modifies the `UrlHelperMiddlewareFactory` to allow specifying a string `$urlHelperServiceName` to its constructor.
   This change allows having discrete factory instances for generating URL helper middleware
   that use different URL helper instances.
 
@@ -206,27 +206,27 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#55](https://github.com/zendframework/zend-expressive-helpers/pull/55)
+- [zendframework/zend-expressive-helpers#55](https://github.com/zendframework/zend-expressive-helpers/pull/55)
   adds support for PSR-15 middleware.
 
-- [#57](https://github.com/zendframework/zend-expressive-helpers/pull/57)
-  adds `Zend\Expressive\Router\ZendRouter\ConfigProvider` and exposes it as a
+- [zendframework/zend-expressive-helpers#57](https://github.com/zendframework/zend-expressive-helpers/pull/57)
+  adds `Mezzio\Router\LaminasRouter\ConfigProvider` and exposes it as a
   config provider within the package definition.
 
 ### Changed
 
-- [#51](https://github.com/zendframework/zend-expressive-helpers/pull/51)
+- [zendframework/zend-expressive-helpers#51](https://github.com/zendframework/zend-expressive-helpers/pull/51)
   changes a number of signatures to provide scalar type hints, return type hints,
   and nullable types. Signatures with changes include:
 
-  - `Zend\Expressive\Helper\BodyParams\StrategyInterface`:
+  - `Mezzio\Helper\BodyParams\StrategyInterface`:
     - The `match()` signature changes to `match(string $contentType) : bool`
     - The `parse()` signature changes to `parse(ServerRequestInterface $request) : ServerRequestInterface`
-  - `Zend\Expressive\Helper\ServerUrlHelper` updates its public API to read as follows:
+  - `Mezzio\Helper\ServerUrlHelper` updates its public API to read as follows:
     - `__invoke(string $path = null) : string`
     - `generate(string $path = null) : string`
     - `setUri(UriInterface $uri) : void`
-  - `Zend\Expressive\Helper\UrlHelper` updates its public API to read as follows:
+  - `Mezzio\Helper\UrlHelper` updates its public API to read as follows:
     - `__invoke(?string $routeName = null, array $routeParams = [], array $queryParams = [], ?string $fragmentIdentifier = null, array $options = []) : string`
     - `generate(?string $routeName = null, array $routeParams = [], array $queryParams = [], ?string $fragmentIdentifier = null, array $options = []) : string`
     - `setRouteResult(RouteResult $result) : void`
@@ -240,11 +240,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- [#50](https://github.com/zendframework/zend-expressive-helpers/pull/50)
+- [zendframework/zend-expressive-helpers#50](https://github.com/zendframework/zend-expressive-helpers/pull/50)
   removes support for PHP versions 5.6 and 7.0.
 
-- [#50](https://github.com/zendframework/zend-expressive-helpers/pull/50) and
-  [#55](https://github.com/zendframework/zend-expressive-helpers/pull/55)
+- [zendframework/zend-expressive-helpers#50](https://github.com/zendframework/zend-expressive-helpers/pull/50) and
+  [zendframework/zend-expressive-helpers#55](https://github.com/zendframework/zend-expressive-helpers/pull/55)
   remove support for http-interop/http-middleware of all versions.
 
 ### Fixed
@@ -255,7 +255,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#46](https://github.com/zendframework/zend-expressive-helpers/pull/46) adds
+- [zendframework/zend-expressive-helpers#46](https://github.com/zendframework/zend-expressive-helpers/pull/46) adds
   support for http-interop/http-middleware 0.5.0 via a polyfill provided by the
   package webimpress/http-middleware-compatibility. Essentially, this means you
   can drop this package into an application targeting either the 0.4.1 or 0.5.0
@@ -263,8 +263,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- [#46](https://github.com/zendframework/zend-expressive-helpers/pull/46)
-  updates the minimum supported zend-expressive-router version to 2.2.0.
+- [zendframework/zend-expressive-helpers#46](https://github.com/zendframework/zend-expressive-helpers/pull/46)
+  updates the minimum supported mezzio-router version to 2.2.0.
 
 ### Deprecated
 
@@ -282,8 +282,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#45](https://github.com/zendframework/zend-expressive-helpers/pull/45) adds
-  `Zend\Expressive\Helper\ContentLengthMiddleware`. This middleware will inject
+- [zendframework/zend-expressive-helpers#45](https://github.com/zendframework/zend-expressive-helpers/pull/45) adds
+  `Mezzio\Helper\ContentLengthMiddleware`. This middleware will inject
   a `Content-Length` response header if none already exists and the response
   body size is non-null.
 
@@ -321,7 +321,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#42](https://github.com/zendframework/zend-expressive-helpers/pull/42) fixes
+- [zendframework/zend-expressive-helpers#42](https://github.com/zendframework/zend-expressive-helpers/pull/42) fixes
   how the `UrlHelper` generates a URI when using the currently matched route.
   Previously, doing so would not append either provided query string arguments
   or fragment identifiers; it now does.
@@ -334,13 +334,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- [#39](https://github.com/zendframework/zend-expressive-helpers/pull/39)
+- [zendframework/zend-expressive-helpers#39](https://github.com/zendframework/zend-expressive-helpers/pull/39)
   switches from container-interop to psr-container for its `ContainerInterface`
   usage. This is a breaking change for anybody extending any of the factories,
   as the typehints will now be different (`Psr\Container\ContainerInterface`
   versus `Interop\Container\ContainerInterface`).
 
-- [#40](https://github.com/zendframework/zend-expressive-helpers/pull/40)
+- [zendframework/zend-expressive-helpers#40](https://github.com/zendframework/zend-expressive-helpers/pull/40)
   switches all middleware from invokable, double-pass to instead implement
   http-interop/http-middleware. This means that any extensions of middleware
   contained in this package will need to be updated; it also means that the
@@ -375,7 +375,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#34](https://github.com/zendframework/zend-expressive-helpers/pull/34) fixes
+- [zendframework/zend-expressive-helpers#34](https://github.com/zendframework/zend-expressive-helpers/pull/34) fixes
   the signature of `UrlHelper::generate()` to match that of
   `UrlHelper::__invoke()`, and, more specifically, ensuring that the default
   `$fragment` value is `null` and not `''`, fixing a subtle issue when calling
@@ -385,11 +385,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#23](https://github.com/zendframework/zend-expressive-helpers/pull/23) adds
+- [zendframework/zend-expressive-helpers#23](https://github.com/zendframework/zend-expressive-helpers/pull/23) adds
   support to `UrlHelper` for generating a URI based on the currently matched
   route and parameters.
 
-- [#9](https://github.com/zendframework/zend-expressive-helpers/pull/9) updates
+- [zendframework/zend-expressive-helpers#9](https://github.com/zendframework/zend-expressive-helpers/pull/9) updates
   `UrlHelper` to pass `$routerOptions` to the underlying router, if provided.
 
   - **BREAKING CHANGE:** This change adds an _optional_ `$options` parameter to
@@ -398,7 +398,7 @@ All notable changes to this project will be documented in this file, in reverse 
     to avoid a PHP Fatal Error. If you have not extended this class, no further
     action is required for compatibility.
 
-- [#27](https://github.com/zendframework/zend-expressive-helpers/pull/27) adds
+- [zendframework/zend-expressive-helpers#27](https://github.com/zendframework/zend-expressive-helpers/pull/27) adds
   query string argument and fragment identifier support to `UrlHelper`.
 
   - **BREAKING CHANGE:** This change adds _optional_ `$routeParams`,
@@ -429,9 +429,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changes
 
-- [#30](https://github.com/zendframework/zend-expressive-helpers/pull/30) Use
-  new ZF coding standard
-- [#31](https://github.com/zendframework/zend-expressive-helpers/pull/31) Check
+- [zendframework/zend-expressive-helpers#30](https://github.com/zendframework/zend-expressive-helpers/pull/30) Use
+  new Laminas coding standard
+- [zendframework/zend-expressive-helpers#31](https://github.com/zendframework/zend-expressive-helpers/pull/31) Check
   to ensure 100% test coverage is retained
 
 ### Deprecated
@@ -462,13 +462,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#29](https://github.com/zendframework/zend-expressive-helpers/pull/29) Don't throw exception on empty JSON body
+- [zendframework/zend-expressive-helpers#29](https://github.com/zendframework/zend-expressive-helpers/pull/29) Don't throw exception on empty JSON body
 
 ## 2.1.0 - 2016-10-02
 
 ### Added
 
-- [#19](https://github.com/zendframework/zend-expressive-helpers/pull/19) FormUrlEncodedStrategy parses raw
+- [zendframework/zend-expressive-helpers#19](https://github.com/zendframework/zend-expressive-helpers/pull/19) FormUrlEncodedStrategy parses raw
   request bodies, if needed.
 
 ### Deprecated
@@ -481,7 +481,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#22](https://github.com/zendframework/zend-expressive-helpers/pull/22) updates JsonStrategy test suite to
+- [zendframework/zend-expressive-helpers#22](https://github.com/zendframework/zend-expressive-helpers/pull/22) updates JsonStrategy test suite to
   function with both the `json` and `jsonc` extensions
 
 ## 2.0.3 - 2016-09-01
@@ -500,7 +500,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#21](https://github.com/zendframework/zend-expressive-helpers/pull/21) Respond with 400 on bad JSON input
+- [zendframework/zend-expressive-helpers#21](https://github.com/zendframework/zend-expressive-helpers/pull/21) Respond with 400 on bad JSON input
 
 ## 2.0.2 - 2016-08-20
 
@@ -518,7 +518,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#15](https://github.com/zendframework/zend-expressive-helpers/pull/15) URLs
+- [zendframework/zend-expressive-helpers#15](https://github.com/zendframework/zend-expressive-helpers/pull/15) URLs
   generated by `UrlHelper` will always include the `$basePath` if one is set.
 
 ## 2.0.1 - 2016-08-17
@@ -537,7 +537,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#18](https://github.com/zendframework/zend-expressive-helpers/pull/18) parsing
+- [zendframework/zend-expressive-helpers#18](https://github.com/zendframework/zend-expressive-helpers/pull/18) parsing
   request body with the `JsonStrategy` will implicitly rewind the stream in order
   to parse the entire body, rather than just parsing the remaining contents.
 
@@ -553,7 +553,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- [#7](https://github.com/zendframework/zend-expressive-helpers/pull/7) removes
+- [zendframework/zend-expressive-helpers#7](https://github.com/zendframework/zend-expressive-helpers/pull/7) removes
   the `RouteResultObserverInterface` implementation from `UrlHelper`. This also
   means that the `UrlHelperMiddleware` no longer registers the `UrlHelper` as a
   route result observer, but instead just injects it with the `RouteResult`
@@ -567,7 +567,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#6](https://github.com/zendframework/zend-expressive-helpers/pull/6) adds base
+- [zendframework/zend-expressive-helpers#6](https://github.com/zendframework/zend-expressive-helpers/pull/6) adds base
   path support to the `UrlHelper`. Middleware may now call
   `UrlHelper::setBasePath()` on an instance to set the path prefix to add to all
   URIs generated by the helper, which is often useful when working in an
@@ -591,9 +591,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#3](https://github.com/zendframework/zend-expressive-helpers/pull/3) and
-  [#5](https://github.com/zendframework/zend-expressive-helpers/pull/5) add
-  a new `Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware` for use in
+- [zendframework/zend-expressive-helpers#3](https://github.com/zendframework/zend-expressive-helpers/pull/3) and
+  [zendframework/zend-expressive-helpers#5](https://github.com/zendframework/zend-expressive-helpers/pull/5) add
+  a new `Mezzio\Helper\BodyParams\BodyParamsMiddleware` for use in
   parsing the request body. The middleware consumes strategies, which match
   against the `Content-Type` header, and, if matched, parse the body and return
   a new request with the parsed body parameters.
@@ -632,7 +632,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#4](https://github.com/zendframework/zend-expressive-helpers/pull/4) adds the
+- [zendframework/zend-expressive-helpers#4](https://github.com/zendframework/zend-expressive-helpers/pull/4) adds the
   protected method `getRouteResult()`, providing extending classes access to the
   private `$result` member.
 
@@ -652,7 +652,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#2](https://github.com/zendframework/zend-expressive-helpers/pull/2) adds the
+- [zendframework/zend-expressive-helpers#2](https://github.com/zendframework/zend-expressive-helpers/pull/2) adds the
   following classes:
   - `UrlHelperMiddleware`, which accepts a `UrlHelper` instance and a
     `RouteResultSubjectInterface` instance; during invocation, it attaches the
@@ -667,7 +667,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- [#2](https://github.com/zendframework/zend-expressive-helpers/pull/2) removes
+- [zendframework/zend-expressive-helpers#2](https://github.com/zendframework/zend-expressive-helpers/pull/2) removes
   registration of the generated `UrlHelper` with the `Application` instance
   within the `UrlHelperFactory`. This change was made to observed race
   conditions when the `UrlHelper` is created within the context of the
@@ -682,8 +682,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#1](https://github.com/zendframework/zend-expressive-helpers/pull/1) adds a
-  dependency on zendframework/zend-expressive-router, which replaces the
+- [zendframework/zend-expressive-helpers#1](https://github.com/zendframework/zend-expressive-helpers/pull/1) adds a
+  dependency on mezzio/mezzio-router, which replaces the
   dependency on zendframework/zend-expressive. This change means the component
   can be used without Expressive, and also removes a potential circular
   dependency issue in consumers of the package.
@@ -694,9 +694,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- [#1](https://github.com/zendframework/zend-expressive-helpers/pull/1) removes
-  the zendframework/zend-expressive, replacing it with a dependency on
-  zendframework/zend-expressive-router.
+- [zendframework/zend-expressive-helpers#1](https://github.com/zendframework/zend-expressive-helpers/pull/1) removes
+  the mezzio/mezzio, replacing it with a dependency on
+  mezzio/mezzio-router.
 
 ### Fixed
 
@@ -708,16 +708,16 @@ Initial release.
 
 ### Added
 
-- `Zend\Expressive\Helper\UrlHelper` provides the ability to generate a URI path
-  based on a given route defined in the `Zend\Expressive\Router\RouterInterface`.
+- `Mezzio\Helper\UrlHelper` provides the ability to generate a URI path
+  based on a given route defined in the `Mezzio\Router\RouterInterface`.
   If registered as a route result observer, and the route being used was also
   the one matched during routing, you can provide a subset of routing
   parameters, and any not provided will be pulled from those matched.
-- `Zend\Expressive\Helper\ServerUrlHelper` provides the ability to generate a
+- `Mezzio\Helper\ServerUrlHelper` provides the ability to generate a
   full URI by passing only the path to the helper; it will then use that path
   with the current `Psr\Http\Message\UriInterface` instance provided to it in
   order to generate a fully qualified URI.
-- `Zend\Expressive\Helper\ServerUrlMiddleware` is pipeline middleware that can
+- `Mezzio\Helper\ServerUrlMiddleware` is pipeline middleware that can
   be registered with an application; it will inject a `ServerUrlHelper` instance
   with the URI composed in the provided `ServerRequestInterface` instance.
 - The package also provides factories compatible with container-interop that can
