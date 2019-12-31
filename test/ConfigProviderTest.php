@@ -1,20 +1,21 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-helpers for the canonical source repository
- * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-helpers/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Helper;
+namespace MezzioTest\Helper;
 
+use Mezzio\Helper\ConfigProvider;
+use Mezzio\Helper\ServerUrlHelper;
+use Mezzio\Helper\ServerUrlMiddleware;
+use Mezzio\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelperMiddleware;
 use PHPUnit\Framework\TestCase;
-use Zend\Expressive\Helper\ConfigProvider;
-use Zend\Expressive\Helper\ServerUrlHelper;
-use Zend\Expressive\Helper\ServerUrlMiddleware;
-use Zend\Expressive\Helper\UrlHelper;
-use Zend\Expressive\Helper\UrlHelperMiddleware;
 
 class ConfigProviderTest extends TestCase
 {
