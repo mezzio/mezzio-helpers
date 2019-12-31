@@ -1,22 +1,23 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-helpers for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-helpers/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Expressive\Helper\BodyParams;
+namespace MezzioTest\Helper\BodyParams;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Laminas\Diactoros\Response;
+use Laminas\Diactoros\ServerRequest;
+use Laminas\Diactoros\Stream;
+use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
+use Mezzio\Helper\BodyParams\StrategyInterface;
+use Mezzio\Helper\Exception\MalformedRequestBodyException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\Stream;
-use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
-use Zend\Expressive\Helper\BodyParams\StrategyInterface;
-use Zend\Expressive\Helper\Exception\MalformedRequestBodyException;
 
 class BodyParamsMiddlewareTest extends TestCase
 {

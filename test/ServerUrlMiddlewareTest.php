@@ -1,21 +1,22 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-helpers for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-helpers/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Expressive\Helper;
+namespace MezzioTest\Helper;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Laminas\Diactoros\Response;
+use Mezzio\Helper\ServerUrlHelper;
+use Mezzio\Helper\ServerUrlMiddleware;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
-use Zend\Diactoros\Response;
-use Zend\Expressive\Helper\ServerUrlHelper;
-use Zend\Expressive\Helper\ServerUrlMiddleware;
 
 class ServerUrlMiddlewareTest extends TestCase
 {
