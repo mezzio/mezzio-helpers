@@ -1,13 +1,14 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-helpers for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-helpers/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace Zend\Expressive\Helper;
+namespace Mezzio\Helper;
 
 use Psr\Container\ContainerInterface;
 
@@ -21,7 +22,9 @@ class UrlHelperMiddlewareFactory
      */
     public function __invoke(ContainerInterface $container) : UrlHelperMiddleware
     {
-        if (! $container->has(UrlHelper::class)) {
+        if (! $container->has(UrlHelper::class)
+            && ! $container->has(\Zend\Expressive\Helper\UrlHelper::class)
+        ) {
             throw new Exception\MissingHelperException(sprintf(
                 '%s requires a %s service at instantiation; none found',
                 UrlHelperMiddleware::class,
@@ -29,6 +32,6 @@ class UrlHelperMiddlewareFactory
             ));
         }
 
-        return new UrlHelperMiddleware($container->get(UrlHelper::class));
+        return new UrlHelperMiddleware($container->has(UrlHelper::class) ? $container->get(UrlHelper::class) : $container->get(\Zend\Expressive\Helper\UrlHelper::class));
     }
 }
