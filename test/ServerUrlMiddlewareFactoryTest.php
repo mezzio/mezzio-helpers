@@ -1,18 +1,19 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-helpers for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-helpers/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Expressive\Helper;
+namespace MezzioTest\Helper;
 
+use Mezzio\Helper\Exception\MissingHelperException;
+use Mezzio\Helper\ServerUrlHelper;
+use Mezzio\Helper\ServerUrlMiddleware;
+use Mezzio\Helper\ServerUrlMiddlewareFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Helper\Exception\MissingHelperException;
-use Zend\Expressive\Helper\ServerUrlHelper;
-use Zend\Expressive\Helper\ServerUrlMiddleware;
-use Zend\Expressive\Helper\ServerUrlMiddlewareFactory;
 
 class ServerUrlMiddlewareFactoryTest extends TestCase
 {
@@ -32,6 +33,7 @@ class ServerUrlMiddlewareFactoryTest extends TestCase
     {
         $container = $this->prophesize(ContainerInterface::class);
         $container->has(ServerUrlHelper::class)->willReturn(false);
+        $container->has(\Zend\Expressive\Helper\ServerUrlHelper::class)->willReturn(false);
 
         $factory = new ServerUrlMiddlewareFactory();
 
