@@ -1,24 +1,23 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Expressive\Helper;
+namespace MezzioTest\Helper;
 
 use Interop\Container\ContainerInterface;
+use Mezzio\Application;
+use Mezzio\Helper\Exception\MissingHelperException;
+use Mezzio\Helper\Exception\MissingSubjectException;
+use Mezzio\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelperMiddleware;
+use Mezzio\Helper\UrlHelperMiddlewareFactory;
+use Mezzio\Router\RouteResultSubjectInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use Zend\Expressive\Application;
-use Zend\Expressive\Helper\Exception\MissingHelperException;
-use Zend\Expressive\Helper\Exception\MissingSubjectException;
-use Zend\Expressive\Helper\UrlHelper;
-use Zend\Expressive\Helper\UrlHelperMiddleware;
-use Zend\Expressive\Helper\UrlHelperMiddlewareFactory;
-use Zend\Expressive\Router\RouteResultSubjectInterface;
 
 class UrlHelperMiddlewareFactoryTest extends TestCase
 {
@@ -54,6 +53,7 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
         $subject = $this->prophesize(RouteResultSubjectInterface::class)->reveal();
         $this->injectContainer(UrlHelper::class, $helper);
         $this->container->has(RouteResultSubjectInterface::class)->willReturn(false);
+        $this->container->has(\Zend\Expressive\Router\RouteResultSubjectInterface::class)->willReturn(false);
         $this->injectContainer(Application::class, $subject);
 
         $factory = new UrlHelperMiddlewareFactory();
@@ -66,6 +66,7 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
     public function testFactoryRaisesExceptionWhenContainerDoesNotContainHelper()
     {
         $this->container->has(UrlHelper::class)->willReturn(false);
+        $this->container->has(\Zend\Expressive\Helper\UrlHelper::class)->willReturn(false);
         $this->injectContainer(
             RouteResultSubjectInterface::class,
             $this->prophesize(RouteResultSubjectInterface::class)
@@ -79,7 +80,9 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
     {
         $this->injectContainer(UrlHelper::class, $this->prophesize(UrlHelper::class));
         $this->container->has(RouteResultSubjectInterface::class)->willReturn(false);
+        $this->container->has(\Zend\Expressive\Router\RouteResultSubjectInterface::class)->willReturn(false);
         $this->container->has(Application::class)->willReturn(false);
+        $this->container->has(\Zend\Expressive\Application::class)->willReturn(false);
         $factory = new UrlHelperMiddlewareFactory();
         $this->setExpectedException(MissingSubjectException::class);
         $middleware =$factory($this->container->reveal());
