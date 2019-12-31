@@ -1,23 +1,22 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Expressive\Helper;
+namespace MezzioTest\Helper;
 
 use ArrayObject;
+use Mezzio\Application;
+use Mezzio\Helper\Exception\RuntimeException;
+use Mezzio\Helper\UrlHelper;
+use Mezzio\Router\Exception\RuntimeException as RouterException;
+use Mezzio\Router\RouteResult;
+use Mezzio\Router\RouterInterface;
+use Mezzio\RouteResultObserverInterface;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Expressive\Application;
-use Zend\Expressive\Helper\Exception\RuntimeException;
-use Zend\Expressive\Helper\UrlHelper;
-use Zend\Expressive\Router\Exception\RuntimeException as RouterException;
-use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Router\RouteResult;
-use Zend\Expressive\RouteResultObserverInterface;
 
 class UrlHelperTest extends TestCase
 {
