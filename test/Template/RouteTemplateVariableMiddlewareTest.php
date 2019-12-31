@@ -1,24 +1,25 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-helpers for the canonical source repository
- * @copyright Copyright (c) 2019 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-helpers/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Helper\Template;
+namespace MezzioTest\Helper\Template;
 
+use Mezzio\Helper\Template\RouteTemplateVariableMiddleware;
+use Mezzio\Helper\Template\TemplateVariableContainer;
+use Mezzio\Router\Route;
+use Mezzio\Router\RouteResult;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Expressive\Helper\Template\RouteTemplateVariableMiddleware;
-use Zend\Expressive\Helper\Template\TemplateVariableContainer;
-use Zend\Expressive\Router\Route;
-use Zend\Expressive\Router\RouteResult;
 
 class RouteTemplateVariableMiddlewareTest extends TestCase
 {
@@ -48,6 +49,18 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
         $this->request
             ->withAttribute(
                 TemplateVariableContainer::class,
+                Argument::that(function ($container) {
+                    TestCase::assertInstanceOf(TemplateVariableContainer::class, $container);
+                    TestCase::assertTrue($container->has('route'));
+                    TestCase::assertNull($container->get('route'));
+                    return $container;
+                })
+            )
+            ->will([$this->request, 'reveal'])
+            ->shouldBeCalledTimes(1);
+        $this->request
+            ->withAttribute(
+                \Zend\Expressive\Helper\Template\TemplateVariableContainer::class,
                 Argument::that(function ($container) {
                     TestCase::assertInstanceOf(TemplateVariableContainer::class, $container);
                     TestCase::assertTrue($container->has('route'));
@@ -93,6 +106,18 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
             )
             ->will([$this->request, 'reveal'])
             ->shouldBeCalledTimes(1);
+        $this->request
+            ->withAttribute(
+                \Zend\Expressive\Helper\Template\TemplateVariableContainer::class,
+                Argument::that(function ($container) use ($originalContainer) {
+                    TestCase::assertNotSame($container, $originalContainer);
+                    TestCase::assertTrue($container->has('route'));
+                    TestCase::assertNull($container->get('route'));
+                    return $container;
+                })
+            )
+            ->will([$this->request, 'reveal'])
+            ->shouldBeCalledTimes(1);
 
         $this->handler
             ->handle(Argument::that([$this->request, 'reveal']))
@@ -122,6 +147,18 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
         $this->request
             ->withAttribute(
                 TemplateVariableContainer::class,
+                Argument::that(function ($container) use ($originalContainer, $routeResult) {
+                    TestCase::assertNotSame($container, $originalContainer);
+                    TestCase::assertTrue($container->has('route'));
+                    TestCase::assertSame($container->get('route'), $routeResult->reveal());
+                    return $container;
+                })
+            )
+            ->will([$this->request, 'reveal'])
+            ->shouldBeCalledTimes(1);
+        $this->request
+            ->withAttribute(
+                \Zend\Expressive\Helper\Template\TemplateVariableContainer::class,
                 Argument::that(function ($container) use ($originalContainer, $routeResult) {
                     TestCase::assertNotSame($container, $originalContainer);
                     TestCase::assertTrue($container->has('route'));

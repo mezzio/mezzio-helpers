@@ -1,20 +1,21 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-helpers for the canonical source repository
- * @copyright Copyright (c) 2019 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-helpers/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace Zend\Expressive\Helper\Template;
+namespace Mezzio\Helper\Template;
 
 use Countable;
 
 /**
  * Container for managing template variables within a middleware pipeline.
  *
- * `Zend\Expressive\Template\TemplateRendererInterface::addDefaultParam()` alters
+ * `Mezzio\Template\TemplateRendererInterface::addDefaultParam()` alters
  * the state of the renderer, which can be problematic in async environments.
  * This class can be composed in a request attribute (we recommend one named
  * after the class itself) in order to aggregate template variables prior to

@@ -1,21 +1,22 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-helpers for the canonical source repository
- * @copyright Copyright (c) 2019 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-helpers/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Helper\Template;
+namespace MezzioTest\Helper\Template;
 
+use Mezzio\Helper\Template\TemplateVariableContainer;
+use Mezzio\Helper\Template\TemplateVariableContainerMiddleware;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Expressive\Helper\Template\TemplateVariableContainer;
-use Zend\Expressive\Helper\Template\TemplateVariableContainerMiddleware;
 
 class TemplateVariableContainerMiddlewareTest extends TestCase
 {
@@ -37,6 +38,10 @@ class TemplateVariableContainerMiddlewareTest extends TestCase
         $clonedRequest = $this->prophesize(ServerRequestInterface::class)->reveal();
         $this->request
             ->withAttribute(TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
+            ->will([$this->request, 'reveal'])
+            ->shouldBeCalledTimes(1);
+        $this->request
+            ->withAttribute(\Zend\Expressive\Helper\Template\TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
             ->willReturn($clonedRequest)
             ->shouldBeCalledTimes(1);
 
@@ -65,6 +70,9 @@ class TemplateVariableContainerMiddlewareTest extends TestCase
 
         $this->request
             ->withAttribute(TemplateVariableContainer::class, $container)
+            ->shouldNotBeCalled();
+        $this->request
+            ->withAttribute(\Zend\Expressive\Helper\Template\TemplateVariableContainer::class, $container)
             ->shouldNotBeCalled();
 
         $this->handler

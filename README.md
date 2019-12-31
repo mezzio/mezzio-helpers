@@ -1,16 +1,16 @@
-# Helper classes for Expressive
+# Helper classes for Mezzio
 
-[![Build Status](https://secure.travis-ci.org/zendframework/zend-expressive-helpers.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-expressive-helpers)
-[![Coverage Status](https://coveralls.io/repos/github/zendframework/zend-expressive-helpers/badge.svg?branch=master)](https://coveralls.io/github/zendframework/zend-expressive-helpers?branch=master)
+[![Build Status](https://travis-ci.org/mezzio/mezzio-helpers.svg?branch=master)](https://travis-ci.org/mezzio/mezzio-helpers)
+[![Coverage Status](https://coveralls.io/repos/github/mezzio/mezzio-helpers/badge.svg?branch=master)](https://coveralls.io/github/mezzio/mezzio-helpers?branch=master)
 
-Helper classes for [Expressive](https://github.com/zendframework/zend-expressive).
+Helper classes for [Mezzio](https://github.com/mezzio/mezzio).
 
 ## Installation
 
 Install this library using composer:
 
 ```bash
-$ composer require zendframework/zend-expressive-helpers
+$ composer require mezzio/mezzio-helpers
 ```
 
 ## Helpers Provided
@@ -24,10 +24,10 @@ $ composer require zendframework/zend-expressive-helpers
 
 ### UrlHelper
 
-`Zend\Expressive\Helper\UrlHelper` provides the ability to generate a URI path
-based on a given route defined in the `Zend\Expressive\Router\RouterInterface`.
-The provided `Zend\Expressive\Helper\UrlHelperMiddleware` can look for a
-`Zend\Expressive\Router\RouteResult` request attribute, and, if present, inject
+`Mezzio\Helper\UrlHelper` provides the ability to generate a URI path
+based on a given route defined in the `Mezzio\Router\RouterInterface`.
+The provided `Mezzio\Helper\UrlHelperMiddleware` can look for a
+`Mezzio\Router\RouteResult` request attribute, and, if present, inject
 the `UrlHelper` with it; when this occurs, if the route being used to generate
 a URI was also the one matched during routing, you can provide a subset of
 routing parameters, and any not provided will be pulled from those matched.
@@ -35,9 +35,9 @@ routing parameters, and any not provided will be pulled from those matched.
 To register the `UrlHelperMiddleware`:
 
 ```php
-use Zend\Expressive\Helper\UrlHelperMiddleware;
-use Zend\Expressive\Router\Middleware\DispatchMiddleware;
-use Zend\Expressive\Router\Middleware\RouteMiddleware;
+use Mezzio\Helper\UrlHelperMiddleware;
+use Mezzio\Router\Middleware\DispatchMiddleware;
+use Mezzio\Router\Middleware\RouteMiddleware;
 
 $app->pipe(RouteMiddleware::class);
 $app->pipe(UrlHelperMiddleware::class);
@@ -65,8 +65,8 @@ generate URI paths:
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response;
-use Zend\Expressive\Helper\UrlHelper;
+use Laminas\Diactoros\Response;
+use Mezzio\Helper\UrlHelper;
 
 class FooHandler implements RequestHandlerInterface
 {
@@ -148,7 +148,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Expressive\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelper;
 
 class LocaleMiddleware implements MiddlewareInterface
 {
@@ -188,14 +188,14 @@ detected language prefix.
 
 ### ServerUrlHelper
 
-`Zend\Expressive\Helper\ServerUrlHelper` provides the ability to generate a full
+`Mezzio\Helper\ServerUrlHelper` provides the ability to generate a full
 URI by passing only the path to the helper; it will then use that path with the
 current `Psr\Http\Message\UriInterface` instance provided to it in order to
 generate a fully qualified URI.
 
 In order to use the helper, you will need to inject it with the current
 `UriInterface` from the request instance. To automate this, we provide
-`Zend\Expressive\Helper\ServerUrlMiddleware`, which composes a `ServerUrl`
+`Mezzio\Helper\ServerUrlMiddleware`, which composes a `ServerUrl`
 instance, and, when invoked, injects it with the URI instance.
 
 As such, you will need to:
@@ -207,9 +207,9 @@ As such, you will need to:
 To register the `ServerUrlMiddleware` in your middleware pipeline:
 
 ```php
-use Zend\Expressive\Helper\ServerUrlMiddleware;
-use Zend\Expressive\Router\Middleware\DispatchMiddleware;
-use Zend\Expressive\Router\Middleware\RouteMiddleware;
+use Mezzio\Helper\ServerUrlMiddleware;
+use Mezzio\Router\Middleware\DispatchMiddleware;
+use Mezzio\Router\Middleware\RouteMiddleware;
 
 // Do this early, before piping other middleware or routes:
 $app->pipe(ServerUrlMiddleware::class);
@@ -236,8 +236,8 @@ generate URI paths:
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response;
-use Zend\Expressive\Helper\ServerUrlHelper;
+use Laminas\Diactoros\Response;
+use Mezzio\Helper\ServerUrlHelper;
 
 class FooHandler implements RequestHandlerInterface
 {
@@ -278,7 +278,7 @@ then create a new instance with the results of parsing that later processes can
 fetch via `getParsedBody()`. It does not provide any actual facilities for
 parsing, which means you must write middleware to do so.
 
-This package provides such facilities via `Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware`.
+This package provides such facilities via `Mezzio\Helper\BodyParams\BodyParamsMiddleware`.
 By default, this middleware will detect the following content types:
 
 - `application/x-www-form-urlencoded` (standard web-based forms, without file
@@ -288,16 +288,16 @@ By default, this middleware will detect the following content types:
 You can register it manually:
 
 ```php
-use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
+use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
 
 $app->pipe(BodyParamsMiddleware::class);
 ```
 
-or, if using Expressive, as pipeline middleware:
+or, if using Mezzio, as pipeline middleware:
 
 ```php
 // config/autoload/middleware-pipeline.global.php
-use Zend\Expressive\Helper;
+use Mezzio\Helper;
 
 return [
     'dependencies' => [
@@ -324,10 +324,10 @@ return [
 #### Strategies
 
 If you want to intercept and parse other payload types, you can add *strategies*
-to the middleware. Strategies implement `Zend\Expressive\Helper\BodyParams\StrategyInterface`:
+to the middleware. Strategies implement `Mezzio\Helper\BodyParams\StrategyInterface`:
 
 ```php
-namespace Zend\Expressive\Helper\BodyParams;
+namespace Mezzio\Helper\BodyParams;
 
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -363,7 +363,7 @@ registration in the `factories` section of the `middleware-pipeline.config.php`
 file:
 
 ```php
-use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
+use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
 
 class MyCustomBodyParamsStrategyFactory
 {
@@ -376,7 +376,7 @@ class MyCustomBodyParamsStrategyFactory
 }
 
 // In config/autoload/middleware-pipeline.config.php:
-use Zend\Expressive\Helper;
+use Mezzio\Helper;
 
 return [
     'dependencies' => [
@@ -411,7 +411,7 @@ be using.
 
 In some cases, you may want to include an explicit `Content-Length` response
 header, without having to inject it manually. To facilitate this, we provide
-`Zend\Expressive\Helper\ContentLengthMiddleware`.
+`Mezzio\Helper\ContentLengthMiddleware`.
 
 This middleware delegates the request, and operates on the returned response. It
 will return a new response with the `Content-Length` header injected under the
@@ -429,7 +429,7 @@ To add it to your container, add the following configuration:
 ```php
 // In a `config/autoload/*.global.php` file, or a `ConfigProvider` class:
 
-use Zend\Expressive\Helper;
+use Mezzio\Helper;
 
 return [
     'dependencies' => [
@@ -445,7 +445,7 @@ To register it as pipeline middleware to execute on any request:
 ```php
 // In `config/pipeline.php`:
 
-use Zend\Expressive\Helper;
+use Mezzio\Helper;
 
 $app->pipe(Helper\ContentLengthMiddleware::class);
 ```
@@ -455,7 +455,7 @@ To register it within a routed middleware pipeline:
 ```php
 // In `config/routes.php`:
 
-use Zend\Expressive\Helper;
+use Mezzio\Helper;
 
 $app->get('/download/tarball', [
     Helper\ContentLengthMiddleware::class,
@@ -467,8 +467,8 @@ $app->get('/download/tarball', [
 
 > - Since 5.2.0
 
-[zend-expressive-template](https://github.com/zendframework/zend-expressive-template)
-provides the method `Zend\Expressive\Template\TemplateRendererInterface::addDefaultParam()`
+[mezzio-template](https://github.com/mezzio/mezzio-template)
+provides the method `Mezzio\Template\TemplateRendererInterface::addDefaultParam()`
 for providing template variables that should be available to any template.
 
 One common use case for this is to set things such as the current user, current
@@ -477,12 +477,12 @@ method changes the internal state of the renderer, this can cause problems in an
 async environment, where those changes will persist for parallel and subsequent
 requests.
 
-To provide a stateless alternative, you can create a `Zend\Expressive\Helper\Template\TemplateVariableContainer`
+To provide a stateless alternative, you can create a `Mezzio\Helper\Template\TemplateVariableContainer`
 and persist it as a request attribute. This allows you to set template variables
 that are pipeline-specific, and later extract and merge them with
 handler-specific values when rendering.
 
-To facilitate this further, we provide `Zend\Expressive\Helper\Template\TemplateVariableContainerMiddleware`,
+To facilitate this further, we provide `Mezzio\Helper\Template\TemplateVariableContainerMiddleware`,
 which will populate the attribute for you if it has not yet been.
 
 The container is **immutable**, and any changes will result in a new instance.
@@ -494,20 +494,20 @@ As an example, consider the following pipeline:
 
 ```php
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Application;
-use Zend\Expressive\Handler\NotFoundHandler;
-use Zend\Expressive\Helper\ServerUrlMiddleware;
-use Zend\Expressive\Helper\Template\TemplateVariableContainerMiddleware;
-use Zend\Expressive\Helper\UrlHelperMiddleware;
-use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Router\Middleware\DispatchMiddleware;
-use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
-use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
-use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
-use Zend\Expressive\Router\Middleware\RouteMiddleware;
-use Zend\Stratigility\Middleware\ErrorHandler;
+use Mezzio\Application;
+use Mezzio\Handler\NotFoundHandler;
+use Mezzio\Helper\ServerUrlMiddleware;
+use Mezzio\Helper\Template\TemplateVariableContainerMiddleware;
+use Mezzio\Helper\UrlHelperMiddleware;
+use Mezzio\MiddlewareFactory;
+use Mezzio\Router\Middleware\DispatchMiddleware;
+use Mezzio\Router\Middleware\ImplicitHeadMiddleware;
+use Mezzio\Router\Middleware\ImplicitOptionsMiddleware;
+use Mezzio\Router\Middleware\MethodNotAllowedMiddleware;
+use Mezzio\Router\Middleware\RouteMiddleware;
+use Laminas\Stratigility\Middleware\ErrorHandler;
 
-use function Zend\Stratigility\path;
+use function Laminas\Stratigility\path;
 
 return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
     $app->pipe(ErrorHandler::class);
@@ -532,14 +532,14 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
 ```
 
 Any middleware or handler that responds to a path beginning with `/api/doc` will
-now have a `Zend\Expressive\Helper\Template\TemplateVariableContainer` attribute
+now have a `Mezzio\Helper\Template\TemplateVariableContainer` attribute
 that contains an instance of that class.
 
 Within middleware that responds on that path, you can then do the following:
 
 ```php
-use Zend\Expressive\Helper\Template\TemplateVariableContainer;
-use Zend\Expressive\Router\RouteResult;
+use Mezzio\Helper\Template\TemplateVariableContainer;
+use Mezzio\Router\RouteResult;
 
 $container = $request->getAttribute(
     TemplateVariableContainer::class,
@@ -560,7 +560,7 @@ In a handler, you will call `mergeForTemplate()` with any local variables you
 want to use, including those that might override the defaults:
 
 ```php
-use Zend\Expressive\Helper\Template\TemplateVariableContainer;
+use Mezzio\Helper\Template\TemplateVariableContainer;
 
 $content = $this->renderer->render(
     'some::template',
@@ -594,7 +594,7 @@ The `TemplateVariableContainer` contains the following methods:
 
 > - Since 5.2.0
 
-`Zend\Expressive\Helper\Template\RouteTemplateVariableMiddleware` will inject
+`Mezzio\Helper\Template\RouteTemplateVariableMiddleware` will inject
 the currently matched route into the [template variable container](#template-variable-container).
 
 This middleware relies on the `TemplateVariableContainerMiddleware` preceding
@@ -603,7 +603,7 @@ request attribute present; if neither is present, it will generate a new
 instance.
 
 It then populates the container's `route` parameter using the results of
-retrieving the `Zend\Expressive\Router\RouteResult` request attribute; the value
+retrieving the `Mezzio\Router\RouteResult` request attribute; the value
 will be either an instance of that class, or `null`.
 
 Templates rendered using the container can then access that value, and test for
@@ -615,5 +615,5 @@ pipeline.
 
 ## Documentation
 
-See the [zend-expressive](https://github.com/zendframework/zend-expressive/blob/master/doc/book)
-documentation tree, or browse online at https://docs.zendframework.com/zend-expressive/features/helpers/intro/
+See the [mezzio](https://github.com/mezzio/mezzio/blob/master/doc/book)
+documentation tree, or browse online at https://docs.mezzio.dev/mezzio/features/helpers/intro/
