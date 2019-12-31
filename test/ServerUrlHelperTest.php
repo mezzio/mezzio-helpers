@@ -1,20 +1,21 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-helpers for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-helpers/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Helper;
+namespace MezzioTest\Helper;
 
+use Laminas\Diactoros\Uri;
+use Mezzio\Helper\ServerUrlHelper;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
-use Zend\Diactoros\Uri;
-use Zend\Expressive\Helper\ServerUrlHelper;
 
 class ServerUrlHelperTest extends TestCase
 {
