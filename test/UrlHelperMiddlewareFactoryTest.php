@@ -1,21 +1,22 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-helpers for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-helpers/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Helper;
+namespace MezzioTest\Helper;
 
+use Mezzio\Helper\Exception\MissingHelperException;
+use Mezzio\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelperMiddleware;
+use Mezzio\Helper\UrlHelperMiddlewareFactory;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Helper\Exception\MissingHelperException;
-use Zend\Expressive\Helper\UrlHelper;
-use Zend\Expressive\Helper\UrlHelperMiddleware;
-use Zend\Expressive\Helper\UrlHelperMiddlewareFactory;
 
 class UrlHelperMiddlewareFactoryTest extends TestCase
 {
@@ -50,6 +51,7 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
     public function testFactoryRaisesExceptionWhenContainerDoesNotContainHelper()
     {
         $this->container->has(UrlHelper::class)->willReturn(false);
+        $this->container->has(\Zend\Expressive\Helper\UrlHelper::class)->willReturn(false);
         $factory = new UrlHelperMiddlewareFactory();
         $this->expectException(MissingHelperException::class);
         $factory($this->container->reveal());
