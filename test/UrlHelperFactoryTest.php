@@ -1,18 +1,19 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-helpers for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-helpers/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Expressive\Helper;
+namespace MezzioTest\Helper;
 
 use Interop\Container\ContainerInterface;
+use Mezzio\Helper\Exception\MissingRouterException;
+use Mezzio\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelperFactory;
+use Mezzio\Router\RouterInterface;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Expressive\Helper\Exception\MissingRouterException;
-use Zend\Expressive\Helper\UrlHelper;
-use Zend\Expressive\Helper\UrlHelperFactory;
-use Zend\Expressive\Router\RouterInterface;
 
 class UrlHelperFactoryTest extends TestCase
 {
