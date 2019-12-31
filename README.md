@@ -1,23 +1,23 @@
-# Helper classes for Expressive
+# Helper classes for Mezzio
 
-[![Build Status](https://secure.travis-ci.org/zendframework/zend-expressive-helpers.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-expressive-helpers)
+[![Build Status](https://travis-ci.org/mezzio/mezzio-helpers.svg?branch=master)](https://travis-ci.org/mezzio/mezzio-helpers)
 
-Helper classes for [Expressive](https://github.com/zendframework/zend-expressive).
+Helper classes for [Mezzio](https://github.com/mezzio/mezzio).
 
 ## Installation
 
 Install this library using composer:
 
 ```bash
-$ composer require zendframework/zend-expressive-helpers
+$ composer require mezzio/mezzio-helpers
 ```
 
 We recommend using a dependency injection container, and typehint against
 [container-interop](https://github.com/container-interop/container-interop). We
 can recommend the following implementations:
 
-- [zend-servicemanager](https://github.com/zendframework/zend-servicemanager):
-  `composer require zendframework/zend-servicemanager`
+- [laminas-servicemanager](https://github.com/laminas/laminas-servicemanager):
+  `composer require laminas/laminas-servicemanager`
 - [pimple-interop](https://github.com/moufmouf/pimple-interop):
   `composer require mouf/pimple-interop`
 - [Aura.Di](https://github.com/auraphp/Aura.Di)
@@ -26,22 +26,22 @@ can recommend the following implementations:
 
 ### UrlHelper
 
-`Zend\Expressive\Helper\UrlHelper` provides the ability to generate a URI path
-based on a given route defined in the `Zend\Expressive\Router\RouterInterface`.
+`Mezzio\Helper\UrlHelper` provides the ability to generate a URI path
+based on a given route defined in the `Mezzio\Router\RouterInterface`.
 If registered as a route result observer, and the route being used was also
 the one matched during routing, you can provide a subset of routing
 parameters, and any not provided will be pulled from those matched.
 
 In order to use the helper, you will need to instantiate it with the current
-`RouterInterface`. The factory `Zend\Expressive\Helper\UrlHelperFactory` has
+`RouterInterface`. The factory `Mezzio\Helper\UrlHelperFactory` has
 been provided for this purpose, and can be used trivially with most
 dependency injection containers implementing container-interop:
 
 ```php
-use Zend\Expressive\Helper\UrlHelper;
-use Zend\Expressive\Helper\UrlHelperFactory;
+use Mezzio\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelperFactory;
 
-// zend-servicemanager:
+// laminas-servicemanager:
 $services->setFactory(UrlHelper::class, UrlHelperFactory::class);
 
 // Pimple:
@@ -59,7 +59,7 @@ $container->set(
 ```
 
 The following dependency configuration will work for all three when using the
-Expressive skeleton:
+Mezzio skeleton:
 
 ```php
 return ['dependencies' => [
@@ -71,14 +71,14 @@ return ['dependencies' => [
 
 > #### Factory requires RouterInterface
 >
-> The factory requires that a service named `Zend\Expressive\Router\RouterInterface` is present,
+> The factory requires that a service named `Mezzio\Router\RouterInterface` is present,
 > and will raise an exception if the service is not found.
 
 Compose the helper in your middleware (or elsewhere), and then use it to
 generate URI paths:
 
 ```php
-use Zend\Expressive\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelper;
 
 class FooMiddleware
 {
@@ -136,14 +136,14 @@ Each method will raise an exception if:
 
 ### ServerUrlHelper
 
-`Zend\Expressive\Helper\ServerUrlHelper` provides the ability to generate a full
+`Mezzio\Helper\ServerUrlHelper` provides the ability to generate a full
 URI by passing only the path to the helper; it will then use that path with the
 current `Psr\Http\Message\UriInterface` instance provided to it in order to
 generate a fully qualified URI.
 
 In order to use the helper, you will need to inject it with the current
 `UriInterface` from the request instance. To automate this, we provide
-`Zend\Expressive\Helper\ServerUrlMiddleware`, which composes a `ServerUrl`
+`Mezzio\Helper\ServerUrlMiddleware`, which composes a `ServerUrl`
 instance, and, when invoked, injects it with the URI instance.
 
 As such, you will need to:
@@ -155,11 +155,11 @@ As such, you will need to:
 The following examples demonstrate registering the services.
 
 ```php
-use Zend\Expressive\Helper\ServerUrlHelper;
-use Zend\Expressive\Helper\ServerUrlMiddleware;
-use Zend\Expressive\Helper\ServerUrlMiddlewareFactory;
+use Mezzio\Helper\ServerUrlHelper;
+use Mezzio\Helper\ServerUrlMiddleware;
+use Mezzio\Helper\ServerUrlMiddlewareFactory;
 
-// zend-servicemanager:
+// laminas-servicemanager:
 $services->setInvokableClass(ServerUrlHelper::class, ServerUrlHelper::class);
 $services->setFactory(ServerUrlMiddleware::class, ServerUrlMiddlewareFactory::class);
 
@@ -184,7 +184,7 @@ $container->set(
 To register the `ServerUrlMiddleware` as pre-routing pipeline middleware:
 
 ```php
-use Zend\Expressive\Helper\ServerUrlMiddleware;
+use Mezzio\Helper\ServerUrlMiddleware;
 
 // Do this early, before piping other middleware or routes:
 $app->pipe(ServerUrlMiddleware::class);
@@ -200,7 +200,7 @@ $app->pipe(ServerUrlMiddleware::class);
 ```
 
 The following dependency configuration will work for all three when using the
-Expressive skeleton:
+Mezzio skeleton:
 
 ```php
 return [
@@ -224,7 +224,7 @@ Compose the helper in your middleware (or elsewhere), and then use it to
 generate URI paths:
 
 ```php
-use Zend\Expressive\Helper\ServerUrlHelper;
+use Mezzio\Helper\ServerUrlHelper;
 
 class FooMiddleware
 {
@@ -259,5 +259,5 @@ Where:
 
 ## Documentation
 
-See the [zend-expressive](https://github.com/zendframework/zend-expressive/blob/master/doc/book)
-documentation tree, or browse online at http://zend-expressive.rtfd.org.
+See the [mezzio](https://github.com/mezzio/mezzio/blob/master/doc/book)
+documentation tree, or browse online at http://mezzio.rtfd.org.
