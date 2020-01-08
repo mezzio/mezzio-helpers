@@ -1,6 +1,6 @@
 # Helper classes for Mezzio
 
-[![Build Status](https://travis-ci.org/mezzio/mezzio-helpers.svg?branch=master)](https://travis-ci.org/mezzio/mezzio-helpers)
+[![Build Status](https://travis-ci.com/mezzio/mezzio-helpers.svg?branch=master)](https://travis-ci.com/mezzio/mezzio-helpers)
 [![Coverage Status](https://coveralls.io/repos/github/mezzio/mezzio-helpers/badge.svg?branch=master)](https://coveralls.io/github/mezzio/mezzio-helpers?branch=master)
 
 Helper classes for [Mezzio](https://github.com/mezzio/mezzio).

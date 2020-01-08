@@ -12,7 +12,7 @@
     ],
     "homepage": "https://mezzio.dev",
     "support": {
-        "docs": "https://docs.mezzio.dev/mezzio-helpers/",
+        "docs": "https://docs.mezzio.dev/mezzio/features/helpers/intro/",
         "issues": "https://github.com/mezzio/mezzio-helpers/issues",
         "source": "https://github.com/mezzio/mezzio-helpers",
         "rss": "https://github.com/mezzio/mezzio-helpers/releases.atom",
