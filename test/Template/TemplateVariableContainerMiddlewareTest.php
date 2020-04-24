@@ -41,7 +41,10 @@ class TemplateVariableContainerMiddlewareTest extends TestCase
             ->will([$this->request, 'reveal'])
             ->shouldBeCalledTimes(1);
         $this->request
-            ->withAttribute(\Zend\Expressive\Helper\Template\TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
+            ->withAttribute(
+                \Zend\Expressive\Helper\Template\TemplateVariableContainer::class,
+                Argument::type(TemplateVariableContainer::class)
+            )
             ->willReturn($clonedRequest)
             ->shouldBeCalledTimes(1);
 

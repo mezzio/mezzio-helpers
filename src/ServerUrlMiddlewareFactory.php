@@ -33,6 +33,10 @@ class ServerUrlMiddlewareFactory
             ));
         }
 
-        return new ServerUrlMiddleware($container->has(ServerUrlHelper::class) ? $container->get(ServerUrlHelper::class) : $container->get(\Zend\Expressive\Helper\ServerUrlHelper::class));
+        return new ServerUrlMiddleware(
+            $container->has(ServerUrlHelper::class)
+                ? $container->get(ServerUrlHelper::class)
+                : $container->get(\Zend\Expressive\Helper\ServerUrlHelper::class)
+        );
     }
 }
