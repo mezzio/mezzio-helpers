@@ -24,5 +24,5 @@ $ composer require mezzio/mezzio-helpers
 
 ## Documentation
 
-See the [mezzio](https://github.com/mezzio/mezzio/blob/master/doc/book)
+See the [mezzio](https://github.com/mezzio/mezzio/blob/master/docs/book)
 documentation tree, or browse online at https://docs.mezzio.dev/mezzio/features/helpers/intro/
