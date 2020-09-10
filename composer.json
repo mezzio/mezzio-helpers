@@ -23,10 +23,6 @@
         "sort-packages": true
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "5.3.x-dev",
-            "dev-develop": "5.4.x-dev"
-        },
         "laminas": {
             "config-provider": "Mezzio\\Helper\\ConfigProvider"
         }
