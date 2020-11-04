@@ -15,6 +15,7 @@ use Mezzio\Helper\UrlHelperMiddleware;
 use Mezzio\Router\RouteResult;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,12 +23,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class UrlHelperMiddlewareTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var UrlHelper|ObjectProphecy
      */
     private $helper;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->helper = $this->prophesize(UrlHelper::class);
     }

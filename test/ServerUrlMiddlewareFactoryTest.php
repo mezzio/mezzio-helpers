@@ -15,10 +15,13 @@ use Mezzio\Helper\ServerUrlHelper;
 use Mezzio\Helper\ServerUrlMiddleware;
 use Mezzio\Helper\ServerUrlMiddlewareFactory;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Container\ContainerInterface;
 
 class ServerUrlMiddlewareFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testCreatesAndReturnsMiddlewareWhenHelperIsPresentInContainer()
     {
         $helper = $this->prophesize(ServerUrlHelper::class);

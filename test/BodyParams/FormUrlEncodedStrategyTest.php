@@ -12,17 +12,20 @@ namespace MezzioTest\Helper\BodyParams;
 
 use Mezzio\Helper\BodyParams\FormUrlEncodedStrategy;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
 class FormUrlEncodedStrategyTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var FormUrlEncodedStrategy
      */
     private $strategy;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->strategy = new FormUrlEncodedStrategy();
     }

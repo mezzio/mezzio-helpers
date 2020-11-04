@@ -14,13 +14,16 @@ use Mezzio\Helper\Template\TemplateVariableContainer;
 use Mezzio\Helper\Template\TemplateVariableContainerMiddleware;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class TemplateVariableContainerMiddlewareTest extends TestCase
 {
-    public function setUp()
+    use ProphecyTrait;
+
+    public function setUp(): void
     {
         $this->handler    = $this->prophesize(RequestHandlerInterface::class);
         $this->request    = $this->prophesize(ServerRequestInterface::class);

@@ -19,12 +19,16 @@ use Mezzio\Router\RouterInterface;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use ReflectionProperty;
 use stdClass;
 use TypeError;
 
 class UrlHelperTest extends TestCase
 {
+    use ProphecyTrait;
+
     use MockeryPHPUnitIntegration;
 
     /**
@@ -32,7 +36,7 @@ class UrlHelperTest extends TestCase
      */
     private $router;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->router = $this->prophesize(RouterInterface::class);
     }
@@ -392,5 +396,19 @@ class UrlHelperTest extends TestCase
 
         $helper->setRouteResult($result->reveal());
         $this->assertInstanceOf(RouteResult::class, $helper->getRouteResult());
+    }
+
+    private function assertAttributeSame($expected, $attribute, $object)
+    {
+        $r = new ReflectionProperty($object, $attribute);
+        $r->setAccessible(true);
+        self::assertSame($expected, $r->getValue($object));
+    }
+
+    private function assertAttributeEquals($expected, $attribute, $object)
+    {
+        $r = new ReflectionProperty($object, $attribute);
+        $r->setAccessible(true);
+        self::assertEquals($expected, $r->getValue($object));
     }
 }
