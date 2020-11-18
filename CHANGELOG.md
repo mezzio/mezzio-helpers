@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#5](https://github.com/mezzio/mezzio-helpers/pull/5) Adds PHP 8.0 support
 
 ### Changed
 
