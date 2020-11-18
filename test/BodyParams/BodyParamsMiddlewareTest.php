@@ -18,9 +18,10 @@ use Mezzio\Helper\BodyParams\StrategyInterface;
 use Mezzio\Helper\Exception\MalformedRequestBodyException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
+use ReflectionProperty;
 use function fopen;
 use function fwrite;
 use function get_class;
@@ -28,6 +29,8 @@ use function json_encode;
 
 class BodyParamsMiddlewareTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var Stream
      */
@@ -38,7 +41,7 @@ class BodyParamsMiddlewareTest extends TestCase
      */
     private $bodyParams;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->bodyParams = new BodyParamsMiddleware();
 
@@ -274,5 +277,19 @@ class BodyParamsMiddlewareTest extends TestCase
 
         $this->assertInstanceOf(Response::class, $result);
         $this->assertTrue($handlerTriggered);
+    }
+
+    private function assertAttributeSame($expected, $attribute, $object)
+    {
+        $r = new ReflectionProperty($object, $attribute);
+        $r->setAccessible(true);
+        self::assertSame($expected, $r->getValue($object));
+    }
+
+    private function assertAttributeContains($expected, $attribute, $object)
+    {
+        $r = new ReflectionProperty($object, $attribute);
+        $r->setAccessible(true);
+        self::assertContains($expected, $r->getValue($object));
     }
 }

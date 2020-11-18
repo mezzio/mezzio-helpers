@@ -13,17 +13,20 @@ namespace MezzioTest\Helper\BodyParams;
 use Mezzio\Helper\BodyParams\JsonStrategy;
 use Mezzio\Helper\Exception\MalformedRequestBodyException;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
 class JsonStrategyTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var JsonStrategy
      */
     private $strategy;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->strategy = new JsonStrategy();
     }

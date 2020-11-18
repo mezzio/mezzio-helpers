@@ -15,11 +15,15 @@ use Mezzio\Helper\UrlHelper;
 use Mezzio\Helper\UrlHelperFactory;
 use Mezzio\Router\RouterInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
+use ReflectionProperty;
 
 class UrlHelperFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var RouterInterface|ObjectProphecy
      */
@@ -35,7 +39,7 @@ class UrlHelperFactoryTest extends TestCase
      */
     private $factory;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->router = $this->prophesize(RouterInterface::class);
         $this->container = $this->prophesize(ContainerInterface::class);
@@ -95,5 +99,12 @@ class UrlHelperFactoryTest extends TestCase
         $this->assertInstanceOf(UrlHelperFactory::class, $factory);
         $this->assertAttributeSame('/api', 'basePath', $factory);
         $this->assertAttributeSame(Router::class, 'routerServiceName', $factory);
+    }
+
+    private function assertAttributeSame($expected, $attribute, $object)
+    {
+        $r = new ReflectionProperty($object, $attribute);
+        $r->setAccessible(true);
+        self::assertSame($expected, $r->getValue($object));
     }
 }

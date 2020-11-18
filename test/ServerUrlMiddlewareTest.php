@@ -15,13 +15,17 @@ use Mezzio\Helper\ServerUrlHelper;
 use Mezzio\Helper\ServerUrlMiddleware;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use ReflectionProperty;
 
 class ServerUrlMiddlewareTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testMiddlewareInjectsHelperWithUri()
     {
         $uri = $this->prophesize(UriInterface::class);
@@ -44,11 +48,8 @@ class ServerUrlMiddlewareTest extends TestCase
         //$this->assertSame($response->reveal(), $test, 'Unexpected return value from middleware');
         $this->assertTrue($invoked, 'next() was not invoked');
 
-        $this->assertAttributeSame(
-            $uri->reveal(),
-            'uri',
-            $helper,
-            'Helper was not injected with URI from request'
-        );
+        $r = new ReflectionProperty($helper, 'uri');
+        $r->setAccessible(true);
+        self::assertSame($uri->reveal(), $r->getValue($helper), 'Helper was not injected with URI from request');
     }
 }

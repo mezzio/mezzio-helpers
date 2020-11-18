@@ -12,6 +12,7 @@ namespace MezzioTest\Helper;
 
 use Mezzio\Helper\ContentLengthMiddleware;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -19,7 +20,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ContentLengthMiddlewareTest extends TestCase
 {
-    public function setUp()
+    use ProphecyTrait;
+
+    public function setUp(): void
     {
         $this->response = $response = $this->prophesize(ResponseInterface::class);
         $this->request = $request = $this->prophesize(ServerRequestInterface::class)->reveal();

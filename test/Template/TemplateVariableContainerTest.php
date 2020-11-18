@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 class TemplateVariableContainerTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new TemplateVariableContainer();
     }

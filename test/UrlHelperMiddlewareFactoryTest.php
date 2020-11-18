@@ -15,17 +15,21 @@ use Mezzio\Helper\UrlHelper;
 use Mezzio\Helper\UrlHelperMiddleware;
 use Mezzio\Helper\UrlHelperMiddlewareFactory;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
+use ReflectionProperty;
 
 class UrlHelperMiddlewareFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ContainerInterface|ObjectProphecy
      */
     private $container;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = $this->prophesize(ContainerInterface::class);
     }
@@ -77,5 +81,12 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
 
         $this->assertInstanceOf(UrlHelperMiddlewareFactory::class, $factory);
         $this->assertAttributeSame(MyUrlHelper::class, 'urlHelperServiceName', $factory);
+    }
+
+    private function assertAttributeSame($expected, $attribute, $object)
+    {
+        $r = new ReflectionProperty($object, $attribute);
+        $r->setAccessible(true);
+        self::assertSame($expected, $r->getValue($object));
     }
 }

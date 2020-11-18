@@ -32,7 +32,7 @@ class ConfigProviderTest extends TestCase
     public function testInvocationReturnsArray() : array
     {
         $config = ($this->provider)();
-        $this->assertInternalType('array', $config);
+        $this->assertIsArray($config);
 
         return $config;
     }
@@ -43,14 +43,14 @@ class ConfigProviderTest extends TestCase
     public function testReturnedArrayContainsDependencies(array $config) : void
     {
         $this->assertArrayHasKey('dependencies', $config);
-        $this->assertInternalType('array', $config['dependencies']);
+        $this->assertIsArray($config['dependencies']);
 
         $this->assertArrayHasKey('invokables', $config['dependencies']);
-        $this->assertInternalType('array', $config['dependencies']['invokables']);
+        $this->assertIsArray($config['dependencies']['invokables']);
         $this->assertArrayHasKey(ServerUrlHelper::class, $config['dependencies']['invokables']);
 
         $this->assertArrayHasKey('factories', $config['dependencies']);
-        $this->assertInternalType('array', $config['dependencies']['factories']);
+        $this->assertIsArray($config['dependencies']['factories']);
         $this->assertArrayHasKey(ServerUrlMiddleware::class, $config['dependencies']['factories']);
         $this->assertArrayHasKey(UrlHelper::class, $config['dependencies']['factories']);
         $this->assertArrayHasKey(UrlHelperMiddleware::class, $config['dependencies']['factories']);
