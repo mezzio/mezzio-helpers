@@ -2,27 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 5.4.0 - TBD
+## 5.4.0 - 2020-11-18
 
 ### Added
 
 - [#5](https://github.com/mezzio/mezzio-helpers/pull/5) Adds PHP 8.0 support
 
-### Changed
 
-- Nothing.
+-----
 
-### Deprecated
+### Release Notes for [5.4.0](https://github.com/mezzio/mezzio-helpers/milestone/2)
 
-- Nothing.
+next feature release (minor)
 
-### Removed
+### 5.4.0
 
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
 
-### Fixed
+#### Enhancement
 
-- Nothing.
+ - [5: Added PHP 8.0 support #4](https://github.com/mezzio/mezzio-helpers/pull/5) thanks to @svycka
 
 ## 5.3.0 - 2019-03-12
 
