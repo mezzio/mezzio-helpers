@@ -54,6 +54,10 @@ class JsonStrategy implements StrategyInterface
                 json_last_error_msg()
             ));
         }
+        
+        if (!is_array($parsedBody)) {
+            $parsedBody = null;
+        }
 
         return $request
             ->withAttribute('rawBody', $rawBody)
