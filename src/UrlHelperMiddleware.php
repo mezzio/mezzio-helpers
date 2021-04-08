@@ -32,11 +32,15 @@ class UrlHelperMiddleware implements MiddlewareInterface
     }
 
     /**
+     * Inject the helper with the request instance.
+     *
      * Inject the UrlHelper instance with a RouteResult, if present as a request attribute.
      * Injects the helper, and then dispatches the next middleware.
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
+        $this->helper->setRequest($request);
+
         $result = $request->getAttribute(RouteResult::class, false);
 
         if ($result instanceof RouteResult) {
