@@ -21,6 +21,7 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\ServerRequestInterface;
 use ReflectionProperty;
 use stdClass;
 use TypeError;
@@ -43,7 +44,12 @@ class UrlHelperTest extends TestCase
 
     public function createHelper()
     {
-        return new UrlHelper($this->router->reveal());
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getQueryParams()->willReturn([]);
+
+        $helper = new UrlHelper($this->router->reveal());
+        $helper->setRequest($request->reveal());
+        return $helper;
     }
 
     public function testRaisesExceptionOnInvocationIfNoRouteProvidedAndNoResultPresent()
