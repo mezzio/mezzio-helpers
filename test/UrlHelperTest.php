@@ -238,7 +238,7 @@ class UrlHelperTest extends TestCase
         $fragmentIdentifier = 'foobar';
         $options = ['router' => ['foobar' => 'baz'], 'reuse_result_params' => false];
 
-        $helper = Mockery::mock(UrlHelper::class)->shouldDeferMissing();
+        $helper = Mockery::mock(UrlHelper::class)->makePartial();
         $helper->shouldReceive('__invoke')
             ->once()
             ->with($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options)
