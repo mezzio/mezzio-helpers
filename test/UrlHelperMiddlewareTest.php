@@ -33,6 +33,11 @@ class UrlHelperMiddlewareTest extends TestCase
     public function setUp(): void
     {
         $this->helper = $this->prophesize(UrlHelper::class);
+
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getQueryparams()->willReturn([]);
+
+        $this->helper->setRequest($request->reveal());
     }
 
     public function createMiddleware()
