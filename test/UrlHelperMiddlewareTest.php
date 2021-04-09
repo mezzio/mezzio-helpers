@@ -33,11 +33,6 @@ class UrlHelperMiddlewareTest extends TestCase
     public function setUp(): void
     {
         $this->helper = $this->prophesize(UrlHelper::class);
-
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getQueryparams()->willReturn([]);
-
-        $this->helper->setRequest($request->reveal());
     }
 
     public function createMiddleware()
@@ -53,6 +48,7 @@ class UrlHelperMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute(RouteResult::class, false)->willReturn($routeResult);
         $this->helper->setRouteResult($routeResult)->shouldBeCalled();
+        $this->helper->setRequest($request)->shouldBeCalled();
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequestInterface::class))->will([$response, 'reveal']);
@@ -70,6 +66,7 @@ class UrlHelperMiddlewareTest extends TestCase
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute(RouteResult::class, false)->willReturn(false);
+        $this->helper->setRequest($request)->shouldBeCalled();
         $this->helper->setRouteResult(Argument::any())->shouldNotBeCalled();
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
