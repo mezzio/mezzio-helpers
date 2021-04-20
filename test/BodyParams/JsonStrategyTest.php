@@ -145,4 +145,37 @@ class JsonStrategyTest extends TestCase
 
         $this->assertSame(json_last_error(), JSON_ERROR_NONE);
     }
+
+    /** @psalm-return iterable<string, array{0: string}> */
+    public function provideNonArrayJsonRequestBody(): iterable
+    {
+        yield 'null'    => ['null'];
+        yield 'true'    => ['true'];
+        yield 'false'   => ['false'];
+        yield 'integer' => ['1'];
+        yield 'float'   => ['1.0'];
+        yield 'string'  => ['"string"'];
+    }
+
+    /**
+     * @dataProvider provideNonArrayJsonRequestBody
+     */
+    public function testParsedBodyEvaluatingToNonArrayValueResultsInNull(string $json): void
+    {
+        $stream = $this->prophesize(StreamInterface::class);
+        $stream->__toString()->willReturn($json);
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getBody()->willReturn($stream->reveal());
+        $request->withAttribute('rawBody', $json)->will(function () use ($request) {
+            return $request->reveal();
+        });
+        $request
+            ->withParsedBody(null)
+            ->will(function () use ($request) {
+                return $request->reveal();
+            })
+            ->shouldBeCalled();
+
+        $this->strategy->parse($request->reveal());
+    }
 }

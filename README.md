@@ -1,7 +1,6 @@
 # Helper classes for Mezzio
 
-[![Build Status](https://travis-ci.com/mezzio/mezzio-helpers.svg?branch=master)](https://travis-ci.com/mezzio/mezzio-helpers)
-[![Coverage Status](https://coveralls.io/repos/github/mezzio/mezzio-helpers/badge.svg?branch=master)](https://coveralls.io/github/mezzio/mezzio-helpers?branch=master)
+[![Build Status](https://github.com/mezzio/mezzio-helpers/workflows/Continuous%20Integration/badge.svg)](https://github.com/mezzio/mezzio-helpers/actions?query=workflow%3A"Continuous+Integration")
 
 Helper classes for [Mezzio](https://github.com/mezzio/mezzio).
 
