@@ -24,9 +24,7 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var ContainerInterface|ObjectProphecy
-     */
+    /** @var ContainerInterface|ObjectProphecy */
     private $container;
 
     public function setUp(): void
@@ -46,7 +44,7 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
         $helper = $this->prophesize(UrlHelper::class)->reveal();
         $this->injectContainer(UrlHelper::class, $helper);
 
-        $factory = new UrlHelperMiddlewareFactory();
+        $factory    = new UrlHelperMiddlewareFactory();
         $middleware = $factory($this->container->reveal());
         $this->assertInstanceOf(UrlHelperMiddleware::class, $middleware);
         $this->assertAttributeSame($helper, 'helper', $middleware);

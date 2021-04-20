@@ -27,14 +27,14 @@ class ContentLengthMiddleware implements MiddlewareInterface
     /**
      * {@inheritDoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = $handler->handle($request);
         if ($response->hasHeader('Content-Length')) {
             return $response;
         }
 
-        $body = $response->getBody();
+        $body     = $response->getBody();
         $bodySize = $body->getSize();
         if (null === $bodySize) {
             return $response;

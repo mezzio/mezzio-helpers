@@ -24,24 +24,18 @@ class UrlHelperFactoryTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var RouterInterface|ObjectProphecy
-     */
+    /** @var RouterInterface|ObjectProphecy */
     private $router;
 
-    /**
-     * @var ContainerInterface|ObjectProphecy
-     */
+    /** @var ContainerInterface|ObjectProphecy */
     private $container;
 
-    /**
-     * @var UrlHelperFactory
-     */
+    /** @var UrlHelperFactory */
     private $factory;
 
     public function setUp(): void
     {
-        $this->router = $this->prophesize(RouterInterface::class);
+        $this->router    = $this->prophesize(RouterInterface::class);
         $this->container = $this->prophesize(ContainerInterface::class);
 
         $this->factory = new UrlHelperFactory();
@@ -92,7 +86,7 @@ class UrlHelperFactoryTest extends TestCase
     public function testFactoryAllowsSerialization()
     {
         $factory = UrlHelperFactory::__set_state([
-            'basePath' => '/api',
+            'basePath'          => '/api',
             'routerServiceName' => Router::class,
         ]);
 

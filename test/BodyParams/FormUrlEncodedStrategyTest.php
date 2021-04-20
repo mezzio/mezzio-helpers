@@ -20,9 +20,7 @@ class FormUrlEncodedStrategyTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var FormUrlEncodedStrategy
-     */
+    /** @var FormUrlEncodedStrategy */
     private $strategy;
 
     public function setUp(): void
@@ -42,7 +40,6 @@ class FormUrlEncodedStrategyTest extends TestCase
 
     /**
      * @dataProvider formContentTypes
-     *
      * @param string $contentType
      */
     public function testMatchesFormUrlencodedTypes($contentType)
@@ -62,7 +59,6 @@ class FormUrlEncodedStrategyTest extends TestCase
 
     /**
      * @dataProvider invalidContentTypes
-     *
      * @param string $contentType
      */
     public function testDoesNotMatchNonFormUrlencodedTypes($contentType)

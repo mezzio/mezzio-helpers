@@ -12,14 +12,12 @@ namespace MezzioTest\Helper\Template;
 
 use Mezzio\Helper\Template\RouteTemplateVariableMiddleware;
 use Mezzio\Helper\Template\TemplateVariableContainer;
-use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class RouteTemplateVariableMiddlewareTest extends TestCase

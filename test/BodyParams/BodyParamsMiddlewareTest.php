@@ -22,6 +22,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionProperty;
+
 use function fopen;
 use function fwrite;
 use function get_class;
@@ -31,14 +32,10 @@ class BodyParamsMiddlewareTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var Stream
-     */
+    /** @var Stream */
     private $body;
 
-    /**
-     * @var BodyParamsMiddleware
-     */
+    /** @var BodyParamsMiddleware */
     private $bodyParams;
 
     public function setUp(): void
@@ -88,7 +85,6 @@ class BodyParamsMiddlewareTest extends TestCase
 
     /**
      * @dataProvider jsonProvider
-     *
      * @param string $contentType
      */
     public function testParsesRawBodyAndPreservesRawBodyInRequestAttribute($contentType)
@@ -123,14 +119,13 @@ class BodyParamsMiddlewareTest extends TestCase
 
     /**
      * @dataProvider notApplicableProvider
-     *
      * @param string $method
      * @param string $contentType
      */
     public function testRequestIsUnchangedWhenBodyParamsMiddlewareIsNotApplicable($method, $contentType)
     {
         $originalRequest = new ServerRequest([], [], '', $method, $this->body, ['Content-type' => $contentType]);
-        $finalRequest = null;
+        $finalRequest    = null;
 
         $this->bodyParams->process(
             $originalRequest,
@@ -158,11 +153,11 @@ class BodyParamsMiddlewareTest extends TestCase
 
     public function testCustomStrategiesCanMatchRequests()
     {
-        $middleware = $this->bodyParams;
-        $serverRequest = new ServerRequest([], [], '', 'PUT', $this->body, ['Content-type' => 'foo/bar']);
-        $expectedReturn = $this->prophesize(ServerRequestInterface::class)->reveal();
+        $middleware       = $this->bodyParams;
+        $serverRequest    = new ServerRequest([], [], '', 'PUT', $this->body, ['Content-type' => 'foo/bar']);
+        $expectedReturn   = $this->prophesize(ServerRequestInterface::class)->reveal();
         $expectedResponse = new Response();
-        $strategy = $this->prophesize(StrategyInterface::class);
+        $strategy         = $this->prophesize(StrategyInterface::class);
         $strategy->match('foo/bar')->willReturn(true);
         $strategy->parse($serverRequest)->willReturn($expectedReturn);
         $middleware->addStrategy($strategy->reveal());
@@ -182,7 +177,7 @@ class BodyParamsMiddlewareTest extends TestCase
     {
         $middleware = $this->bodyParams;
         $middleware->clearStrategies();
-        $serverRequest = new ServerRequest([], [], '', 'PUT', $this->body, ['Content-type' => 'foo/bar']);
+        $serverRequest    = new ServerRequest([], [], '', 'PUT', $this->body, ['Content-type' => 'foo/bar']);
         $expectedResponse = new Response();
 
         $response = $middleware->process(
@@ -200,9 +195,9 @@ class BodyParamsMiddlewareTest extends TestCase
     {
         $expectedException = new MalformedRequestBodyException('malformed request body');
 
-        $middleware = $this->bodyParams;
+        $middleware    = $this->bodyParams;
         $serverRequest = new ServerRequest([], [], '', 'PUT', $this->body, ['Content-type' => 'foo/bar']);
-        $strategy = $this->prophesize(StrategyInterface::class);
+        $strategy      = $this->prophesize(StrategyInterface::class);
         $strategy->match('foo/bar')->willReturn(true);
         $strategy->parse($serverRequest)->willThrow($expectedException);
         $middleware->addStrategy($strategy->reveal());

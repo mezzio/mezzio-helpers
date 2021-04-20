@@ -22,7 +22,7 @@ class UrlHelperMiddlewareFactory
     /**
      * Allow serialization
      */
-    public static function __set_state(array $data) : self
+    public static function __set_state(array $data): self
     {
         return new self(
             $data['urlHelperServiceName'] ?? UrlHelper::class
@@ -43,7 +43,7 @@ class UrlHelperMiddlewareFactory
      * @throws Exception\MissingHelperException if the UrlHelper service is
      *     missing
      */
-    public function __invoke(ContainerInterface $container) : UrlHelperMiddleware
+    public function __invoke(ContainerInterface $container): UrlHelperMiddleware
     {
         if (! $container->has($this->urlHelperServiceName)) {
             throw new Exception\MissingHelperException(sprintf(

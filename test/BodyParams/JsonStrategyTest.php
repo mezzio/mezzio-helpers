@@ -17,13 +17,15 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
+use function json_last_error;
+
+use const JSON_ERROR_NONE;
+
 class JsonStrategyTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var JsonStrategy
-     */
+    /** @var JsonStrategy */
     private $strategy;
 
     public function setUp(): void
@@ -46,7 +48,6 @@ class JsonStrategyTest extends TestCase
 
     /**
      * @dataProvider jsonContentTypes
-     *
      * @param string $contentType
      */
     public function testMatchesJsonTypes($contentType)
@@ -69,7 +70,6 @@ class JsonStrategyTest extends TestCase
 
     /**
      * @dataProvider invalidContentTypes
-     *
      * @param string $contentType
      */
     public function testDoesNotMatchNonJsonTypes($contentType)
@@ -79,7 +79,7 @@ class JsonStrategyTest extends TestCase
 
     public function testParseReturnsNewRequest()
     {
-        $body = '{"foo":"bar"}';
+        $body   = '{"foo":"bar"}';
         $stream = $this->prophesize(StreamInterface::class);
         $stream->__toString()->willReturn($body);
         $request = $this->prophesize(ServerRequestInterface::class);
@@ -96,7 +96,7 @@ class JsonStrategyTest extends TestCase
 
     public function testThrowsExceptionOnMalformedJsonInRequestBody()
     {
-        $body = '{foobar}';
+        $body   = '{foobar}';
         $stream = $this->prophesize(StreamInterface::class);
         $stream->__toString()->willReturn($body);
         $request = $this->prophesize(ServerRequestInterface::class);
@@ -111,7 +111,7 @@ class JsonStrategyTest extends TestCase
 
     public function testEmptyRequestBodyYieldsNullParsedBodyWithNoExceptionThrown()
     {
-        $body = '';
+        $body   = '';
         $stream = $this->prophesize(StreamInterface::class);
         $stream->__toString()->willReturn($body);
         $request = $this->prophesize(ServerRequestInterface::class);
@@ -131,7 +131,7 @@ class JsonStrategyTest extends TestCase
      */
     public function testEmptyRequestBodyIsNotJsonDecoded(): void
     {
-        $body = '';
+        $body   = '';
         $stream = $this->prophesize(StreamInterface::class);
         $stream->__toString()->willReturn($body);
         $request = $this->prophesize(ServerRequestInterface::class);

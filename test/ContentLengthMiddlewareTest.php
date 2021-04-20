@@ -25,8 +25,8 @@ class ContentLengthMiddlewareTest extends TestCase
     public function setUp(): void
     {
         $this->response = $response = $this->prophesize(ResponseInterface::class);
-        $this->request = $request = $this->prophesize(ServerRequestInterface::class)->reveal();
-        $this->stream = $this->prophesize(StreamInterface::class);
+        $this->request  = $request = $this->prophesize(ServerRequestInterface::class)->reveal();
+        $this->stream   = $this->prophesize(StreamInterface::class);
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle($request)->will([$response, 'reveal']);

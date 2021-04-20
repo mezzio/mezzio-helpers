@@ -21,9 +21,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class UrlHelperMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var UrlHelper
-     */
+    /** @var UrlHelper */
     private $helper;
 
     public function __construct(UrlHelper $helper)
@@ -37,7 +35,7 @@ class UrlHelperMiddleware implements MiddlewareInterface
      * Inject the UrlHelper instance with a RouteResult, if present as a request attribute.
      * Injects the helper, and then dispatches the next middleware.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->helper->setRequest($request);
 

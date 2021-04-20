@@ -13,6 +13,8 @@ namespace MezzioTest\Helper\Template;
 use Mezzio\Helper\Template\TemplateVariableContainer;
 use PHPUnit\Framework\TestCase;
 
+use function array_merge;
+
 class TemplateVariableContainerTest extends TestCase
 {
     public function setUp(): void
@@ -25,7 +27,7 @@ class TemplateVariableContainerTest extends TestCase
         $this->assertCount(0, $this->container);
     }
 
-    public function testSettingVariablesReturnsNewInstanceContainingValue() : TemplateVariableContainer
+    public function testSettingVariablesReturnsNewInstanceContainingValue(): TemplateVariableContainer
     {
         $container = $this->container->with('key', 'value');
 

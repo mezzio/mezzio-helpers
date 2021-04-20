@@ -34,7 +34,6 @@ class ServerUrlHelperTest extends TestCase
 
     /**
      * @dataProvider plainPaths
-     *
      * @param null|string $path
      * @param string $expected
      */
@@ -58,8 +57,6 @@ class ServerUrlHelperTest extends TestCase
 
     /**
      * @dataProvider plainPathsForUseWithUri
-     *
-     * @param UriInterface $uri
      * @param null|string $path
      * @param string $expected
      */
@@ -84,8 +81,6 @@ class ServerUrlHelperTest extends TestCase
 
     /**
      * @dataProvider uriWithQueryString
-     *
-     * @param UriInterface $uri
      * @param null|string $path
      * @param string $expected
      */
@@ -110,8 +105,6 @@ class ServerUrlHelperTest extends TestCase
 
     /**
      * @dataProvider uriWithFragment
-     *
-     * @param UriInterface $uri
      * @param null|string $path
      * @param string $expected
      */
@@ -135,8 +128,6 @@ class ServerUrlHelperTest extends TestCase
 
     /**
      * @dataProvider pathsWithQueryString
-     *
-     * @param UriInterface $uri
      * @param string $path
      * @param string $expected
      */
@@ -160,8 +151,6 @@ class ServerUrlHelperTest extends TestCase
 
     /**
      * @dataProvider pathsWithFragment
-     *
-     * @param UriInterface $uri
      * @param string $path
      * @param string $expected
      */

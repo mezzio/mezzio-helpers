@@ -25,9 +25,7 @@ class UrlHelperMiddlewareTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var UrlHelper|ObjectProphecy
-     */
+    /** @var UrlHelper|ObjectProphecy */
     private $helper;
 
     public function setUp(): void
@@ -45,7 +43,7 @@ class UrlHelperMiddlewareTest extends TestCase
         $response = $this->prophesize(ResponseInterface::class);
 
         $routeResult = $this->prophesize(RouteResult::class)->reveal();
-        $request = $this->prophesize(ServerRequestInterface::class);
+        $request     = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute(RouteResult::class, false)->willReturn($routeResult);
         $this->helper->setRouteResult($routeResult)->shouldBeCalled();
         $this->helper->setRequest($request)->shouldBeCalled();

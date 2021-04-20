@@ -26,7 +26,7 @@ class UrlHelperFactory
     /**
      * Allow serialization
      */
-    public static function __set_state(array $data) : self
+    public static function __set_state(array $data): self
     {
         return new self(
             $data['basePath'] ?? '/',
@@ -41,7 +41,7 @@ class UrlHelperFactory
      */
     public function __construct(string $basePath = '/', string $routerServiceName = RouterInterface::class)
     {
-        $this->basePath = $basePath;
+        $this->basePath          = $basePath;
         $this->routerServiceName = $routerServiceName;
     }
 
@@ -50,7 +50,7 @@ class UrlHelperFactory
      *
      * @throws Exception\MissingRouterException
      */
-    public function __invoke(ContainerInterface $container) : UrlHelper
+    public function __invoke(ContainerInterface $container): UrlHelper
     {
         if (! $container->has($this->routerServiceName)) {
             throw new Exception\MissingRouterException(sprintf(

@@ -28,11 +28,11 @@ class ServerUrlMiddlewareTest extends TestCase
 
     public function testMiddlewareInjectsHelperWithUri()
     {
-        $uri = $this->prophesize(UriInterface::class);
+        $uri     = $this->prophesize(UriInterface::class);
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getUri()->willReturn($uri->reveal());
 
-        $helper = new ServerUrlHelper();
+        $helper     = new ServerUrlHelper();
         $middleware = new ServerUrlMiddleware($helper);
 
         $invoked = false;

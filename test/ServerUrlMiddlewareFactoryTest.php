@@ -24,12 +24,12 @@ class ServerUrlMiddlewareFactoryTest extends TestCase
 
     public function testCreatesAndReturnsMiddlewareWhenHelperIsPresentInContainer()
     {
-        $helper = $this->prophesize(ServerUrlHelper::class);
+        $helper    = $this->prophesize(ServerUrlHelper::class);
         $container = $this->prophesize(ContainerInterface::class);
         $container->has(ServerUrlHelper::class)->willReturn(true);
         $container->get(ServerUrlHelper::class)->willReturn($helper->reveal());
 
-        $factory = new ServerUrlMiddlewareFactory();
+        $factory    = new ServerUrlMiddlewareFactory();
         $middleware = $factory($container->reveal());
         $this->assertInstanceOf(ServerUrlMiddleware::class, $middleware);
     }
@@ -38,7 +38,7 @@ class ServerUrlMiddlewareFactoryTest extends TestCase
     {
         $container = $this->prophesize(ContainerInterface::class);
         $container->has(ServerUrlHelper::class)->willReturn(false);
-        $container->has(\Zend\Expressive\Helper\ServerUrlHelper::class)->willReturn(false);
+        $container->has(\zend\expressive\helper\serverurlhelper::class)->willReturn(false);
 
         $factory = new ServerUrlMiddlewareFactory();
 

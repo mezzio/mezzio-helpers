@@ -19,9 +19,7 @@ use function in_array;
 
 class BodyParamsMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var StrategyInterface[]
-     */
+    /** @var StrategyInterface[] */
     private $strategies = [];
 
     /**
@@ -52,7 +50,7 @@ class BodyParamsMiddleware implements MiddlewareInterface
     /**
      * Add a body parsing strategy to the middleware.
      */
-    public function addStrategy(StrategyInterface $strategy) : void
+    public function addStrategy(StrategyInterface $strategy): void
     {
         $this->strategies[] = $strategy;
     }
@@ -60,7 +58,7 @@ class BodyParamsMiddleware implements MiddlewareInterface
     /**
      * Clear all strategies from the middleware.
      */
-    public function clearStrategies() : void
+    public function clearStrategies(): void
     {
         $this->strategies = [];
     }
@@ -69,7 +67,7 @@ class BodyParamsMiddleware implements MiddlewareInterface
      * Process an incoming server request and return a response, optionally delegating
      * to the next middleware component to create the response.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if (in_array($request->getMethod(), $this->nonBodyRequests)) {
             return $handler->handle($request);

@@ -29,13 +29,10 @@ use TypeError;
 
 class UrlHelperTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
     use ProphecyTrait;
 
-    use MockeryPHPUnitIntegration;
-
-    /**
-     * @var RouterInterface|ObjectProphecy
-     */
+    /** @var RouterInterface|ObjectProphecy */
     private $router;
 
     public function setUp(): void
@@ -232,11 +229,11 @@ class UrlHelperTest extends TestCase
 
     public function testGenerateProxiesToInvokeMethod()
     {
-        $routeName = 'foo';
-        $routeParams = ['bar'];
-        $queryParams = ['foo' => 'bar'];
+        $routeName          = 'foo';
+        $routeParams        = ['bar'];
+        $queryParams        = ['foo' => 'bar'];
         $fragmentIdentifier = 'foobar';
-        $options = ['router' => ['foobar' => 'baz'], 'reuse_result_params' => false];
+        $options            = ['router' => ['foobar' => 'baz'], 'reuse_result_params' => false];
 
         $helper = Mockery::mock(UrlHelper::class)->makePartial();
         $helper->shouldReceive('__invoke')
@@ -260,7 +257,6 @@ class UrlHelperTest extends TestCase
 
     /**
      * @dataProvider invalidBasePathProvider
-     *
      * @param mixed $basePath
      */
     public function testThrowsExceptionWhenSettingInvalidBasePaths($basePath)
@@ -305,7 +301,6 @@ class UrlHelperTest extends TestCase
 
     /**
      * @dataProvider queryParametersAndFragmentProvider
-     *
      * @param array $queryParams
      * @param null|string $fragmentIdentifier
      * @param string $expected
@@ -331,7 +326,6 @@ class UrlHelperTest extends TestCase
 
     /**
      * @dataProvider invalidFragmentProvider
-     *
      * @param string $fragmentIdentifier
      */
     public function testRejectsInvalidFragmentIdentifier($fragmentIdentifier)
