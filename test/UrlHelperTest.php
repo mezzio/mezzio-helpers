@@ -21,6 +21,8 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionProperty;
 use stdClass;
 use TypeError;
@@ -43,7 +45,12 @@ class UrlHelperTest extends TestCase
 
     public function createHelper()
     {
-        return new UrlHelper($this->router->reveal());
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getQueryParams()->willReturn([]);
+
+        $helper = new UrlHelper($this->router->reveal());
+        $helper->setRequest($request->reveal());
+        return $helper;
     }
 
     public function testRaisesExceptionOnInvocationIfNoRouteProvidedAndNoResultPresent()
@@ -231,7 +238,7 @@ class UrlHelperTest extends TestCase
         $fragmentIdentifier = 'foobar';
         $options = ['router' => ['foobar' => 'baz'], 'reuse_result_params' => false];
 
-        $helper = Mockery::mock(UrlHelper::class)->shouldDeferMissing();
+        $helper = Mockery::mock(UrlHelper::class)->makePartial();
         $helper->shouldReceive('__invoke')
             ->once()
             ->with($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options)
@@ -396,6 +403,82 @@ class UrlHelperTest extends TestCase
 
         $helper->setRouteResult($result->reveal());
         $this->assertInstanceOf(RouteResult::class, $helper->getRouteResult());
+    }
+
+    public function testWillNotReuseQueryParamsIfReuseQueryParamsFlagIsFalseWhenGeneratingUri()
+    {
+        $result = $this->prophesize(RouteResult::class);
+        $result->isFailure()->willReturn(false);
+        $result->getMatchedRouteName()->willReturn('resource');
+        $result->getMatchedParams()->willReturn([]);
+
+        $this->router->generateUri('resource', [], [])->willReturn('URL');
+
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getQueryParams()->wilLReturn(['foo' => 'bar']);
+
+        $helper = $this->createHelper();
+        $helper->setRouteResult($result->reveal());
+        $helper->setRequest($request->reveal());
+
+        $this->assertEquals('URL', $helper('resource', [], [], null, ['reuse_query_params' => false]));
+    }
+
+    public function testWillReuseQueryParamsIfReuseQueryParamsFlagIsTrueWhenGeneratingUri()
+    {
+        $result = $this->prophesize(RouteResult::class);
+        $result->isFailure()->willReturn(false);
+        $result->getMatchedRouteName()->willReturn('resource');
+        $result->getMatchedParams()->willReturn([]);
+
+        $this->router->generateUri('resource', [], [])->willReturn('URL');
+
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getQueryParams()->wilLReturn(['foo' => 'bar']);
+
+        $helper = $this->createHelper();
+        $helper->setRouteResult($result->reveal());
+        $helper->setRequest($request->reveal());
+
+        $this->assertEquals('URL?foo=bar', $helper('resource', [], [], null, ['reuse_query_params' => true]));
+    }
+
+    public function testWillReuseQueryParamsIfReuseQueryParamsFlagIsMissingGeneratingUri()
+    {
+        $result = $this->prophesize(RouteResult::class);
+        $result->isFailure()->willReturn(false);
+        $result->getMatchedRouteName()->willReturn('resource');
+        $result->getMatchedParams()->willReturn([]);
+
+        $this->router->generateUri('resource', [], [])->willReturn('URL');
+
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getQueryParams()->wilLReturn(['foo' => 'bar']);
+
+        $helper = $this->createHelper();
+        $helper->setRouteResult($result->reveal());
+        $helper->setRequest($request->reveal());
+
+        $this->assertEquals('URL?foo=bar', $helper('resource'));
+    }
+
+    public function testCanOverrideRequestQueryParams()
+    {
+        $result = $this->prophesize(RouteResult::class);
+        $result->isFailure()->willReturn(false);
+        $result->getMatchedRouteName()->willReturn('resource');
+        $result->getMatchedParams()->willReturn([]);
+
+        $this->router->generateUri('resource', [], [])->willReturn('URL');
+
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getQueryParams()->wilLReturn(['foo' => 'bar']);
+
+        $helper = $this->createHelper();
+        $helper->setRouteResult($result->reveal());
+        $helper->setRequest($request->reveal());
+
+        $this->assertEquals('URL?foo=foo', $helper('resource', [], ['foo' => 'foo']));
     }
 
     private function assertAttributeSame($expected, $attribute, $object)

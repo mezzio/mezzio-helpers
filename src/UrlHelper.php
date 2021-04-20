@@ -13,6 +13,7 @@ namespace Mezzio\Helper;
 use InvalidArgumentException;
 use Mezzio\Router\RouteResult;
 use Mezzio\Router\RouterInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 use function array_merge;
 use function count;
@@ -39,6 +40,11 @@ class UrlHelper
      * @var RouteResult
      */
     private $result;
+
+    /**
+     * @var ServerRequestInterface
+     */
+    private $request;
 
     /**
      * @var RouterInterface
@@ -102,6 +108,13 @@ class UrlHelper
             $routeParams = $this->mergeParams($routeName, $result, $routeParams);
         }
 
+        $reuseQueryParams = ! isset($options['reuse_query_params']) || (bool) $options['reuse_query_params'];
+
+        if ($result && $reuseQueryParams) {
+            // Merge current request params with passed query params
+            $queryParams = $this->mergeQueryParams($routeName, $result, $queryParams);
+        }
+
         // Generate the route
         $path = $basePath . $this->router->generateUri($routeName, $routeParams, $routerOptions);
 
@@ -154,6 +167,19 @@ class UrlHelper
     }
 
     /**
+     * Set request instance
+     */
+    public function setRequest(ServerRequestInterface $request) : void
+    {
+        $this->request = $request;
+    }
+
+    public function getRequest() : ?ServerRequestInterface
+    {
+        return $this->request;
+    }
+
+    /**
      * Internal accessor for retrieving the base path.
      */
     public function getBasePath() : string
@@ -190,7 +216,9 @@ class UrlHelper
      * invocation, with the latter having precedence.
      *
      * @param string $route Route name.
-     * @param array $params Parameters provided at invocation.
+     * @param RouteResult $result RouteResult instance
+     * @param array $params Route parameters
+     * @return array Merged parameters
      */
     private function mergeParams(string $route, RouteResult $result, array $params) : array
     {
@@ -203,6 +231,35 @@ class UrlHelper
         }
 
         return array_merge($result->getMatchedParams(), $params);
+    }
+
+    /**
+     * Merge requested route query params with existing request query parameters.
+     *
+     * If route result represents routing failure, returns the params verbatim
+     *
+     * If the route result does not represent the same route name requested,
+     * returns the params verbatim.
+     *
+     * Otherwise, merges the current request query parameters with the specified query
+     * parameters with the latter having precedence.
+     *
+     * @param string $route Route name
+     * @param RouteResult $result RouteResult instance
+     * @param array $params Params to be merged with request params
+     * @return array
+     */
+    private function mergeQueryParams(string $route, RouteResult $result, array $params) : array
+    {
+        if ($result->isFailure()) {
+            return $params;
+        }
+
+        if ($result->getMatchedRouteName() !== $route) {
+            return $params;
+        }
+
+        return array_merge($this->getRequest()->getQueryParams(), $params);
     }
 
     /**

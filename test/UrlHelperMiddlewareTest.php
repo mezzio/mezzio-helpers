@@ -48,6 +48,7 @@ class UrlHelperMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute(RouteResult::class, false)->willReturn($routeResult);
         $this->helper->setRouteResult($routeResult)->shouldBeCalled();
+        $this->helper->setRequest($request)->shouldBeCalled();
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequestInterface::class))->will([$response, 'reveal']);
@@ -65,6 +66,7 @@ class UrlHelperMiddlewareTest extends TestCase
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute(RouteResult::class, false)->willReturn(false);
+        $this->helper->setRequest($request)->shouldBeCalled();
         $this->helper->setRouteResult(Argument::any())->shouldNotBeCalled();
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
