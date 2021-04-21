@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="4.7.0@d4377c0baf3ffbf0b1ec6998e8d1be2a40971005">
+  <file src="src/BodyParams/JsonStrategy.php">
+    <MixedAssignment occurrences="1">
+      <code>$parsedBody</code>
+    </MixedAssignment>
+  </file>
+  <file src="src/ServerUrlHelper.php">
+    <MissingConstructor occurrences="1">
+      <code>$uri</code>
+    </MissingConstructor>
+    <RedundantCast occurrences="1">
+      <code>(string) $specification</code>
+    </RedundantCast>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>$this-&gt;uri instanceof UriInterface</code>
+    </RedundantConditionGivenDocblockType>
+  </file>
+  <file src="src/ServerUrlMiddlewareFactory.php">
+    <MixedArgument occurrences="1"/>
+  </file>
+  <file src="src/Template/RouteTemplateVariableMiddleware.php">
+    <MixedAssignment occurrences="2">
+      <code>$container</code>
+      <code>$routeResult</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="2">
+      <code>with</code>
+      <code>with</code>
+    </MixedMethodCall>
+  </file>
+  <file src="src/Template/TemplateVariableContainer.php">
+    <MixedPropertyTypeCoercion occurrences="1">
+      <code>array_merge($this-&gt;variables, $values)</code>
+    </MixedPropertyTypeCoercion>
+  </file>
+  <file src="src/Template/TemplateVariableContainerMiddleware.php">
+    <MixedAssignment occurrences="1">
+      <code>$container</code>
+    </MixedAssignment>
+  </file>
+  <file src="src/UrlHelper.php">
+    <MixedArgument occurrences="2">
+      <code>$routerOptions</code>
+      <code>$routerOptions</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="1">
+      <code>$routerOptions</code>
+    </MixedAssignment>
+    <PossiblyFalseArgument occurrences="1">
+      <code>$name</code>
+    </PossiblyFalseArgument>
+    <PossiblyNullReference occurrences="1">
+      <code>getQueryParams</code>
+    </PossiblyNullReference>
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>$request</code>
+      <code>$result</code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/UrlHelperFactory.php">
+    <MixedArgument occurrences="3">
+      <code>$container-&gt;get($this-&gt;routerServiceName)</code>
+      <code>$data['basePath'] ?? '/'</code>
+      <code>$data['routerServiceName'] ?? RouterInterface::class</code>
+    </MixedArgument>
+  </file>
+  <file src="src/UrlHelperMiddleware.php">
+    <MixedAssignment occurrences="1">
+      <code>$result</code>
+    </MixedAssignment>
+  </file>
+  <file src="src/UrlHelperMiddlewareFactory.php">
+    <MixedArgument occurrences="2">
+      <code>$container-&gt;get($this-&gt;urlHelperServiceName)</code>
+      <code>$data['urlHelperServiceName'] ?? UrlHelper::class</code>
+    </MixedArgument>
+  </file>
+  <file src="test/AttributeAssertionsTrait.php">
+    <MixedArgument occurrences="1">
+      <code>$r-&gt;getValue($object)</code>
+    </MixedArgument>
+  </file>
+  <file src="test/BodyParams/BodyParamsMiddlewareTest.php">
+    <MissingClosureParamType occurrences="1">
+      <code>$args</code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType occurrences="1">
+      <code>function ($args) use ($callback) {</code>
+    </MissingClosureReturnType>
+    <MixedArgument occurrences="6">
+      <code>$this-&gt;mockHandlerToNeverTrigger()-&gt;reveal()</code>
+    </MixedArgument>
+    <MixedArrayAccess occurrences="1">
+      <code>$args[0]</code>
+    </MixedArrayAccess>
+    <MixedAssignment occurrences="1">
+      <code>$request</code>
+    </MixedAssignment>
+    <PossiblyUndefinedMethod occurrences="6">
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="test/ConfigProviderTest.php">
+    <RedundantCondition occurrences="1">
+      <code>assertIsArray</code>
+    </RedundantCondition>
+  </file>
+  <file src="test/ContentLengthMiddlewareTest.php">
+    <MixedAssignment occurrences="3">
+      <code>$response</code>
+      <code>$response</code>
+      <code>$response</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="22">
+      <code>getBody</code>
+      <code>getBody</code>
+      <code>getSize</code>
+      <code>getSize</code>
+      <code>hasHeader</code>
+      <code>hasHeader</code>
+      <code>hasHeader</code>
+      <code>process</code>
+      <code>process</code>
+      <code>process</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>will</code>
+      <code>will</code>
+      <code>will</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>withHeader</code>
+    </MixedMethodCall>
+    <UndefinedThisPropertyAssignment occurrences="5">
+      <code>$this-&gt;handler</code>
+      <code>$this-&gt;middleware</code>
+      <code>$this-&gt;request</code>
+      <code>$this-&gt;response</code>
+      <code>$this-&gt;stream</code>
+    </UndefinedThisPropertyAssignment>
+    <UndefinedThisPropertyFetch occurrences="14">
+      <code>$this-&gt;handler</code>
+      <code>$this-&gt;handler</code>
+      <code>$this-&gt;handler</code>
+      <code>$this-&gt;middleware</code>
+      <code>$this-&gt;middleware</code>
+      <code>$this-&gt;middleware</code>
+      <code>$this-&gt;request</code>
+      <code>$this-&gt;request</code>
+      <code>$this-&gt;request</code>
+      <code>$this-&gt;response</code>
+      <code>$this-&gt;response</code>
+      <code>$this-&gt;response</code>
+      <code>$this-&gt;stream</code>
+      <code>$this-&gt;stream</code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="test/ExceptionTest.php">
+    <InvalidLiteralArgument occurrences="1">
+      <code>ExceptionInterface::class</code>
+    </InvalidLiteralArgument>
+    <MixedInferredReturnType occurrences="1">
+      <code>Generator</code>
+    </MixedInferredReturnType>
+    <PossiblyFalseOperand occurrences="1">
+      <code>strrpos(ExceptionInterface::class, '\\')</code>
+    </PossiblyFalseOperand>
+  </file>
+  <file src="test/ServerUrlHelperTest.php">
+    <DeprecatedMethod occurrences="1">
+      <code>shouldDeferMissing</code>
+    </DeprecatedMethod>
+    <ImplicitToStringCast occurrences="1">
+      <code>array&lt;string, Uri|string[]&gt;</code>
+    </ImplicitToStringCast>
+    <InvalidReturnStatement occurrences="5"/>
+    <InvalidReturnType occurrences="6">
+      <code>array&lt;string, Uri|string[]&gt;</code>
+      <code>array&lt;string, Uri|string|null[]&gt;</code>
+      <code>array&lt;string, Uri|string|null[]&gt;</code>
+      <code>array&lt;string, Uri|string|null[]&gt;</code>
+      <code>array&lt;string, Uri|string|null[]&gt;</code>
+      <code>array&lt;string, string|null[]&gt;</code>
+    </InvalidReturnType>
+    <MixedMethodCall occurrences="2">
+      <code>andReturn</code>
+      <code>with</code>
+    </MixedMethodCall>
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>once</code>
+    </PossiblyUndefinedMethod>
+    <RedundantCast occurrences="1">
+      <code>(string) $expected</code>
+    </RedundantCast>
+    <UndefinedMagicMethod occurrences="1">
+      <code>once</code>
+    </UndefinedMagicMethod>
+  </file>
+  <file src="test/ServerUrlMiddlewareTest.php">
+    <MissingClosureParamType occurrences="1">
+      <code>$req</code>
+    </MissingClosureParamType>
+    <UnusedClosureParam occurrences="1">
+      <code>$req</code>
+    </UnusedClosureParam>
+    <UnusedVariable occurrences="1">
+      <code>$test</code>
+    </UnusedVariable>
+  </file>
+  <file src="test/Template/RouteTemplateVariableMiddlewareTest.php">
+    <InvalidArgument occurrences="2"/>
+    <MissingClosureParamType occurrences="7">
+      <code>$args</code>
+      <code>$container</code>
+      <code>$container</code>
+      <code>$container</code>
+      <code>$container</code>
+      <code>$container</code>
+      <code>$container</code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType occurrences="5">
+      <code>function ($args) {</code>
+      <code>function ($container) use ($originalContainer) {</code>
+      <code>function ($container) use ($originalContainer) {</code>
+      <code>function ($container) use ($originalContainer, $routeResult) {</code>
+      <code>function ($container) use ($originalContainer, $routeResult) {</code>
+    </MissingClosureReturnType>
+    <MixedArgumentTypeCoercion occurrences="4"/>
+    <MixedArrayAccess occurrences="1">
+      <code>$args[1]</code>
+    </MixedArrayAccess>
+    <MixedAssignment occurrences="2">
+      <code>$originalContainer</code>
+      <code>$originalContainer</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="62">
+      <code>get</code>
+      <code>get</code>
+      <code>get</code>
+      <code>get</code>
+      <code>getAttribute</code>
+      <code>getAttribute</code>
+      <code>getAttribute</code>
+      <code>getAttribute</code>
+      <code>getAttribute</code>
+      <code>getAttribute</code>
+      <code>handle</code>
+      <code>handle</code>
+      <code>handle</code>
+      <code>has</code>
+      <code>has</code>
+      <code>has</code>
+      <code>has</code>
+      <code>process</code>
+      <code>process</code>
+      <code>process</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>will</code>
+      <code>will</code>
+      <code>will</code>
+      <code>will</code>
+      <code>will</code>
+      <code>will</code>
+      <code>will</code>
+      <code>will</code>
+      <code>will</code>
+      <code>will</code>
+      <code>will</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>withAttribute</code>
+      <code>withAttribute</code>
+      <code>withAttribute</code>
+      <code>withAttribute</code>
+      <code>withAttribute</code>
+      <code>withAttribute</code>
+    </MixedMethodCall>
+    <UndefinedThisPropertyAssignment occurrences="5">
+      <code>$this-&gt;container</code>
+      <code>$this-&gt;handler</code>
+      <code>$this-&gt;middleware</code>
+      <code>$this-&gt;request</code>
+      <code>$this-&gt;response</code>
+    </UndefinedThisPropertyAssignment>
+    <UndefinedThisPropertyFetch occurrences="14">
+      <code>$this-&gt;container</code>
+      <code>$this-&gt;container</code>
+      <code>$this-&gt;handler</code>
+      <code>$this-&gt;handler</code>
+      <code>$this-&gt;handler</code>
+      <code>$this-&gt;middleware</code>
+      <code>$this-&gt;middleware</code>
+      <code>$this-&gt;middleware</code>
+      <code>$this-&gt;request</code>
+      <code>$this-&gt;request</code>
+      <code>$this-&gt;request</code>
+      <code>$this-&gt;response</code>
+      <code>$this-&gt;response</code>
+      <code>$this-&gt;response</code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="test/Template/TemplateVariableContainerMiddlewareTest.php">
+    <MixedMethodCall occurrences="28">
+      <code>getAttribute</code>
+      <code>getAttribute</code>
+      <code>handle</code>
+      <code>handle</code>
+      <code>process</code>
+      <code>process</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldBeCalledTimes</code>
+      <code>shouldNotBeCalled</code>
+      <code>shouldNotBeCalled</code>
+      <code>will</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>withAttribute</code>
+      <code>withAttribute</code>
+      <code>withAttribute</code>
+      <code>withAttribute</code>
+    </MixedMethodCall>
+    <UndefinedThisPropertyAssignment occurrences="4">
+      <code>$this-&gt;handler</code>
+      <code>$this-&gt;middleware</code>
+      <code>$this-&gt;request</code>
+      <code>$this-&gt;response</code>
+    </UndefinedThisPropertyAssignment>
+    <UndefinedThisPropertyFetch occurrences="8">
+      <code>$this-&gt;handler</code>
+      <code>$this-&gt;handler</code>
+      <code>$this-&gt;middleware</code>
+      <code>$this-&gt;middleware</code>
+      <code>$this-&gt;request</code>
+      <code>$this-&gt;request</code>
+      <code>$this-&gt;response</code>
+      <code>$this-&gt;response</code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="test/Template/TemplateVariableContainerTest.php">
+    <MixedArgument occurrences="2">
+      <code>$container</code>
+      <code>$this-&gt;container</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="3">
+      <code>$container</code>
+      <code>$container</code>
+      <code>$container</code>
+    </MixedAssignment>
+    <MixedInferredReturnType occurrences="1">
+      <code>TemplateVariableContainer</code>
+    </MixedInferredReturnType>
+    <MixedMethodCall occurrences="12">
+      <code>get</code>
+      <code>get</code>
+      <code>get</code>
+      <code>get</code>
+      <code>has</code>
+      <code>has</code>
+      <code>has</code>
+      <code>has</code>
+      <code>merge</code>
+      <code>merge</code>
+      <code>mergeForTemplate</code>
+      <code>with</code>
+    </MixedMethodCall>
+    <MixedReturnStatement occurrences="1">
+      <code>$container</code>
+    </MixedReturnStatement>
+    <UndefinedThisPropertyAssignment occurrences="1">
+      <code>$this-&gt;container</code>
+    </UndefinedThisPropertyAssignment>
+    <UndefinedThisPropertyFetch occurrences="6">
+      <code>$this-&gt;container</code>
+      <code>$this-&gt;container</code>
+      <code>$this-&gt;container</code>
+      <code>$this-&gt;container</code>
+      <code>$this-&gt;container</code>
+      <code>$this-&gt;container</code>
+    </UndefinedThisPropertyFetch>
+  </file>
+  <file src="test/UrlHelperFactoryTest.php">
+    <MixedArgument occurrences="7">
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;router-&gt;reveal()</code>
+      <code>$this-&gt;router-&gt;reveal()</code>
+      <code>Router::class</code>
+      <code>Router::class</code>
+    </MixedArgument>
+    <MixedMethodCall occurrences="1">
+      <code>willReturn</code>
+    </MixedMethodCall>
+    <PossiblyInvalidMethodCall occurrences="1">
+      <code>willReturn</code>
+    </PossiblyInvalidMethodCall>
+    <PossiblyUndefinedMethod occurrences="7">
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+    </PossiblyUndefinedMethod>
+    <UndefinedClass occurrences="4">
+      <code>Router</code>
+      <code>Router</code>
+      <code>Router</code>
+      <code>Router</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/UrlHelperMiddlewareFactoryTest.php">
+    <MixedArgument occurrences="5">
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>$this-&gt;container-&gt;reveal()</code>
+      <code>MyUrlHelper::class</code>
+      <code>MyUrlHelper::class</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="1">
+      <code>$service</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>willReturn</code>
+    </MixedMethodCall>
+    <PossiblyInvalidMethodCall occurrences="3">
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+    </PossiblyInvalidMethodCall>
+    <PossiblyUndefinedMethod occurrences="3">
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+    </PossiblyUndefinedMethod>
+    <UndefinedClass occurrences="4">
+      <code>MyUrlHelper</code>
+      <code>MyUrlHelper</code>
+      <code>MyUrlHelper</code>
+      <code>MyUrlHelper</code>
+    </UndefinedClass>
+  </file>
+  <file src="test/UrlHelperMiddlewareTest.php">
+    <InvalidArgument occurrences="3">
+      <code>$request</code>
+      <code>$request</code>
+      <code>Argument::any()</code>
+    </InvalidArgument>
+    <MixedArgument occurrences="1">
+      <code>$this-&gt;helper-&gt;reveal()</code>
+    </MixedArgument>
+    <PossiblyNullReference occurrences="4">
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldNotBeCalled</code>
+    </PossiblyNullReference>
+    <PossiblyUndefinedMethod occurrences="1">
+      <code>reveal</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="test/UrlHelperTest.php">
+    <MixedArgument occurrences="2">
+      <code>$basePath</code>
+      <code>$this-&gt;router-&gt;reveal()</code>
+    </MixedArgument>
+    <MixedMethodCall occurrences="2">
+      <code>andReturn</code>
+      <code>with</code>
+    </MixedMethodCall>
+    <PossiblyInvalidArgument occurrences="1">
+      <code>testQueryParametersAndFragment</code>
+    </PossiblyInvalidArgument>
+    <PossiblyInvalidMethodCall occurrences="20">
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willThrow</code>
+    </PossiblyInvalidMethodCall>
+    <PossiblyUndefinedMethod occurrences="2">
+      <code>once</code>
+      <code>reveal</code>
+    </PossiblyUndefinedMethod>
+    <UndefinedMagicMethod occurrences="1">
+      <code>once</code>
+    </UndefinedMagicMethod>
+  </file>
+</files>
