@@ -38,7 +38,7 @@ class ServerUrlMiddlewareFactoryTest extends TestCase
     {
         $container = $this->prophesize(ContainerInterface::class);
         $container->has(ServerUrlHelper::class)->willReturn(false);
-        $container->has(\zend\expressive\helper\serverurlhelper::class)->willReturn(false);
+        $container->has(\Zend\Expressive\Helper\ServerUrlHelper::class)->willReturn(false);
 
         $factory = new ServerUrlMiddlewareFactory();
 
