@@ -12,8 +12,8 @@ namespace MezzioTest\Helper\BodyParams;
 
 use Mezzio\Helper\BodyParams\JsonStrategy;
 use Mezzio\Helper\Exception\MalformedRequestBodyException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -23,8 +23,6 @@ use const JSON_ERROR_NONE;
 
 class JsonStrategyTest extends TestCase
 {
-    use ProphecyTrait;
-
     /** @var JsonStrategy */
     private $strategy;
 
@@ -77,53 +75,67 @@ class JsonStrategyTest extends TestCase
         $this->assertFalse($this->strategy->match($contentType));
     }
 
+    /** @psalm-return ServerRequestInterface&MockObject */
+    private function requestWillReturnBodyWithString(string $body): ServerRequestInterface
+    {
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->expects(self::once())
+            ->method('__toString')
+            ->willReturn($body);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::once())
+            ->method('getBody')
+            ->willReturn($stream);
+
+        return $request;
+    }
+
     public function testParseReturnsNewRequest(): void
     {
-        $body   = '{"foo":"bar"}';
-        $stream = $this->prophesize(StreamInterface::class);
-        $stream->__toString()->willReturn($body);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getBody()->willReturn($stream->reveal());
-        $request->withAttribute('rawBody', $body)->will(function () use ($request) {
-            return $request->reveal();
-        });
-        $request->withParsedBody(['foo' => 'bar'])->will(function () use ($request) {
-            return $request->reveal();
-        });
+        $body    = '{"foo":"bar"}';
+        $request = $this->requestWillReturnBodyWithString($body);
 
-        $this->assertSame($request->reveal(), $this->strategy->parse($request->reveal()));
+        $request->expects(self::once())
+            ->method('withAttribute')
+            ->with('rawBody', $body)
+            ->willReturnSelf();
+
+        $request->expects(self::once())
+            ->method('withParsedBody')
+            ->with(['foo' => 'bar'])
+            ->willReturnSelf();
+
+        $this->assertSame($request, $this->strategy->parse($request));
     }
 
     public function testThrowsExceptionOnMalformedJsonInRequestBody(): void
     {
-        $body   = '{foobar}';
-        $stream = $this->prophesize(StreamInterface::class);
-        $stream->__toString()->willReturn($body);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getBody()->willReturn($stream->reveal());
+        $body    = '{foobar}';
+        $request = $this->requestWillReturnBodyWithString($body);
 
         $this->expectException(MalformedRequestBodyException::class);
         $this->expectExceptionMessage('Error when parsing JSON request body: ');
         $this->expectExceptionCode(400);
 
-        $this->strategy->parse($request->reveal());
+        $this->strategy->parse($request);
     }
 
     public function testEmptyRequestBodyYieldsNullParsedBodyWithNoExceptionThrown(): void
     {
-        $body   = '';
-        $stream = $this->prophesize(StreamInterface::class);
-        $stream->__toString()->willReturn($body);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getBody()->willReturn($stream->reveal());
-        $request->withAttribute('rawBody', $body)->will(function () use ($request) {
-            return $request->reveal();
-        });
-        $request->withParsedBody(null)->will(function () use ($request) {
-            return $request->reveal();
-        });
+        $body    = '';
+        $request = $this->requestWillReturnBodyWithString($body);
 
-        $this->assertSame($request->reveal(), $this->strategy->parse($request->reveal()));
+        $request->expects(self::once())
+            ->method('withAttribute')
+            ->with('rawBody', $body)
+            ->willReturnSelf();
+
+        $request->expects(self::once())
+            ->method('withParsedBody')
+            ->with(null)
+            ->willReturnSelf();
+
+        $this->assertSame($request, $this->strategy->parse($request));
     }
 
     /**
@@ -131,18 +143,19 @@ class JsonStrategyTest extends TestCase
      */
     public function testEmptyRequestBodyIsNotJsonDecoded(): void
     {
-        $body   = '';
-        $stream = $this->prophesize(StreamInterface::class);
-        $stream->__toString()->willReturn($body);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getBody()->willReturn($stream->reveal());
-        $request->withAttribute('rawBody', $body)->will(function () use ($request) {
-            return $request->reveal();
-        });
-        $request->withParsedBody(null)->will(function () use ($request) {
-            return $request->reveal();
-        });
+        $body    = '';
+        $request = $this->requestWillReturnBodyWithString($body);
+        $request->expects(self::once())
+            ->method('withAttribute')
+            ->with('rawBody', $body)
+            ->willReturnSelf();
 
+        $request->expects(self::once())
+            ->method('withParsedBody')
+            ->with(null)
+            ->willReturnSelf();
+
+        $this->strategy->parse($request);
         $this->assertSame(json_last_error(), JSON_ERROR_NONE);
     }
 
@@ -162,20 +175,17 @@ class JsonStrategyTest extends TestCase
      */
     public function testParsedBodyEvaluatingToNonArrayValueResultsInNull(string $json): void
     {
-        $stream = $this->prophesize(StreamInterface::class);
-        $stream->__toString()->willReturn($json);
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getBody()->willReturn($stream->reveal());
-        $request->withAttribute('rawBody', $json)->will(function () use ($request) {
-            return $request->reveal();
-        });
-        $request
-            ->withParsedBody(null)
-            ->will(function () use ($request) {
-                return $request->reveal();
-            })
-            ->shouldBeCalled();
+        $request = $this->requestWillReturnBodyWithString($json);
+        $request->expects(self::once())
+            ->method('withAttribute')
+            ->with('rawBody', $json)
+            ->willReturnSelf();
 
-        $this->strategy->parse($request->reveal());
+        $request->expects(self::once())
+            ->method('withParsedBody')
+            ->with(null)
+            ->willReturnSelf();
+
+        $this->strategy->parse($request);
     }
 }

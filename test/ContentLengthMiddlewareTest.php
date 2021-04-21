@@ -10,56 +10,74 @@ declare(strict_types=1);
 
 namespace MezzioTest\Helper;
 
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\ServerRequest;
 use Mezzio\Helper\ContentLengthMiddleware;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+use function str_repeat;
+
 class ContentLengthMiddlewareTest extends TestCase
 {
-    use ProphecyTrait;
+    /** @var ContentLengthMiddleware */
+    private $middleware;
+    /** @var ServerRequest */
+    private $serverRequest;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->response = $response = $this->prophesize(ResponseInterface::class);
-        $this->request  = $request = $this->prophesize(ServerRequestInterface::class)->reveal();
-        $this->stream   = $this->prophesize(StreamInterface::class);
+        $this->middleware    = new ContentLengthMiddleware();
+        $this->serverRequest = new ServerRequest();
+    }
 
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $handler->handle($request)->will([$response, 'reveal']);
-        $this->handler = $handler->reveal();
+    private function handlerWillReturnResponse(ResponseInterface $response): RequestHandlerInterface
+    {
+        return new class ($response) implements RequestHandlerInterface {
+            /** @var ResponseInterface */
+            public $response;
 
-        $this->middleware = new ContentLengthMiddleware();
+            public function __construct(ResponseInterface $response)
+            {
+                $this->response = $response;
+            }
+
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return $this->response;
+            }
+        };
     }
 
     public function testReturnsResponseVerbatimIfContentLengthHeaderPresent(): void
     {
-        $this->response->hasHeader('Content-Length')->willReturn(true);
-        $response = $this->middleware->process($this->request, $this->handler);
-        $this->assertSame($this->response->reveal(), $response);
+        $response = (new HtmlResponse('foo'))->withAddedHeader('Content-Length', '3');
+        $handler  = $this->handlerWillReturnResponse($response);
+        $this->assertSame($response, $this->middleware->process($this->serverRequest, $handler));
     }
 
     public function testReturnsResponseVerbatimIfContentLengthHeaderNotPresentAndBodySizeIsNull(): void
     {
-        $this->stream->getSize()->willReturn(null);
-        $this->response->hasHeader('Content-Length')->willReturn(false);
-        $this->response->getBody()->will([$this->stream, 'reveal']);
-
-        $response = $this->middleware->process($this->request, $this->handler);
-        $this->assertSame($this->response->reveal(), $response);
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->expects(self::once())
+            ->method('getSize')
+            ->willReturn(null);
+        $response = new HtmlResponse($stream);
+        $handler  = $this->handlerWillReturnResponse($response);
+        $this->assertSame($response, $this->middleware->process($this->serverRequest, $handler));
     }
 
     public function testReturnsResponseWithContentLengthHeaderBasedOnBodySize(): void
     {
-        $this->stream->getSize()->willReturn(42);
-        $this->response->hasHeader('Content-Length')->willReturn(false);
-        $this->response->getBody()->will([$this->stream, 'reveal']);
-        $this->response->withHeader('Content-Length', '42')->will([$this->response, 'reveal']);
-
-        $response = $this->middleware->process($this->request, $this->handler);
-        $this->assertSame($this->response->reveal(), $response);
+        $response = new HtmlResponse(str_repeat('a', 42));
+        self::assertFalse($response->hasHeader('Content-Length'));
+        $handler  = $this->handlerWillReturnResponse($response);
+        $modified = $this->middleware->process($this->serverRequest, $handler);
+        self::assertNotSame($response, $modified);
+        self::assertTrue($modified->hasHeader('Content-Length'));
+        self::assertEquals(42, $modified->getHeader('Content-Length')[0]);
     }
 }
