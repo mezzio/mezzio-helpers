@@ -18,9 +18,6 @@ use Mezzio\Helper\BodyParams\StrategyInterface;
 use Mezzio\Helper\Exception\MalformedRequestBodyException;
 use MezzioTest\Helper\AttributeAssertionsTrait;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -32,7 +29,6 @@ use function json_encode;
 class BodyParamsMiddlewareTest extends TestCase
 {
     use AttributeAssertionsTrait;
-    use ProphecyTrait;
 
     /** @var Stream */
     private $body;
@@ -51,29 +47,22 @@ class BodyParamsMiddlewareTest extends TestCase
         $this->body->rewind();
     }
 
-    /** @return RequestHandlerInterface|ObjectProphecy */
-    private function mockHandler(callable $callback)
+    private function mockHandler(callable $callback): RequestHandlerInterface
     {
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-
-        $handler
-            ->handle(Argument::type(ServerRequestInterface::class))
-            ->will(function ($args) use ($callback) {
-                $request = $args[0];
-                return $callback($request);
-            });
+        $handler = $this->createMock(RequestHandlerInterface::class);
+        $handler->expects(self::once())
+            ->method('handle')
+            ->with(self::isInstanceOf(ServerRequestInterface::class))
+            ->willReturnCallback($callback);
 
         return $handler;
     }
 
-    /** @return RequestHandlerInterface|ObjectProphecy */
-    private function mockHandlerToNeverTrigger()
+    private function mockHandlerToNeverTrigger(): RequestHandlerInterface
     {
-        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler = $this->createMock(RequestHandlerInterface::class);
 
-        $handler
-            ->handle(Argument::type(ServerRequestInterface::class))
-            ->shouldNotBeCalled();
+        $handler->expects(self::never())->method('handle');
 
         return $handler;
     }
@@ -100,7 +89,7 @@ class BodyParamsMiddlewareTest extends TestCase
             $this->mockHandler(function (ServerRequestInterface $request) use (&$serverRequest) {
                 $serverRequest = $request;
                 return new Response();
-            })->reveal()
+            })
         );
 
         $this->assertSame(
@@ -137,7 +126,7 @@ class BodyParamsMiddlewareTest extends TestCase
             $this->mockHandler(function (ServerRequestInterface $request) use (&$finalRequest) {
                 $finalRequest = $request;
                 return new Response();
-            })->reveal()
+            })
         );
 
         $this->assertSame($originalRequest, $finalRequest);
@@ -151,7 +140,7 @@ class BodyParamsMiddlewareTest extends TestCase
 
     public function testCanAttachCustomStrategies(): void
     {
-        $strategy = $this->prophesize(StrategyInterface::class)->reveal();
+        $strategy = $this->createMock(StrategyInterface::class);
         $this->bodyParams->addStrategy($strategy);
         $this->assertAttributeContains($strategy, 'strategies', $this->bodyParams);
     }
@@ -160,19 +149,25 @@ class BodyParamsMiddlewareTest extends TestCase
     {
         $middleware       = $this->bodyParams;
         $serverRequest    = new ServerRequest([], [], '', 'PUT', $this->body, ['Content-type' => 'foo/bar']);
-        $expectedReturn   = $this->prophesize(ServerRequestInterface::class)->reveal();
+        $expectedReturn   = $this->createMock(ServerRequestInterface::class);
         $expectedResponse = new Response();
-        $strategy         = $this->prophesize(StrategyInterface::class);
-        $strategy->match('foo/bar')->willReturn(true);
-        $strategy->parse($serverRequest)->willReturn($expectedReturn);
-        $middleware->addStrategy($strategy->reveal());
+        $strategy         = $this->createMock(StrategyInterface::class);
+        $strategy->expects(self::once())
+            ->method('match')
+            ->with('foo/bar')
+            ->willReturn(true);
+        $strategy->expects(self::once())
+            ->method('parse')
+            ->with($serverRequest)
+            ->willReturn($expectedReturn);
+        $middleware->addStrategy($strategy);
 
         $response = $middleware->process(
             $serverRequest,
             $this->mockHandler(function (ServerRequestInterface $request) use ($expectedReturn, $expectedResponse) {
                 $this->assertSame($expectedReturn, $request);
                 return $expectedResponse;
-            })->reveal()
+            })
         );
 
         $this->assertSame($expectedResponse, $response);
@@ -190,7 +185,7 @@ class BodyParamsMiddlewareTest extends TestCase
             $this->mockHandler(function (ServerRequestInterface $request) use ($serverRequest, $expectedResponse) {
                 $this->assertSame($serverRequest, $request);
                 return $expectedResponse;
-            })->reveal()
+            })
         );
 
         $this->assertSame($expectedResponse, $response);
@@ -202,10 +197,16 @@ class BodyParamsMiddlewareTest extends TestCase
 
         $middleware    = $this->bodyParams;
         $serverRequest = new ServerRequest([], [], '', 'PUT', $this->body, ['Content-type' => 'foo/bar']);
-        $strategy      = $this->prophesize(StrategyInterface::class);
-        $strategy->match('foo/bar')->willReturn(true);
-        $strategy->parse($serverRequest)->willThrow($expectedException);
-        $middleware->addStrategy($strategy->reveal());
+        $strategy      = $this->createMock(StrategyInterface::class);
+        $strategy->expects(self::once())
+            ->method('match')
+            ->with('foo/bar')
+            ->willReturn(true);
+        $strategy->expects(self::once())
+            ->method('parse')
+            ->with($serverRequest)
+            ->willThrowException($expectedException);
+        $middleware->addStrategy($strategy);
 
         $this->expectException(get_class($expectedException));
         $this->expectExceptionMessage($expectedException->getMessage());
@@ -213,7 +214,7 @@ class BodyParamsMiddlewareTest extends TestCase
 
         $middleware->process(
             $serverRequest,
-            $this->mockHandlerToNeverTrigger()->reveal()
+            $this->mockHandlerToNeverTrigger()
         );
     }
 
@@ -272,7 +273,7 @@ class BodyParamsMiddlewareTest extends TestCase
                 );
 
                 return new Response();
-            })->reveal()
+            })
         );
 
         $this->assertInstanceOf(Response::class, $result);
