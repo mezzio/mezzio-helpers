@@ -49,7 +49,7 @@ class BodyParamsMiddlewareTest extends TestCase
         $this->body->rewind();
     }
 
-    private function mockHandler(callable $callback)
+    private function mockHandler(callable $callback): RequestHandlerInterface
     {
         $handler = $this->prophesize(RequestHandlerInterface::class);
 

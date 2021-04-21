@@ -40,8 +40,7 @@ class UrlHelperMiddlewareFactory
     /**
      * Create and return a UrlHelperMiddleware instance.
      *
-     * @throws Exception\MissingHelperException if the UrlHelper service is
-     *     missing
+     * @throws Exception\MissingHelperException If the UrlHelper service is missing.
      */
     public function __invoke(ContainerInterface $container): UrlHelperMiddleware
     {

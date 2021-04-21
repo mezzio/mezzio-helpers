@@ -29,7 +29,7 @@ class UrlHelper
      *
      * @see RFC 3986: https://tools.ietf.org/html/rfc3986#section-3.5
      */
-    const FRAGMENT_IDENTIFIER_REGEX = '/^([!$&\'()*+,;=._~:@\/?-]|%[0-9a-fA-F]{2}|[a-zA-Z0-9])+$/';
+    public const FRAGMENT_IDENTIFIER_REGEX = '/^([!$&\'()*+,;=._~:@\/?-]|%[0-9a-fA-F]{2}|[a-zA-Z0-9])+$/';
 
     /** @var string */
     private $basePath = '/';
@@ -55,11 +55,11 @@ class UrlHelper
      *     - router (array): contains options to be passed to the router
      *     - reuse_result_params (bool): indicates if the current RouteResult
      *       parameters will be used, defaults to true
-     * @throws Exception\RuntimeException for attempts to use the currently matched
+     * @throws Exception\RuntimeException For attempts to use the currently matched
      *     route but routing failed.
-     * @throws Exception\RuntimeException for attempts to use a matched result
+     * @throws Exception\RuntimeException For attempts to use a matched result
      *     when none has been previously injected in the instance.
-     * @throws InvalidArgumentException for malformed fragment identifiers.
+     * @throws InvalidArgumentException For malformed fragment identifiers.
      */
     public function __invoke(
         ?string $routeName = null,
@@ -177,7 +177,7 @@ class UrlHelper
     }
 
     /**
-     * @throws Exception\RuntimeException if current result is a routing failure.
+     * @throws Exception\RuntimeException If current result is a routing failure.
      */
     private function generateUriFromResult(array $params, RouteResult $result, array $routerOptions): string
     {
@@ -265,7 +265,7 @@ class UrlHelper
     /**
      * Append a fragment to a URI string, if present.
      *
-     * @throws InvalidArgumentException if the fragment identifier is malformed.
+     * @throws InvalidArgumentException If the fragment identifier is malformed.
      */
     private function appendFragment(string $uriString, ?string $fragmentIdentifier): string
     {
