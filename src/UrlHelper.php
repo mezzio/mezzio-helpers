@@ -108,7 +108,7 @@ class UrlHelper
             $routeParams = $this->mergeParams($routeName, $result, $routeParams);
         }
 
-        $reuseQueryParams = ! isset($options['reuse_query_params']) || (bool) $options['reuse_query_params'];
+        $reuseQueryParams = isset($options['reuse_query_params']) ? (bool) $options['reuse_query_params'] : false;
 
         if ($result && $reuseQueryParams) {
             // Merge current request params with passed query params

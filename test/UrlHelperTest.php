@@ -443,7 +443,7 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('URL?foo=bar', $helper('resource', [], [], null, ['reuse_query_params' => true]));
     }
 
-    public function testWillReuseQueryParamsIfReuseQueryParamsFlagIsMissingGeneratingUri()
+    public function testWillNotReuseQueryParamsIfReuseQueryParamsFlagIsMissingGeneratingUri()
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -459,7 +459,7 @@ class UrlHelperTest extends TestCase
         $helper->setRouteResult($result->reveal());
         $helper->setRequest($request->reveal());
 
-        $this->assertEquals('URL?foo=bar', $helper('resource'));
+        $this->assertEquals('URL', $helper('resource'));
     }
 
     public function testCanOverrideRequestQueryParams()
