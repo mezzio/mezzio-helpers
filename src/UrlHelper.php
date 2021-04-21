@@ -158,12 +158,12 @@ class UrlHelper
     /**
      * Set request instance
      */
-    public function setRequest(ServerRequestInterface $request) : void
+    public function setRequest(ServerRequestInterface $request): void
     {
         $this->request = $request;
     }
 
-    public function getRequest() : ?ServerRequestInterface
+    public function getRequest(): ?ServerRequestInterface
     {
         return $this->request;
     }
@@ -238,7 +238,7 @@ class UrlHelper
      * @param array $params Params to be merged with request params
      * @return array
      */
-    private function mergeQueryParams(string $route, RouteResult $result, array $params) : array
+    private function mergeQueryParams(string $route, RouteResult $result, array $params): array
     {
         if ($result->isFailure()) {
             return $params;

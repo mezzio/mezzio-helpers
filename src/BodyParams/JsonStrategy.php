@@ -13,6 +13,7 @@ namespace Mezzio\Helper\BodyParams;
 use Mezzio\Helper\Exception\MalformedRequestBodyException;
 use Psr\Http\Message\ServerRequestInterface;
 
+use function is_array;
 use function json_decode;
 use function json_last_error;
 use function json_last_error_msg;
