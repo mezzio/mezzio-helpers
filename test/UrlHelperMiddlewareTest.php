@@ -33,12 +33,12 @@ class UrlHelperMiddlewareTest extends TestCase
         $this->helper = $this->prophesize(UrlHelper::class);
     }
 
-    public function createMiddleware()
+    public function createMiddleware(): UrlHelperMiddleware
     {
         return new UrlHelperMiddleware($this->helper->reveal());
     }
 
-    public function testInvocationInjectsHelperWithRouteResultWhenPresentInRequest()
+    public function testInvocationInjectsHelperWithRouteResultWhenPresentInRequest(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
 
@@ -58,7 +58,7 @@ class UrlHelperMiddlewareTest extends TestCase
         ));
     }
 
-    public function testInvocationDoesNotInjectHelperWithRouteResultWhenAbsentInRequest()
+    public function testInvocationDoesNotInjectHelperWithRouteResultWhenAbsentInRequest(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
 

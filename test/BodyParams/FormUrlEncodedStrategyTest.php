@@ -28,7 +28,8 @@ class FormUrlEncodedStrategyTest extends TestCase
         $this->strategy = new FormUrlEncodedStrategy();
     }
 
-    public function formContentTypes()
+    /** @return array<array-key, string[]> */
+    public function formContentTypes(): array
     {
         return [
             ['application/x-www-form-urlencoded'],
@@ -40,14 +41,14 @@ class FormUrlEncodedStrategyTest extends TestCase
 
     /**
      * @dataProvider formContentTypes
-     * @param string $contentType
      */
-    public function testMatchesFormUrlencodedTypes($contentType)
+    public function testMatchesFormUrlencodedTypes(string $contentType): void
     {
         $this->assertTrue($this->strategy->match($contentType));
     }
 
-    public function invalidContentTypes()
+    /** @return array<array-key, string[]> */
+    public function invalidContentTypes(): array
     {
         return [
             ['application/x-www-form-urlencoded2'],
@@ -59,14 +60,13 @@ class FormUrlEncodedStrategyTest extends TestCase
 
     /**
      * @dataProvider invalidContentTypes
-     * @param string $contentType
      */
-    public function testDoesNotMatchNonFormUrlencodedTypes($contentType)
+    public function testDoesNotMatchNonFormUrlencodedTypes(string $contentType): void
     {
         $this->assertFalse($this->strategy->match($contentType));
     }
 
-    public function testParseReturnsOriginalRequest()
+    public function testParseReturnsOriginalRequest(): void
     {
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getParsedBody()->willReturn(['test' => 'value']);
@@ -74,7 +74,7 @@ class FormUrlEncodedStrategyTest extends TestCase
         $this->assertSame($request->reveal(), $this->strategy->parse($request->reveal()));
     }
 
-    public function testParseReturnsOriginalRequestIfBodyIsEmpty()
+    public function testParseReturnsOriginalRequestIfBodyIsEmpty(): void
     {
         $stream = $this->prophesize(StreamInterface::class);
         $stream->__toString()->willReturn('');
@@ -86,7 +86,7 @@ class FormUrlEncodedStrategyTest extends TestCase
         $this->assertSame($request->reveal(), $this->strategy->parse($request->reveal()));
     }
 
-    public function testParseReturnsNewRequest()
+    public function testParseReturnsNewRequest(): void
     {
         $body = 'foo=bar&bar=foo';
 

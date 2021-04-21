@@ -33,7 +33,8 @@ class JsonStrategyTest extends TestCase
         $this->strategy = new JsonStrategy();
     }
 
-    public function jsonContentTypes()
+    /** @return array<array-key, string[]> */
+    public function jsonContentTypes(): array
     {
         return [
             ['application/json'],
@@ -48,14 +49,14 @@ class JsonStrategyTest extends TestCase
 
     /**
      * @dataProvider jsonContentTypes
-     * @param string $contentType
      */
-    public function testMatchesJsonTypes($contentType)
+    public function testMatchesJsonTypes(string $contentType): void
     {
         $this->assertTrue($this->strategy->match($contentType));
     }
 
-    public function invalidContentTypes()
+    /** @return array<array-key, string[]> */
+    public function invalidContentTypes(): array
     {
         return [
             ['application/json+xml'],
@@ -70,14 +71,13 @@ class JsonStrategyTest extends TestCase
 
     /**
      * @dataProvider invalidContentTypes
-     * @param string $contentType
      */
-    public function testDoesNotMatchNonJsonTypes($contentType)
+    public function testDoesNotMatchNonJsonTypes(string $contentType): void
     {
         $this->assertFalse($this->strategy->match($contentType));
     }
 
-    public function testParseReturnsNewRequest()
+    public function testParseReturnsNewRequest(): void
     {
         $body   = '{"foo":"bar"}';
         $stream = $this->prophesize(StreamInterface::class);
@@ -94,7 +94,7 @@ class JsonStrategyTest extends TestCase
         $this->assertSame($request->reveal(), $this->strategy->parse($request->reveal()));
     }
 
-    public function testThrowsExceptionOnMalformedJsonInRequestBody()
+    public function testThrowsExceptionOnMalformedJsonInRequestBody(): void
     {
         $body   = '{foobar}';
         $stream = $this->prophesize(StreamInterface::class);
@@ -109,7 +109,7 @@ class JsonStrategyTest extends TestCase
         $this->strategy->parse($request->reveal());
     }
 
-    public function testEmptyRequestBodyYieldsNullParsedBodyWithNoExceptionThrown()
+    public function testEmptyRequestBodyYieldsNullParsedBodyWithNoExceptionThrown(): void
     {
         $body   = '';
         $stream = $this->prophesize(StreamInterface::class);

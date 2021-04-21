@@ -18,10 +18,10 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
-use ReflectionProperty;
 
 class UrlHelperMiddlewareFactoryTest extends TestCase
 {
+    use AttributeAssertionsTrait;
     use ProphecyTrait;
 
     /** @var ContainerInterface|ObjectProphecy */
@@ -32,14 +32,14 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
         $this->container = $this->prophesize(ContainerInterface::class);
     }
 
-    public function injectContainer($name, $service)
+    public function injectContainer(string $name, object $service): void
     {
         $service = $service instanceof ObjectProphecy ? $service->reveal() : $service;
         $this->container->has($name)->willReturn(true);
         $this->container->get($name)->willReturn($service);
     }
 
-    public function testFactoryCreatesAndReturnsMiddlewareWhenHelperIsPresentInContainer()
+    public function testFactoryCreatesAndReturnsMiddlewareWhenHelperIsPresentInContainer(): void
     {
         $helper = $this->prophesize(UrlHelper::class)->reveal();
         $this->injectContainer(UrlHelper::class, $helper);
@@ -50,7 +50,7 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
         $this->assertAttributeSame($helper, 'helper', $middleware);
     }
 
-    public function testFactoryRaisesExceptionWhenContainerDoesNotContainHelper()
+    public function testFactoryRaisesExceptionWhenContainerDoesNotContainHelper(): void
     {
         $this->container->has(UrlHelper::class)->willReturn(false);
         $this->container->has(\Zend\Expressive\Helper\UrlHelper::class)->willReturn(false);
@@ -59,7 +59,7 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
         $factory($this->container->reveal());
     }
 
-    public function testFactoryUsesUrlHelperServiceProvidedAtInstantiation()
+    public function testFactoryUsesUrlHelperServiceProvidedAtInstantiation(): void
     {
         $helper = $this->prophesize(UrlHelper::class)->reveal();
         $this->injectContainer(MyUrlHelper::class, $helper);
@@ -71,7 +71,7 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
         $this->assertAttributeSame($helper, 'helper', $middleware);
     }
 
-    public function testFactoryAllowsSerialization()
+    public function testFactoryAllowsSerialization(): void
     {
         $factory = UrlHelperMiddlewareFactory::__set_state([
             'urlHelperServiceName' => MyUrlHelper::class,
@@ -79,12 +79,5 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
 
         $this->assertInstanceOf(UrlHelperMiddlewareFactory::class, $factory);
         $this->assertAttributeSame(MyUrlHelper::class, 'urlHelperServiceName', $factory);
-    }
-
-    private function assertAttributeSame($expected, $attribute, $object)
-    {
-        $r = new ReflectionProperty($object, $attribute);
-        $r->setAccessible(true);
-        self::assertSame($expected, $r->getValue($object));
     }
 }

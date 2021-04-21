@@ -18,10 +18,10 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
-use ReflectionProperty;
 
 class UrlHelperFactoryTest extends TestCase
 {
+    use AttributeAssertionsTrait;
     use ProphecyTrait;
 
     /** @var RouterInterface|ObjectProphecy */
@@ -41,13 +41,13 @@ class UrlHelperFactoryTest extends TestCase
         $this->factory = new UrlHelperFactory();
     }
 
-    public function injectContainerService($name, $service)
+    public function injectContainerService(string $name, object $service): void
     {
         $this->container->has($name)->willReturn(true);
         $this->container->get($name)->willReturn($service);
     }
 
-    public function testFactoryReturnsHelperWithRouterInjected()
+    public function testFactoryReturnsHelperWithRouterInjected(): UrlHelper
     {
         $this->injectContainerService(RouterInterface::class, $this->router->reveal());
 
@@ -60,18 +60,18 @@ class UrlHelperFactoryTest extends TestCase
     /**
      * @depends testFactoryReturnsHelperWithRouterInjected
      */
-    public function testHelperUsesDefaultBasePathWhenNoneProvidedAtInstantiation(UrlHelper $helper)
+    public function testHelperUsesDefaultBasePathWhenNoneProvidedAtInstantiation(UrlHelper $helper): void
     {
         $this->assertEquals('/', $helper->getBasePath());
     }
 
-    public function testFactoryRaisesExceptionWhenRouterIsNotPresentInContainer()
+    public function testFactoryRaisesExceptionWhenRouterIsNotPresentInContainer(): void
     {
         $this->expectException(MissingRouterException::class);
         $this->factory->__invoke($this->container->reveal());
     }
 
-    public function testFactoryUsesBasePathAndRouterServiceProvidedAtInstantiation()
+    public function testFactoryUsesBasePathAndRouterServiceProvidedAtInstantiation(): void
     {
         $this->injectContainerService(Router::class, $this->router->reveal());
         $factory = new UrlHelperFactory('/api', Router::class);
@@ -83,7 +83,7 @@ class UrlHelperFactoryTest extends TestCase
         $this->assertEquals('/api', $helper->getBasePath());
     }
 
-    public function testFactoryAllowsSerialization()
+    public function testFactoryAllowsSerialization(): void
     {
         $factory = UrlHelperFactory::__set_state([
             'basePath'          => '/api',
@@ -93,12 +93,5 @@ class UrlHelperFactoryTest extends TestCase
         $this->assertInstanceOf(UrlHelperFactory::class, $factory);
         $this->assertAttributeSame('/api', 'basePath', $factory);
         $this->assertAttributeSame(Router::class, 'routerServiceName', $factory);
-    }
-
-    private function assertAttributeSame($expected, $attribute, $object)
-    {
-        $r = new ReflectionProperty($object, $attribute);
-        $r->setAccessible(true);
-        self::assertSame($expected, $r->getValue($object));
     }
 }

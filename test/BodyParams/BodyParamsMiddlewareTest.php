@@ -16,12 +16,13 @@ use Laminas\Diactoros\Stream;
 use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
 use Mezzio\Helper\BodyParams\StrategyInterface;
 use Mezzio\Helper\Exception\MalformedRequestBodyException;
+use MezzioTest\Helper\AttributeAssertionsTrait;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use ReflectionProperty;
 
 use function fopen;
 use function fwrite;
@@ -30,6 +31,7 @@ use function json_encode;
 
 class BodyParamsMiddlewareTest extends TestCase
 {
+    use AttributeAssertionsTrait;
     use ProphecyTrait;
 
     /** @var Stream */
@@ -49,7 +51,8 @@ class BodyParamsMiddlewareTest extends TestCase
         $this->body->rewind();
     }
 
-    private function mockHandler(callable $callback): RequestHandlerInterface
+    /** @return RequestHandlerInterface|ObjectProphecy */
+    private function mockHandler(callable $callback)
     {
         $handler = $this->prophesize(RequestHandlerInterface::class);
 
@@ -63,6 +66,7 @@ class BodyParamsMiddlewareTest extends TestCase
         return $handler;
     }
 
+    /** @return RequestHandlerInterface|ObjectProphecy */
     private function mockHandlerToNeverTrigger()
     {
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -74,7 +78,8 @@ class BodyParamsMiddlewareTest extends TestCase
         return $handler;
     }
 
-    public function jsonProvider()
+    /** @return array<array-key, string[]> */
+    public function jsonProvider(): array
     {
         return [
             ['application/json'],
@@ -85,9 +90,8 @@ class BodyParamsMiddlewareTest extends TestCase
 
     /**
      * @dataProvider jsonProvider
-     * @param string $contentType
      */
-    public function testParsesRawBodyAndPreservesRawBodyInRequestAttribute($contentType)
+    public function testParsesRawBodyAndPreservesRawBodyInRequestAttribute(string $contentType): void
     {
         $serverRequest = new ServerRequest([], [], '', 'PUT', $this->body, ['Content-type' => $contentType]);
 
@@ -106,7 +110,8 @@ class BodyParamsMiddlewareTest extends TestCase
         $this->assertSame(['foo' => 'bar'], $serverRequest->getParsedBody());
     }
 
-    public function notApplicableProvider()
+    /** @return array<array-key, string[]> */
+    public function notApplicableProvider(): array
     {
         return [
             ['GET', 'application/json'],
@@ -119,11 +124,11 @@ class BodyParamsMiddlewareTest extends TestCase
 
     /**
      * @dataProvider notApplicableProvider
-     * @param string $method
-     * @param string $contentType
      */
-    public function testRequestIsUnchangedWhenBodyParamsMiddlewareIsNotApplicable($method, $contentType)
-    {
+    public function testRequestIsUnchangedWhenBodyParamsMiddlewareIsNotApplicable(
+        string $method,
+        string $contentType
+    ): void {
         $originalRequest = new ServerRequest([], [], '', $method, $this->body, ['Content-type' => $contentType]);
         $finalRequest    = null;
 
@@ -138,20 +143,20 @@ class BodyParamsMiddlewareTest extends TestCase
         $this->assertSame($originalRequest, $finalRequest);
     }
 
-    public function testCanClearStrategies()
+    public function testCanClearStrategies(): void
     {
         $this->bodyParams->clearStrategies();
         $this->assertAttributeSame([], 'strategies', $this->bodyParams);
     }
 
-    public function testCanAttachCustomStrategies()
+    public function testCanAttachCustomStrategies(): void
     {
         $strategy = $this->prophesize(StrategyInterface::class)->reveal();
         $this->bodyParams->addStrategy($strategy);
         $this->assertAttributeContains($strategy, 'strategies', $this->bodyParams);
     }
 
-    public function testCustomStrategiesCanMatchRequests()
+    public function testCustomStrategiesCanMatchRequests(): void
     {
         $middleware       = $this->bodyParams;
         $serverRequest    = new ServerRequest([], [], '', 'PUT', $this->body, ['Content-type' => 'foo/bar']);
@@ -173,7 +178,7 @@ class BodyParamsMiddlewareTest extends TestCase
         $this->assertSame($expectedResponse, $response);
     }
 
-    public function testCallsNextWithOriginalRequestWhenNoStrategiesMatch()
+    public function testCallsNextWithOriginalRequestWhenNoStrategiesMatch(): void
     {
         $middleware = $this->bodyParams;
         $middleware->clearStrategies();
@@ -191,7 +196,7 @@ class BodyParamsMiddlewareTest extends TestCase
         $this->assertSame($expectedResponse, $response);
     }
 
-    public function testThrowsMalformedRequestBodyExceptionWhenRequestBodyIsNotValidJson()
+    public function testThrowsMalformedRequestBodyExceptionWhenRequestBodyIsNotValidJson(): void
     {
         $expectedException = new MalformedRequestBodyException('malformed request body');
 
@@ -212,7 +217,8 @@ class BodyParamsMiddlewareTest extends TestCase
         );
     }
 
-    public function jsonBodyRequests()
+    /** @return array<string, string[]> */
+    public function jsonBodyRequests(): array
     {
         return [
             'POST'   => ['POST'],
@@ -224,9 +230,8 @@ class BodyParamsMiddlewareTest extends TestCase
 
     /**
      * @dataProvider jsonBodyRequests
-     * @param string $method
      */
-    public function testParsesJsonBodyWhenExpected($method)
+    public function testParsesJsonBodyWhenExpected(string $method): void
     {
         $stream = fopen('php://memory', 'wb+');
         fwrite($stream, json_encode(['foo' => 'bar']));
@@ -272,19 +277,5 @@ class BodyParamsMiddlewareTest extends TestCase
 
         $this->assertInstanceOf(Response::class, $result);
         $this->assertTrue($handlerTriggered);
-    }
-
-    private function assertAttributeSame($expected, $attribute, $object)
-    {
-        $r = new ReflectionProperty($object, $attribute);
-        $r->setAccessible(true);
-        self::assertSame($expected, $r->getValue($object));
-    }
-
-    private function assertAttributeContains($expected, $attribute, $object)
-    {
-        $r = new ReflectionProperty($object, $attribute);
-        $r->setAccessible(true);
-        self::assertContains($expected, $r->getValue($object));
     }
 }

@@ -22,7 +22,7 @@ class ServerUrlMiddlewareFactoryTest extends TestCase
 {
     use ProphecyTrait;
 
-    public function testCreatesAndReturnsMiddlewareWhenHelperIsPresentInContainer()
+    public function testCreatesAndReturnsMiddlewareWhenHelperIsPresentInContainer(): void
     {
         $helper    = $this->prophesize(ServerUrlHelper::class);
         $container = $this->prophesize(ContainerInterface::class);
@@ -34,7 +34,7 @@ class ServerUrlMiddlewareFactoryTest extends TestCase
         $this->assertInstanceOf(ServerUrlMiddleware::class, $middleware);
     }
 
-    public function testRaisesExceptionWhenContainerDoesNotContainHelper()
+    public function testRaisesExceptionWhenContainerDoesNotContainHelper(): void
     {
         $container = $this->prophesize(ContainerInterface::class);
         $container->has(ServerUrlHelper::class)->willReturn(false);

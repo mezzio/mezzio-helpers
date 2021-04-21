@@ -33,7 +33,7 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
         $this->middleware = new RouteTemplateVariableMiddleware();
     }
 
-    public function testMiddlewareInjectsVariableContainerWithNullRouteIfNoVariableContainerOrRouteResultPresent()
+    public function testMiddlewareInjectsVariableContainerWithNullRouteIfNoVariableContainerOrRouteResultPresent(): void
     {
         $this->request
             ->getAttribute(TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
@@ -82,7 +82,7 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
         );
     }
 
-    public function testMiddlewareWillInjectNullValueForRouteIfNoRouteResultInRequest()
+    public function testMiddlewareWillInjectNullValueForRouteIfNoRouteResultInRequest(): void
     {
         $this->request
             ->getAttribute(TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
@@ -130,7 +130,7 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
         );
     }
 
-    public function testMiddlewareWillInjectRoutePulledFromRequestRouteResult()
+    public function testMiddlewareWillInjectRoutePulledFromRequestRouteResult(): void
     {
         $routeResult = $this->prophesize(RouteResult::class);
 

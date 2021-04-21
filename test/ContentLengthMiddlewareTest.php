@@ -35,14 +35,14 @@ class ContentLengthMiddlewareTest extends TestCase
         $this->middleware = new ContentLengthMiddleware();
     }
 
-    public function testReturnsResponseVerbatimIfContentLengthHeaderPresent()
+    public function testReturnsResponseVerbatimIfContentLengthHeaderPresent(): void
     {
         $this->response->hasHeader('Content-Length')->willReturn(true);
         $response = $this->middleware->process($this->request, $this->handler);
         $this->assertSame($this->response->reveal(), $response);
     }
 
-    public function testReturnsResponseVerbatimIfContentLengthHeaderNotPresentAndBodySizeIsNull()
+    public function testReturnsResponseVerbatimIfContentLengthHeaderNotPresentAndBodySizeIsNull(): void
     {
         $this->stream->getSize()->willReturn(null);
         $this->response->hasHeader('Content-Length')->willReturn(false);
@@ -52,7 +52,7 @@ class ContentLengthMiddlewareTest extends TestCase
         $this->assertSame($this->response->reveal(), $response);
     }
 
-    public function testReturnsResponseWithContentLengthHeaderBasedOnBodySize()
+    public function testReturnsResponseWithContentLengthHeaderBasedOnBodySize(): void
     {
         $this->stream->getSize()->willReturn(42);
         $this->response->hasHeader('Content-Length')->willReturn(false);

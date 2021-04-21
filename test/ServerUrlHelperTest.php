@@ -21,7 +21,8 @@ class ServerUrlHelperTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    public function plainPaths()
+    /** @return array<string, string|null[]> */
+    public function plainPaths(): array
     {
         return [
             'null'          => [null,       '/'],
@@ -34,16 +35,15 @@ class ServerUrlHelperTest extends TestCase
 
     /**
      * @dataProvider plainPaths
-     * @param null|string $path
-     * @param string $expected
      */
-    public function testInvocationReturnsPathOnlyIfNoUriInjected($path, $expected)
+    public function testInvocationReturnsPathOnlyIfNoUriInjected(?string $path, string $expected): void
     {
         $helper = new ServerUrlHelper();
         $this->assertEquals($expected, $helper($path));
     }
 
-    public function plainPathsForUseWithUri()
+    /** @return array<string, Uri|string|null[]> */
+    public function plainPathsForUseWithUri(): array
     {
         $uri = new Uri('https://example.com/resource');
         return [
@@ -57,17 +57,19 @@ class ServerUrlHelperTest extends TestCase
 
     /**
      * @dataProvider plainPathsForUseWithUri
-     * @param null|string $path
-     * @param string $expected
      */
-    public function testInvocationReturnsUriComposingPathWhenUriInjected(UriInterface $uri, $path, $expected)
-    {
+    public function testInvocationReturnsUriComposingPathWhenUriInjected(
+        UriInterface $uri,
+        ?string $path,
+        string $expected
+    ): void {
         $helper = new ServerUrlHelper();
         $helper->setUri($uri);
         $this->assertEquals((string) $expected, $helper($path));
     }
 
-    public function uriWithQueryString()
+    /** @return array<string, Uri|string|null[]> */
+    public function uriWithQueryString(): array
     {
         $uri = new Uri('https://example.com/resource?bar=baz');
         return [
@@ -81,17 +83,16 @@ class ServerUrlHelperTest extends TestCase
 
     /**
      * @dataProvider uriWithQueryString
-     * @param null|string $path
-     * @param string $expected
      */
-    public function testStripsQueryStringFromInjectedUri(UriInterface $uri, $path, $expected)
+    public function testStripsQueryStringFromInjectedUri(UriInterface $uri, ?string $path, string $expected): void
     {
         $helper = new ServerUrlHelper();
         $helper->setUri($uri);
         $this->assertEquals($expected, $helper($path));
     }
 
-    public function uriWithFragment()
+    /** @return array<string, Uri|string|null[]> */
+    public function uriWithFragment(): array
     {
         $uri = new Uri('https://example.com/resource#bar');
         return [
@@ -105,17 +106,16 @@ class ServerUrlHelperTest extends TestCase
 
     /**
      * @dataProvider uriWithFragment
-     * @param null|string $path
-     * @param string $expected
      */
-    public function testStripsFragmentFromInjectedUri(UriInterface $uri, $path, $expected)
+    public function testStripsFragmentFromInjectedUri(UriInterface $uri, ?string $path, string $expected): void
     {
         $helper = new ServerUrlHelper();
         $helper->setUri($uri);
         $this->assertEquals($expected, $helper($path));
     }
 
-    public function pathsWithQueryString()
+    /** @return array<string, Uri|string|null[]> */
+    public function pathsWithQueryString(): array
     {
         $uri = new Uri('https://example.com/resource');
         return [
@@ -128,17 +128,16 @@ class ServerUrlHelperTest extends TestCase
 
     /**
      * @dataProvider pathsWithQueryString
-     * @param string $path
-     * @param string $expected
      */
-    public function testUsesQueryStringFromProvidedPath(UriInterface $uri, $path, $expected)
+    public function testUsesQueryStringFromProvidedPath(UriInterface $uri, ?string $path, string $expected): void
     {
         $helper = new ServerUrlHelper();
         $helper->setUri($uri);
         $this->assertEquals($expected, $helper($path));
     }
 
-    public function pathsWithFragment()
+    /** @return array<string, Uri|string[]> */
+    public function pathsWithFragment(): array
     {
         $uri = new Uri('https://example.com/resource');
         return [
@@ -151,17 +150,15 @@ class ServerUrlHelperTest extends TestCase
 
     /**
      * @dataProvider pathsWithFragment
-     * @param string $path
-     * @param string $expected
      */
-    public function testUsesFragmentFromProvidedPath(UriInterface $uri, $path, $expected)
+    public function testUsesFragmentFromProvidedPath(UriInterface $uri, ?string $path, string $expected): void
     {
         $helper = new ServerUrlHelper();
         $helper->setUri($uri);
         $this->assertEquals($expected, $helper($path));
     }
 
-    public function testGenerateProxiesToInvokeMethod()
+    public function testGenerateProxiesToInvokeMethod(): void
     {
         $path = '/foo';
 

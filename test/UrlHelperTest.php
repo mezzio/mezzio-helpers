@@ -22,13 +22,12 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use ReflectionProperty;
 use stdClass;
 use TypeError;
 
 class UrlHelperTest extends TestCase
 {
+    use AttributeAssertionsTrait;
     use MockeryPHPUnitIntegration;
     use ProphecyTrait;
 
@@ -40,7 +39,7 @@ class UrlHelperTest extends TestCase
         $this->router = $this->prophesize(RouterInterface::class);
     }
 
-    public function createHelper()
+    public function createHelper(): UrlHelper
     {
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getQueryParams()->willReturn([]);
@@ -50,7 +49,7 @@ class UrlHelperTest extends TestCase
         return $helper;
     }
 
-    public function testRaisesExceptionOnInvocationIfNoRouteProvidedAndNoResultPresent()
+    public function testRaisesExceptionOnInvocationIfNoRouteProvidedAndNoResultPresent(): void
     {
         $helper = $this->createHelper();
 
@@ -59,19 +58,21 @@ class UrlHelperTest extends TestCase
         $helper();
     }
 
-    public function testRaisesExceptionOnInvocationIfNoRouteProvidedAndResultIndicatesFailure()
+    public function testRaisesExceptionOnInvocationIfNoRouteProvidedAndResultIndicatesFailure(): void
     {
-        $result = $this->prophesize(RouteResult::class);
-        $result->isFailure()->willReturn(true);
+        $result = $this->createMock(RouteResult::class);
+        $result->expects(self::atLeastOnce())
+            ->method('isFailure')
+            ->willReturn(true);
         $helper = $this->createHelper();
-        $helper->setRouteResult($result->reveal());
+        $helper->setRouteResult($result);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('routing failed');
         $helper();
     }
 
-    public function testRaisesExceptionOnInvocationIfRouterCannotGenerateUriForRouteProvided()
+    public function testRaisesExceptionOnInvocationIfRouterCannotGenerateUriForRouteProvided(): void
     {
         $this->router->generateUri('foo', [], [])->willThrow(RouterException::class);
         $helper = $this->createHelper();
@@ -80,7 +81,7 @@ class UrlHelperTest extends TestCase
         $helper('foo');
     }
 
-    public function testWhenNoRouteProvidedTheHelperUsesComposedResultToGenerateUrl()
+    public function testWhenNoRouteProvidedTheHelperUsesComposedResultToGenerateUrl(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -95,7 +96,7 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('URL', $helper());
     }
 
-    public function testWhenNoRouteProvidedTheHelperMergesPassedParametersWithResultParametersToGenerateUrl()
+    public function testWhenNoRouteProvidedTheHelperMergesPassedParametersWithResultParametersToGenerateUrl(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -110,14 +111,14 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('URL', $helper(null, ['baz' => 'bat']));
     }
 
-    public function testWhenRouteProvidedTheHelperDelegatesToTheRouterToGenerateUrl()
+    public function testWhenRouteProvidedTheHelperDelegatesToTheRouterToGenerateUrl(): void
     {
         $this->router->generateUri('foo', ['bar' => 'baz'], [])->willReturn('URL');
         $helper = $this->createHelper();
         $this->assertEquals('URL', $helper('foo', ['bar' => 'baz']));
     }
 
-    public function testIfRouteResultRouteNameDoesNotMatchRequestedNameItWillNotMergeParamsToGenerateUri()
+    public function testIfRouteResultRouteNameDoesNotMatchRequestedNameItWillNotMergeParamsToGenerateUri(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -132,7 +133,7 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('URL', $helper('resource'));
     }
 
-    public function testMergesRouteResultParamsWithProvidedParametersToGenerateUri()
+    public function testMergesRouteResultParamsWithProvidedParametersToGenerateUri(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -147,7 +148,7 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('URL', $helper('resource', ['version' => 2]));
     }
 
-    public function testProvidedParametersOverrideAnyPresentInARouteResultWhenGeneratingUri()
+    public function testProvidedParametersOverrideAnyPresentInARouteResultWhenGeneratingUri(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -162,7 +163,7 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('URL', $helper('resource', ['id' => 2]));
     }
 
-    public function testWillNotReuseRouteResultParamsIfReuseResultParamsFlagIsFalseWhenGeneratingUri()
+    public function testWillNotReuseRouteResultParamsIfReuseResultParamsFlagIsFalseWhenGeneratingUri(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -177,7 +178,7 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('URL', $helper('resource', [], [], null, ['reuse_result_params' => false]));
     }
 
-    public function testCanInjectRouteResult()
+    public function testCanInjectRouteResult(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $helper = $this->createHelper();
@@ -185,21 +186,21 @@ class UrlHelperTest extends TestCase
         $this->assertAttributeSame($result->reveal(), 'result', $helper);
     }
 
-    public function testAllowsSettingBasePath()
+    public function testAllowsSettingBasePath(): void
     {
         $helper = $this->createHelper();
         $helper->setBasePath('/foo');
         $this->assertAttributeEquals('/foo', 'basePath', $helper);
     }
 
-    public function testSlashIsPrependedWhenBasePathDoesNotHaveOne()
+    public function testSlashIsPrependedWhenBasePathDoesNotHaveOne(): void
     {
         $helper = $this->createHelper();
         $helper->setBasePath('foo');
         $this->assertAttributeEquals('/foo', 'basePath', $helper);
     }
 
-    public function testBasePathIsPrependedToGeneratedPath()
+    public function testBasePathIsPrependedToGeneratedPath(): void
     {
         $this->router->generateUri('foo', ['bar' => 'baz'], [])->willReturn('/foo/baz');
         $helper = $this->createHelper();
@@ -207,7 +208,7 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('/prefix/foo/baz', $helper('foo', ['bar' => 'baz']));
     }
 
-    public function testBasePathIsPrependedToGeneratedPathWhenUsingRouteResult()
+    public function testBasePathIsPrependedToGeneratedPathWhenUsingRouteResult(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -227,7 +228,7 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('/prefix/foo/baz', $helper());
     }
 
-    public function testGenerateProxiesToInvokeMethod()
+    public function testGenerateProxiesToInvokeMethod(): void
     {
         $routeName          = 'foo';
         $routeParams        = ['bar'];
@@ -247,7 +248,8 @@ class UrlHelperTest extends TestCase
         );
     }
 
-    public function invalidBasePathProvider()
+    /** @return array<array-key, mixed[]> */
+    public function invalidBasePathProvider(): array
     {
         return [
             [new stdClass('foo')],
@@ -259,7 +261,7 @@ class UrlHelperTest extends TestCase
      * @dataProvider invalidBasePathProvider
      * @param mixed $basePath
      */
-    public function testThrowsExceptionWhenSettingInvalidBasePaths($basePath)
+    public function testThrowsExceptionWhenSettingInvalidBasePaths($basePath): void
     {
         $this->expectException(TypeError::class);
 
@@ -267,7 +269,7 @@ class UrlHelperTest extends TestCase
         $helper->setBasePath($basePath);
     }
 
-    public function testIfRouteResultIsFailureItWillNotMergeParamsToGenerateUri()
+    public function testIfRouteResultIsFailureItWillNotMergeParamsToGenerateUri(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(true);
@@ -282,14 +284,15 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('URL', $helper('resource'));
     }
 
-    public function testOptionsArePassedToRouter()
+    public function testOptionsArePassedToRouter(): void
     {
         $this->router->generateUri('foo', [], ['bar' => 'baz'])->willReturn('URL');
         $helper = $this->createHelper();
         $this->assertEquals('URL', $helper('foo', [], [], null, ['router' => ['bar' => 'baz']]));
     }
 
-    public function queryParametersAndFragmentProvider()
+    /** @return array<string, mixed[]> */
+    public function queryParametersAndFragmentProvider(): array
     {
         return [
             'none'           => [[], null, ''],
@@ -301,12 +304,12 @@ class UrlHelperTest extends TestCase
 
     /**
      * @dataProvider queryParametersAndFragmentProvider
-     * @param array $queryParams
-     * @param null|string $fragmentIdentifier
-     * @param string $expected
      */
-    public function testQueryParametersAndFragment(array $queryParams, $fragmentIdentifier, $expected)
-    {
+    public function testQueryParametersAndFragment(
+        array $queryParams,
+        ?string $fragmentIdentifier,
+        string $expected
+    ): void {
         $this->router->generateUri('foo', ['bar' => 'baz'], [])->willReturn('/foo/baz');
         $helper = $this->createHelper();
 
@@ -316,7 +319,8 @@ class UrlHelperTest extends TestCase
         );
     }
 
-    public function invalidFragmentProvider()
+    /** @return array<array-key, string[]> */
+    public function invalidFragmentProvider(): array
     {
         return [
             [''],
@@ -326,9 +330,8 @@ class UrlHelperTest extends TestCase
 
     /**
      * @dataProvider invalidFragmentProvider
-     * @param string $fragmentIdentifier
      */
-    public function testRejectsInvalidFragmentIdentifier($fragmentIdentifier)
+    public function testRejectsInvalidFragmentIdentifier(string $fragmentIdentifier): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Fragment identifier must conform to RFC 3986');
@@ -344,7 +347,7 @@ class UrlHelperTest extends TestCase
      * Test written when discovering that generate() uses '' as the default fragment,
      * which __invoke() considers invalid.
      */
-    public function testCallingGenerateWithoutFragmentArgumentPassesNullValueForFragment()
+    public function testCallingGenerateWithoutFragmentArgumentPassesNullValueForFragment(): void
     {
         $this->router->generateUri('foo', [], [])->willReturn('/foo');
         $helper = $this->createHelper();
@@ -355,7 +358,7 @@ class UrlHelperTest extends TestCase
     /**
      * @group 42
      */
-    public function testAppendsQueryStringAndFragmentWhenPresentAndRouteNameIsNotProvided()
+    public function testAppendsQueryStringAndFragmentWhenPresentAndRouteNameIsNotProvided(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -384,13 +387,13 @@ class UrlHelperTest extends TestCase
         );
     }
 
-    public function testGetRouteResultIfNoRouteResultSet()
+    public function testGetRouteResultIfNoRouteResultSet(): void
     {
         $helper = $this->createHelper();
         $this->assertNull($helper->getRouteResult());
     }
 
-    public function testGetRouteResultWithRouteResultSet()
+    public function testGetRouteResultWithRouteResultSet(): void
     {
         $helper = $this->createHelper();
         $result = $this->prophesize(RouteResult::class);
@@ -399,7 +402,7 @@ class UrlHelperTest extends TestCase
         $this->assertInstanceOf(RouteResult::class, $helper->getRouteResult());
     }
 
-    public function testWillNotReuseQueryParamsIfReuseQueryParamsFlagIsFalseWhenGeneratingUri()
+    public function testWillNotReuseQueryParamsIfReuseQueryParamsFlagIsFalseWhenGeneratingUri(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -418,7 +421,7 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('URL', $helper('resource', [], [], null, ['reuse_query_params' => false]));
     }
 
-    public function testWillReuseQueryParamsIfReuseQueryParamsFlagIsTrueWhenGeneratingUri()
+    public function testWillReuseQueryParamsIfReuseQueryParamsFlagIsTrueWhenGeneratingUri(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -437,7 +440,7 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('URL?foo=bar', $helper('resource', [], [], null, ['reuse_query_params' => true]));
     }
 
-    public function testWillNotReuseQueryParamsIfReuseQueryParamsFlagIsMissingGeneratingUri()
+    public function testWillNotReuseQueryParamsIfReuseQueryParamsFlagIsMissingGeneratingUri(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -456,7 +459,7 @@ class UrlHelperTest extends TestCase
         $this->assertEquals('URL', $helper('resource'));
     }
 
-    public function testCanOverrideRequestQueryParams()
+    public function testCanOverrideRequestQueryParams(): void
     {
         $result = $this->prophesize(RouteResult::class);
         $result->isFailure()->willReturn(false);
@@ -473,19 +476,5 @@ class UrlHelperTest extends TestCase
         $helper->setRequest($request->reveal());
 
         $this->assertEquals('URL?foo=foo', $helper('resource', [], ['foo' => 'foo']));
-    }
-
-    private function assertAttributeSame($expected, $attribute, $object)
-    {
-        $r = new ReflectionProperty($object, $attribute);
-        $r->setAccessible(true);
-        self::assertSame($expected, $r->getValue($object));
-    }
-
-    private function assertAttributeEquals($expected, $attribute, $object)
-    {
-        $r = new ReflectionProperty($object, $attribute);
-        $r->setAccessible(true);
-        self::assertEquals($expected, $r->getValue($object));
     }
 }
