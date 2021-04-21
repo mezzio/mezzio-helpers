@@ -15,7 +15,8 @@ use InvalidArgumentException;
 
 class MalformedRequestBodyException extends InvalidArgumentException implements ExceptionInterface
 {
-    public function __construct(string $message, ?Exception $previous = null)
+    /** @param string $message */
+    public function __construct($message, ?Exception $previous = null)
     {
         parent::__construct($message, 400, $previous);
     }
