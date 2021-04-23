@@ -20,9 +20,7 @@ use function rtrim;
  */
 class ServerUrlHelper
 {
-    /**
-     * @var UriInterface
-     */
+    /** @var UriInterface */
     private $uri;
 
     /**
@@ -39,9 +37,9 @@ class ServerUrlHelper
      * The $path may optionally contain the query string and/or fragment to
      * use.
      */
-    public function __invoke(string $path = null) : string
+    public function __invoke(?string $path = null): string
     {
-        $path = $path === null ? '' : $path;
+        $path = $path ?? '';
 
         if ($this->uri instanceof UriInterface) {
             return $this->createUrlFromUri($path);
@@ -63,17 +61,17 @@ class ServerUrlHelper
      *
      * Proxies to __invoke().
      */
-    public function generate(string $path = null) : string
+    public function generate(?string $path = null): string
     {
         return $this($path);
     }
 
-    public function setUri(UriInterface $uri) : void
+    public function setUri(UriInterface $uri): void
     {
         $this->uri = $uri;
     }
 
-    private function createUrlFromUri(string $specification) : string
+    private function createUrlFromUri(string $specification): string
     {
         preg_match(
             '%^(?P<path>[^?#]*)(?:(?:\?(?P<query>[^#]*))?(?:\#(?P<fragment>.*))?)$%',
@@ -81,8 +79,8 @@ class ServerUrlHelper
             $matches
         );
         $path     = $matches['path'];
-        $query    = isset($matches['query']) ? $matches['query'] : '';
-        $fragment = isset($matches['fragment']) ? $matches['fragment'] : '';
+        $query    = $matches['query'] ?? '';
+        $fragment = $matches['fragment'] ?? '';
 
         $uri = $this->uri
             ->withQuery('')

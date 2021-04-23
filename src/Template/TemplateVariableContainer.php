@@ -12,6 +12,10 @@ namespace Mezzio\Helper\Template;
 
 use Countable;
 
+use function array_key_exists;
+use function array_merge;
+use function count;
+
 /**
  * Container for managing template variables within a middleware pipeline.
  *
@@ -73,12 +77,10 @@ use Countable;
  */
 class TemplateVariableContainer implements Countable
 {
-    /**
-     * @var array<string, mixed>
-     */
+    /** @var array<string, mixed> */
     private $variables = [];
 
-    public function count() : int
+    public function count(): int
     {
         return count($this->variables);
     }
@@ -92,17 +94,18 @@ class TemplateVariableContainer implements Countable
         return $this->variables[$key] ?? null;
     }
 
-    public function has(string $key) : bool
+    public function has(string $key): bool
     {
         return array_key_exists($key, $this->variables);
     }
 
     /**
+     * @param mixed $value
      * @return self Returns a new instance that contains the given key/value pair
      */
-    public function with(string $key, $value) : self
+    public function with(string $key, $value): self
     {
-        $new = clone $this;
+        $new                  = clone $this;
         $new->variables[$key] = $value;
         return $new;
     }
@@ -110,7 +113,7 @@ class TemplateVariableContainer implements Countable
     /**
      * @return self Returns a new instance with the given key removed.
      */
-    public function without(string $key) : self
+    public function without(string $key): self
     {
         $new = clone $this;
         unset($new->variables[$key]);
@@ -127,9 +130,9 @@ class TemplateVariableContainer implements Countable
      *
      * @return self Returns a new instance with the merged values.
      */
-    public function merge(array $values) : self
+    public function merge(array $values): self
     {
-        $new = clone $this;
+        $new            = clone $this;
         $new->variables = array_merge($this->variables, $values);
         return $new;
     }
@@ -141,7 +144,7 @@ class TemplateVariableContainer implements Countable
      * the container in order to pass the result to the renderer's `render()`
      * method.
      */
-    public function mergeForTemplate(array $values) : array
+    public function mergeForTemplate(array $values): array
     {
         return array_merge($this->variables, $values);
     }

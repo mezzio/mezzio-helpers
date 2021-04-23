@@ -25,9 +25,7 @@ class UrlHelperMiddlewareTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var UrlHelper|ObjectProphecy
-     */
+    /** @var UrlHelper|ObjectProphecy */
     private $helper;
 
     public function setUp(): void
@@ -35,17 +33,17 @@ class UrlHelperMiddlewareTest extends TestCase
         $this->helper = $this->prophesize(UrlHelper::class);
     }
 
-    public function createMiddleware()
+    public function createMiddleware(): UrlHelperMiddleware
     {
         return new UrlHelperMiddleware($this->helper->reveal());
     }
 
-    public function testInvocationInjectsHelperWithRouteResultWhenPresentInRequest()
+    public function testInvocationInjectsHelperWithRouteResultWhenPresentInRequest(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
 
         $routeResult = $this->prophesize(RouteResult::class)->reveal();
-        $request = $this->prophesize(ServerRequestInterface::class);
+        $request     = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute(RouteResult::class, false)->willReturn($routeResult);
         $this->helper->setRouteResult($routeResult)->shouldBeCalled();
         $this->helper->setRequest($request)->shouldBeCalled();
@@ -60,7 +58,7 @@ class UrlHelperMiddlewareTest extends TestCase
         ));
     }
 
-    public function testInvocationDoesNotInjectHelperWithRouteResultWhenAbsentInRequest()
+    public function testInvocationDoesNotInjectHelperWithRouteResultWhenAbsentInRequest(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
 

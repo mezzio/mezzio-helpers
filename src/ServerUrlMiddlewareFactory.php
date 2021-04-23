@@ -21,9 +21,10 @@ class ServerUrlMiddlewareFactory
      *
      * @throws Exception\MissingHelperException
      */
-    public function __invoke(ContainerInterface $container) : ServerUrlMiddleware
+    public function __invoke(ContainerInterface $container): ServerUrlMiddleware
     {
-        if (! $container->has(ServerUrlHelper::class)
+        if (
+            ! $container->has(ServerUrlHelper::class)
             && ! $container->has(\Zend\Expressive\Helper\ServerUrlHelper::class)
         ) {
             throw new Exception\MissingHelperException(sprintf(

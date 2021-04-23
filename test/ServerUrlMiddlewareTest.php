@@ -26,13 +26,13 @@ class ServerUrlMiddlewareTest extends TestCase
 {
     use ProphecyTrait;
 
-    public function testMiddlewareInjectsHelperWithUri()
+    public function testMiddlewareInjectsHelperWithUri(): void
     {
-        $uri = $this->prophesize(UriInterface::class);
+        $uri     = $this->prophesize(UriInterface::class);
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getUri()->willReturn($uri->reveal());
 
-        $helper = new ServerUrlHelper();
+        $helper     = new ServerUrlHelper();
         $middleware = new ServerUrlMiddleware($helper);
 
         $invoked = false;

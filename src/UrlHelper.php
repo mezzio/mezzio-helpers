@@ -29,31 +29,20 @@ class UrlHelper
      *
      * @see RFC 3986: https://tools.ietf.org/html/rfc3986#section-3.5
      */
-    const FRAGMENT_IDENTIFIER_REGEX = '/^([!$&\'()*+,;=._~:@\/?-]|%[0-9a-fA-F]{2}|[a-zA-Z0-9])+$/';
+    public const FRAGMENT_IDENTIFIER_REGEX = '/^([!$&\'()*+,;=._~:@\/?-]|%[0-9a-fA-F]{2}|[a-zA-Z0-9])+$/';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $basePath = '/';
 
-    /**
-     * @var RouteResult
-     */
+    /** @var RouteResult */
     private $result;
 
-    /**
-     * @var ServerRequestInterface
-     */
+    /** @var ServerRequestInterface */
     private $request;
 
-    /**
-     * @var RouterInterface
-     */
+    /** @var RouterInterface */
     private $router;
 
-    /**
-     * @param RouterInterface $router
-     */
     public function __construct(RouterInterface $router)
     {
         $this->router = $router;
@@ -66,19 +55,19 @@ class UrlHelper
      *     - router (array): contains options to be passed to the router
      *     - reuse_result_params (bool): indicates if the current RouteResult
      *       parameters will be used, defaults to true
-     * @throws Exception\RuntimeException for attempts to use the currently matched
+     * @throws Exception\RuntimeException For attempts to use the currently matched
      *     route but routing failed.
-     * @throws Exception\RuntimeException for attempts to use a matched result
+     * @throws Exception\RuntimeException For attempts to use a matched result
      *     when none has been previously injected in the instance.
-     * @throws InvalidArgumentException for malformed fragment identifiers.
+     * @throws InvalidArgumentException For malformed fragment identifiers.
      */
     public function __invoke(
-        string $routeName = null,
+        ?string $routeName = null,
         array $routeParams = [],
         array $queryParams = [],
-        string $fragmentIdentifier = null,
+        ?string $fragmentIdentifier = null,
         array $options = []
-    ) : string {
+    ): string {
         $result = $this->getRouteResult();
         if ($routeName === null && $result === null) {
             throw new Exception\RuntimeException(
@@ -133,12 +122,12 @@ class UrlHelper
      * @see UrlHelper::__invoke()
      */
     public function generate(
-        string $routeName = null,
+        ?string $routeName = null,
         array $routeParams = [],
         array $queryParams = [],
-        string $fragmentIdentifier = null,
+        ?string $fragmentIdentifier = null,
         array $options = []
-    ) : string {
+    ): string {
         return $this($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options);
     }
 
@@ -148,7 +137,7 @@ class UrlHelper
      * When the route result is injected, the helper will use it to seed default
      * parameters if the URL being generated is for the route that was matched.
      */
-    public function setRouteResult(RouteResult $result) : void
+    public function setRouteResult(RouteResult $result): void
     {
         $this->result = $result;
     }
@@ -156,12 +145,12 @@ class UrlHelper
     /**
      * Set the base path to prepend to a generated URI
      */
-    public function setBasePath(string $path) : void
+    public function setBasePath(string $path): void
     {
         $this->basePath = '/' . ltrim($path, '/');
     }
 
-    public function getRouteResult() : ?RouteResult
+    public function getRouteResult(): ?RouteResult
     {
         return $this->result;
     }
@@ -169,12 +158,12 @@ class UrlHelper
     /**
      * Set request instance
      */
-    public function setRequest(ServerRequestInterface $request) : void
+    public function setRequest(ServerRequestInterface $request): void
     {
         $this->request = $request;
     }
 
-    public function getRequest() : ?ServerRequestInterface
+    public function getRequest(): ?ServerRequestInterface
     {
         return $this->request;
     }
@@ -182,15 +171,15 @@ class UrlHelper
     /**
      * Internal accessor for retrieving the base path.
      */
-    public function getBasePath() : string
+    public function getBasePath(): string
     {
         return $this->basePath;
     }
 
     /**
-     * @throws Exception\RuntimeException if current result is a routing failure.
+     * @throws Exception\RuntimeException If current result is a routing failure.
      */
-    private function generateUriFromResult(array $params, RouteResult $result, array $routerOptions) : string
+    private function generateUriFromResult(array $params, RouteResult $result, array $routerOptions): string
     {
         if ($result->isFailure()) {
             throw new Exception\RuntimeException(
@@ -220,7 +209,7 @@ class UrlHelper
      * @param array $params Route parameters
      * @return array Merged parameters
      */
-    private function mergeParams(string $route, RouteResult $result, array $params) : array
+    private function mergeParams(string $route, RouteResult $result, array $params): array
     {
         if ($result->isFailure()) {
             return $params;
@@ -249,7 +238,7 @@ class UrlHelper
      * @param array $params Params to be merged with request params
      * @return array
      */
-    private function mergeQueryParams(string $route, RouteResult $result, array $params) : array
+    private function mergeQueryParams(string $route, RouteResult $result, array $params): array
     {
         if ($result->isFailure()) {
             return $params;
@@ -265,7 +254,7 @@ class UrlHelper
     /**
      * Append query string arguments to a URI string, if any are present.
      */
-    private function appendQueryStringArguments(string $uriString, array $queryParams) : string
+    private function appendQueryStringArguments(string $uriString, array $queryParams): string
     {
         if (count($queryParams) > 0) {
             return sprintf('%s?%s', $uriString, http_build_query($queryParams));
@@ -276,9 +265,9 @@ class UrlHelper
     /**
      * Append a fragment to a URI string, if present.
      *
-     * @throws InvalidArgumentException if the fragment identifier is malformed.
+     * @throws InvalidArgumentException If the fragment identifier is malformed.
      */
-    private function appendFragment(string $uriString, ?string $fragmentIdentifier) : string
+    private function appendFragment(string $uriString, ?string $fragmentIdentifier): string
     {
         if ($fragmentIdentifier !== null) {
             if (! preg_match(self::FRAGMENT_IDENTIFIER_REGEX, $fragmentIdentifier)) {

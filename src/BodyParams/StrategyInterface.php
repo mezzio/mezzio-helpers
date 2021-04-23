@@ -22,13 +22,10 @@ interface StrategyInterface
      *
      * @return bool Whether or not the strategy matches.
      */
-    public function match(string $contentType) : bool;
+    public function match(string $contentType): bool;
 
     /**
      * Parse the body content and return a new request.
-     *
-     * @param ServerRequestInterface $request
-     * @return ServerRequestInterface
      */
-    public function parse(ServerRequestInterface $request) : ServerRequestInterface;
+    public function parse(ServerRequestInterface $request): ServerRequestInterface;
 }

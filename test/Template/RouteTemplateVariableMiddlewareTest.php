@@ -12,14 +12,12 @@ namespace MezzioTest\Helper\Template;
 
 use Mezzio\Helper\Template\RouteTemplateVariableMiddleware;
 use Mezzio\Helper\Template\TemplateVariableContainer;
-use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class RouteTemplateVariableMiddlewareTest extends TestCase
@@ -35,7 +33,7 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
         $this->middleware = new RouteTemplateVariableMiddleware();
     }
 
-    public function testMiddlewareInjectsVariableContainerWithNullRouteIfNoVariableContainerOrRouteResultPresent()
+    public function testMiddlewareInjectsVariableContainerWithNullRouteIfNoVariableContainerOrRouteResultPresent(): void
     {
         $this->request
             ->getAttribute(TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
@@ -84,7 +82,7 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
         );
     }
 
-    public function testMiddlewareWillInjectNullValueForRouteIfNoRouteResultInRequest()
+    public function testMiddlewareWillInjectNullValueForRouteIfNoRouteResultInRequest(): void
     {
         $this->request
             ->getAttribute(TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
@@ -132,7 +130,7 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
         );
     }
 
-    public function testMiddlewareWillInjectRoutePulledFromRequestRouteResult()
+    public function testMiddlewareWillInjectRoutePulledFromRequestRouteResult(): void
     {
         $routeResult = $this->prophesize(RouteResult::class);
 

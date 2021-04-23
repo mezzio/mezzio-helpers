@@ -11,18 +11,14 @@ declare(strict_types=1);
 namespace MezzioTest\Helper\BodyParams;
 
 use Mezzio\Helper\BodyParams\FormUrlEncodedStrategy;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
 class FormUrlEncodedStrategyTest extends TestCase
 {
-    use ProphecyTrait;
-
-    /**
-     * @var FormUrlEncodedStrategy
-     */
+    /** @var FormUrlEncodedStrategy */
     private $strategy;
 
     public function setUp(): void
@@ -30,7 +26,8 @@ class FormUrlEncodedStrategyTest extends TestCase
         $this->strategy = new FormUrlEncodedStrategy();
     }
 
-    public function formContentTypes()
+    /** @return array<array-key, string[]> */
+    public function formContentTypes(): array
     {
         return [
             ['application/x-www-form-urlencoded'],
@@ -42,15 +39,14 @@ class FormUrlEncodedStrategyTest extends TestCase
 
     /**
      * @dataProvider formContentTypes
-     *
-     * @param string $contentType
      */
-    public function testMatchesFormUrlencodedTypes($contentType)
+    public function testMatchesFormUrlencodedTypes(string $contentType): void
     {
         $this->assertTrue($this->strategy->match($contentType));
     }
 
-    public function invalidContentTypes()
+    /** @return array<array-key, string[]> */
+    public function invalidContentTypes(): array
     {
         return [
             ['application/x-www-form-urlencoded2'],
@@ -62,45 +58,59 @@ class FormUrlEncodedStrategyTest extends TestCase
 
     /**
      * @dataProvider invalidContentTypes
-     *
-     * @param string $contentType
      */
-    public function testDoesNotMatchNonFormUrlencodedTypes($contentType)
+    public function testDoesNotMatchNonFormUrlencodedTypes(string $contentType): void
     {
         $this->assertFalse($this->strategy->match($contentType));
     }
 
-    public function testParseReturnsOriginalRequest()
+    public function testParseReturnsOriginalRequest(): void
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(['test' => 'value']);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::once())
+            ->method('getParsedBody')
+            ->willReturn(['test' => 'value']);
 
-        $this->assertSame($request->reveal(), $this->strategy->parse($request->reveal()));
+        $this->assertSame($request, $this->strategy->parse($request));
     }
 
-    public function testParseReturnsOriginalRequestIfBodyIsEmpty()
+    /** @psalm-return ServerRequestInterface&MockObject */
+    private function requestWithRawBodyIsNotYetParsed(string $rawBody): ServerRequestInterface
     {
-        $stream = $this->prophesize(StreamInterface::class);
-        $stream->__toString()->willReturn('');
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->expects(self::once())
+            ->method('__toString')
+            ->willReturn($rawBody);
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(null);
-        $request->getBody()->willReturn($stream);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::once())
+            ->method('getBody')
+            ->willReturn($stream);
 
-        $this->assertSame($request->reveal(), $this->strategy->parse($request->reveal()));
+        $request->expects(self::once())
+            ->method('getParsedBody')
+            ->willReturn(null);
+
+        return $request;
     }
 
-    public function testParseReturnsNewRequest()
+    public function testParseReturnsOriginalRequestIfBodyIsEmpty(): void
     {
-        $body = 'foo=bar&bar=foo';
+        $request = $this->requestWithRawBodyIsNotYetParsed('');
 
-        $stream = $this->prophesize(StreamInterface::class);
-        $stream->__toString()->shouldBeCalled()->willReturn($body);
+        $this->assertSame($request, $this->strategy->parse($request));
+    }
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getParsedBody()->willReturn(null);
-        $request->getBody()->willReturn($stream->reveal());
-        $request->withParsedBody(['foo' => 'bar', 'bar' => 'foo'])->shouldBeCalled()->willReturn($request->reveal());
-        $this->assertSame($request->reveal(), $this->strategy->parse($request->reveal()));
+    public function testParseReturnsNewRequest(): void
+    {
+        $body    = 'foo=bar&bar=foo';
+        $expect  = ['foo' => 'bar', 'bar' => 'foo'];
+        $request = $this->requestWithRawBodyIsNotYetParsed($body);
+        $request->expects(self::once())
+            ->method('withParsedBody')
+            ->with(self::equalTo($expect))
+            ->willReturnSelf();
+
+        $this->assertSame($request, $this->strategy->parse($request));
     }
 }

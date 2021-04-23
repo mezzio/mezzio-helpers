@@ -22,19 +22,19 @@ class ServerUrlMiddlewareFactoryTest extends TestCase
 {
     use ProphecyTrait;
 
-    public function testCreatesAndReturnsMiddlewareWhenHelperIsPresentInContainer()
+    public function testCreatesAndReturnsMiddlewareWhenHelperIsPresentInContainer(): void
     {
-        $helper = $this->prophesize(ServerUrlHelper::class);
+        $helper    = $this->prophesize(ServerUrlHelper::class);
         $container = $this->prophesize(ContainerInterface::class);
         $container->has(ServerUrlHelper::class)->willReturn(true);
         $container->get(ServerUrlHelper::class)->willReturn($helper->reveal());
 
-        $factory = new ServerUrlMiddlewareFactory();
+        $factory    = new ServerUrlMiddlewareFactory();
         $middleware = $factory($container->reveal());
         $this->assertInstanceOf(ServerUrlMiddleware::class, $middleware);
     }
 
-    public function testRaisesExceptionWhenContainerDoesNotContainHelper()
+    public function testRaisesExceptionWhenContainerDoesNotContainHelper(): void
     {
         $container = $this->prophesize(ContainerInterface::class);
         $container->has(ServerUrlHelper::class)->willReturn(false);

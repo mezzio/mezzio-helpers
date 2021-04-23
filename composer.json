@@ -36,12 +36,18 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "laminas/laminas-coding-standard": "~1.0.0",
+        "ext-json": "*",
+        "laminas/laminas-coding-standard": "~2.1.0",
         "laminas/laminas-diactoros": "^1.7.1",
         "malukenho/docheader": "^0.1.8",
         "mockery/mockery": "^1.4.2",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpunit/phpunit": "^9.4.2"
+        "phpunit/phpunit": "^9.4.2",
+        "psalm/plugin-phpunit": "^0.15.1",
+        "vimeo/psalm": "^4.7"
+    },
+    "suggest": {
+        "ext-json": "If you wish to use the JsonStrategy with BodyParamsMiddleware"
     },
     "autoload": {
         "psr-4": {
@@ -62,6 +68,7 @@
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
+        "static-analysis": "psalm --shepherd --stats",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "license-check": "docheader check src/ test/"
     },

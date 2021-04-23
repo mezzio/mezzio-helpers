@@ -13,6 +13,8 @@ namespace MezzioTest\Helper\Template;
 use Mezzio\Helper\Template\TemplateVariableContainer;
 use PHPUnit\Framework\TestCase;
 
+use function array_merge;
+
 class TemplateVariableContainerTest extends TestCase
 {
     public function setUp(): void
@@ -20,12 +22,12 @@ class TemplateVariableContainerTest extends TestCase
         $this->container = new TemplateVariableContainer();
     }
 
-    public function testContainerIsEmptyByDefault()
+    public function testContainerIsEmptyByDefault(): void
     {
         $this->assertCount(0, $this->container);
     }
 
-    public function testSettingVariablesReturnsNewInstanceContainingValue() : TemplateVariableContainer
+    public function testSettingVariablesReturnsNewInstanceContainingValue(): TemplateVariableContainer
     {
         $container = $this->container->with('key', 'value');
 
@@ -37,12 +39,12 @@ class TemplateVariableContainerTest extends TestCase
         return $container;
     }
 
-    public function testHasReturnsFalseForUnsetVariables()
+    public function testHasReturnsFalseForUnsetVariables(): void
     {
         $this->assertFalse($this->container->has('key'));
     }
 
-    public function testGetReturnsNullForUnsetVariables()
+    public function testGetReturnsNullForUnsetVariables(): void
     {
         $this->assertNull($this->container->get('key'));
     }
@@ -50,7 +52,7 @@ class TemplateVariableContainerTest extends TestCase
     /**
      * @depends testSettingVariablesReturnsNewInstanceContainingValue
      */
-    public function testCallingWithoutReturnsNewInstanceWithoutValue(TemplateVariableContainer $original)
+    public function testCallingWithoutReturnsNewInstanceWithoutValue(TemplateVariableContainer $original): void
     {
         $container = $original->without('key');
 
@@ -59,7 +61,7 @@ class TemplateVariableContainerTest extends TestCase
         $this->assertFalse($container->has('key'));
     }
 
-    public function testMergeReturnsNewInstanceContainingMergedArray()
+    public function testMergeReturnsNewInstanceContainingMergedArray(): void
     {
         $values = [
             'foo' => 'bar',
@@ -79,7 +81,7 @@ class TemplateVariableContainerTest extends TestCase
         }
     }
 
-    public function testWillReturnArrayWhenRequestedToMergeForTemplate()
+    public function testWillReturnArrayWhenRequestedToMergeForTemplate(): void
     {
         $containerValues = [
             'foo' => 'bar',

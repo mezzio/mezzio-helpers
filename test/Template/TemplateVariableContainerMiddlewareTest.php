@@ -31,7 +31,7 @@ class TemplateVariableContainerMiddlewareTest extends TestCase
         $this->middleware = new TemplateVariableContainerMiddleware();
     }
 
-    public function testProcessInjectsVariableContainerIntoRequestPassedToHandler()
+    public function testProcessInjectsVariableContainerIntoRequestPassedToHandler(): void
     {
         $this->request
             ->getAttribute(TemplateVariableContainer::class)
@@ -65,7 +65,7 @@ class TemplateVariableContainerMiddlewareTest extends TestCase
         );
     }
 
-    public function testProcessIsANoOpIfVariableContainerIsAlreadyInRequest()
+    public function testProcessIsANoOpIfVariableContainerIsAlreadyInRequest(): void
     {
         $container = new TemplateVariableContainer();
 

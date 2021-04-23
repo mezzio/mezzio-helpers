@@ -13,20 +13,18 @@ namespace Mezzio\Helper\BodyParams;
 use Mezzio\Helper\Exception\MalformedRequestBodyException;
 use Psr\Http\Message\ServerRequestInterface;
 
-use function array_shift;
-use function explode;
+use function is_array;
 use function json_decode;
 use function json_last_error;
 use function json_last_error_msg;
 use function preg_match;
 use function sprintf;
-use function trim;
 
 use const JSON_ERROR_NONE;
 
 class JsonStrategy implements StrategyInterface
 {
-    public function match(string $contentType) : bool
+    public function match(string $contentType): bool
     {
         return 1 === preg_match('#^application/(|[\S]+\+)json($|[ ;])#', $contentType);
     }
@@ -36,7 +34,7 @@ class JsonStrategy implements StrategyInterface
      *
      * @throws MalformedRequestBodyException
      */
-    public function parse(ServerRequestInterface $request) : ServerRequestInterface
+    public function parse(ServerRequestInterface $request): ServerRequestInterface
     {
         $rawBody = (string) $request->getBody();
 
