@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
- * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
- * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
- */
-
 declare(strict_types=1);
 
 namespace Mezzio\Helper;
@@ -25,7 +19,7 @@ class ServerUrlMiddlewareFactory
     {
         if (
             ! $container->has(ServerUrlHelper::class)
-            && ! $container->has(\Zend\Expressive\Helper\ServerUrlHelper::class)
+            && ! $container->has(\zend\expressive\helper\serverurlhelper::class)
         ) {
             throw new Exception\MissingHelperException(sprintf(
                 '%s requires a %s service at instantiation; none found',
@@ -37,7 +31,7 @@ class ServerUrlMiddlewareFactory
         return new ServerUrlMiddleware(
             $container->has(ServerUrlHelper::class)
                 ? $container->get(ServerUrlHelper::class)
-                : $container->get(\Zend\Expressive\Helper\ServerUrlHelper::class)
+                : $container->get(\zend\expressive\helper\serverurlhelper::class)
         );
     }
 }

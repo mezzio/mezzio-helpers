@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
- * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
- * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
- */
-
 declare(strict_types=1);
 
 namespace MezzioTest\Helper;
@@ -53,7 +47,7 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
     public function testFactoryRaisesExceptionWhenContainerDoesNotContainHelper(): void
     {
         $this->container->has(UrlHelper::class)->willReturn(false);
-        $this->container->has(\Zend\Expressive\Helper\UrlHelper::class)->willReturn(false);
+        $this->container->has(\zend\expressive\helper\urlhelper::class)->willReturn(false);
         $factory = new UrlHelperMiddlewareFactory();
         $this->expectException(MissingHelperException::class);
         $factory($this->container->reveal());
