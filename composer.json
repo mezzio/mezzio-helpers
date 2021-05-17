@@ -1,7 +1,6 @@
 {
     "name": "mezzio/mezzio-helpers",
     "description": "Helper/Utility classes for Mezzio",
-    "license": "BSD-3-Clause",
     "keywords": [
         "laminas",
         "mezzio",
@@ -11,22 +10,7 @@
         "psr-7"
     ],
     "homepage": "https://mezzio.dev",
-    "support": {
-        "docs": "https://docs.mezzio.dev/mezzio/features/helpers/intro/",
-        "issues": "https://github.com/mezzio/mezzio-helpers/issues",
-        "source": "https://github.com/mezzio/mezzio-helpers",
-        "rss": "https://github.com/mezzio/mezzio-helpers/releases.atom",
-        "chat": "https://laminas.dev/chat",
-        "forum": "https://discourse.laminas.dev"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "laminas": {
-            "config-provider": "Mezzio\\Helper\\ConfigProvider"
-        }
-    },
+    "license": "BSD-3-Clause",
     "require": {
         "php": "^7.3 || ~8.0.0",
         "laminas/laminas-zendframework-bridge": "^1.0",
@@ -34,6 +18,9 @@
         "psr/container": "^1.0",
         "psr/http-message": "^1.0.1",
         "psr/http-server-middleware": "^1.0"
+    },
+    "replace": {
+        "zendframework/zend-expressive-helpers": "^5.3.0"
     },
     "require-dev": {
         "ext-json": "*",
@@ -48,6 +35,14 @@
     },
     "suggest": {
         "ext-json": "If you wish to use the JsonStrategy with BodyParamsMiddleware"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laminas": {
+            "config-provider": "Mezzio\\Helper\\ConfigProvider"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -67,12 +62,17 @@
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
-        "test": "phpunit --colors=always",
+        "license-check": "docheader check src/ test/",
         "static-analysis": "psalm --shepherd --stats",
-        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
-        "license-check": "docheader check src/ test/"
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
-    "replace": {
-        "zendframework/zend-expressive-helpers": "^5.3.0"
+    "support": {
+        "issues": "https://github.com/mezzio/mezzio-helpers/issues",
+        "forum": "https://discourse.laminas.dev",
+        "chat": "https://laminas.dev/chat",
+        "source": "https://github.com/mezzio/mezzio-helpers",
+        "docs": "https://docs.mezzio.dev/mezzio/features/helpers/intro/",
+        "rss": "https://github.com/mezzio/mezzio-helpers/releases.atom"
     }
 }
