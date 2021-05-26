@@ -55,7 +55,8 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
             ->shouldBeCalledTimes(1);
         $this->request
             ->withAttribute(
-                \zend\expressive\helper\template\templatevariablecontainer::class,
+                // phpcs:ignore WebimpressCodingStandard.Formatting.StringClassReference.Found
+                'Zend\Expressive\Helper\Template\TemplateVariableContainer',
                 Argument::that(function ($container) {
                     TestCase::assertInstanceOf(TemplateVariableContainer::class, $container);
                     TestCase::assertTrue($container->has('route'));
@@ -103,7 +104,8 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
             ->shouldBeCalledTimes(1);
         $this->request
             ->withAttribute(
-                \zend\expressive\helper\template\templatevariablecontainer::class,
+                // phpcs:ignore WebimpressCodingStandard.Formatting.StringClassReference.Found
+                'Zend\Expressive\Helper\Template\TemplateVariableContainer',
                 Argument::that(function ($container) use ($originalContainer) {
                     TestCase::assertNotSame($container, $originalContainer);
                     TestCase::assertTrue($container->has('route'));
@@ -153,7 +155,8 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
             ->shouldBeCalledTimes(1);
         $this->request
             ->withAttribute(
-                \zend\expressive\helper\template\templatevariablecontainer::class,
+                // phpcs:ignore WebimpressCodingStandard.Formatting.StringClassReference.Found
+                'Zend\Expressive\Helper\Template\TemplateVariableContainer',
                 Argument::that(function ($container) use ($originalContainer, $routeResult) {
                     TestCase::assertNotSame($container, $originalContainer);
                     TestCase::assertTrue($container->has('route'));
