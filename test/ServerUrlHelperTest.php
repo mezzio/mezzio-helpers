@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
- * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
- * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
- */
-
 declare(strict_types=1);
 
 namespace MezzioTest\Helper;
@@ -21,7 +15,12 @@ class ServerUrlHelperTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    /** @return array<string, string|null[]> */
+    /**
+     * @psalm-return array<string, array{
+     *     0: null|string,
+     *     1: string
+     * }>
+     */
     public function plainPaths(): array
     {
         return [
@@ -42,7 +41,13 @@ class ServerUrlHelperTest extends TestCase
         $this->assertEquals($expected, $helper($path));
     }
 
-    /** @return array<string, Uri|string|null[]> */
+    /**
+     * @psalm-return array<string, array{
+     *     0: Uri,
+     *     1: null|string,
+     *     2: string
+     * }>
+     */
     public function plainPathsForUseWithUri(): array
     {
         $uri = new Uri('https://example.com/resource');
@@ -68,7 +73,13 @@ class ServerUrlHelperTest extends TestCase
         $this->assertEquals((string) $expected, $helper($path));
     }
 
-    /** @return array<string, Uri|string|null[]> */
+    /**
+     * @psalm-return array<string, array{
+     *     0: Uri,
+     *     1: null|string,
+     *     2: string
+     * }>
+     */
     public function uriWithQueryString(): array
     {
         $uri = new Uri('https://example.com/resource?bar=baz');
@@ -91,7 +102,13 @@ class ServerUrlHelperTest extends TestCase
         $this->assertEquals($expected, $helper($path));
     }
 
-    /** @return array<string, Uri|string|null[]> */
+    /**
+     * @psalm-return array<string, array{
+     *     0: Uri,
+     *     1: null|string,
+     *     2: string
+     * }>
+     */
     public function uriWithFragment(): array
     {
         $uri = new Uri('https://example.com/resource#bar');
@@ -114,7 +131,13 @@ class ServerUrlHelperTest extends TestCase
         $this->assertEquals($expected, $helper($path));
     }
 
-    /** @return array<string, Uri|string|null[]> */
+    /**
+     * @psalm-return array<string, array{
+     *     0: Uri,
+     *     1: string,
+     *     2: string
+     * }>
+     */
     public function pathsWithQueryString(): array
     {
         $uri = new Uri('https://example.com/resource');
@@ -136,7 +159,13 @@ class ServerUrlHelperTest extends TestCase
         $this->assertEquals($expected, $helper($path));
     }
 
-    /** @return array<string, Uri|string[]> */
+    /**
+     * @psalm-return array<string, array{
+     *     0: Uri,
+     *     1: string,
+     *     2: string
+     * }>
+     */
     public function pathsWithFragment(): array
     {
         $uri = new Uri('https://example.com/resource');

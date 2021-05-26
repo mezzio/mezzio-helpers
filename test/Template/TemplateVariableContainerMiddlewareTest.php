@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/mezzio/mezzio-helpers for the canonical source repository
- * @copyright https://github.com/mezzio/mezzio-helpers/blob/master/COPYRIGHT.md
- * @license   https://github.com/mezzio/mezzio-helpers/blob/master/LICENSE.md New BSD License
- */
-
 declare(strict_types=1);
 
 namespace MezzioTest\Helper\Template;
@@ -45,7 +39,7 @@ class TemplateVariableContainerMiddlewareTest extends TestCase
             ->shouldBeCalledTimes(1);
         $this->request
             ->withAttribute(
-                \Zend\Expressive\Helper\Template\TemplateVariableContainer::class,
+                \zend\expressive\helper\template\templatevariablecontainer::class,
                 Argument::type(TemplateVariableContainer::class)
             )
             ->willReturn($clonedRequest)
@@ -78,7 +72,7 @@ class TemplateVariableContainerMiddlewareTest extends TestCase
             ->withAttribute(TemplateVariableContainer::class, $container)
             ->shouldNotBeCalled();
         $this->request
-            ->withAttribute(\Zend\Expressive\Helper\Template\TemplateVariableContainer::class, $container)
+            ->withAttribute(\zend\expressive\helper\template\templatevariablecontainer::class, $container)
             ->shouldNotBeCalled();
 
         $this->handler
