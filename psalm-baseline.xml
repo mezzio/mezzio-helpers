@@ -17,7 +17,9 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/ServerUrlMiddlewareFactory.php">
-    <MixedArgument occurrences="1"/>
+    <MixedArgument occurrences="1">
+      <code>$container-&gt;get(ServerUrlHelper::class)</code>
+    </MixedArgument>
   </file>
   <file src="src/Template/RouteTemplateVariableMiddleware.php">
     <MixedAssignment occurrences="2">
@@ -25,7 +27,6 @@
       <code>$routeResult</code>
     </MixedAssignment>
     <MixedMethodCall occurrences="1">
-      <code>with</code>
       <code>with</code>
     </MixedMethodCall>
   </file>
@@ -133,15 +134,10 @@
       <code>$container</code>
       <code>$container</code>
       <code>$container</code>
-      <code>$container</code>
-      <code>$container</code>
-      <code>$container</code>
     </MissingClosureParamType>
     <MissingClosureReturnType occurrences="3">
       <code>function ($args) {</code>
       <code>function ($container) use ($originalContainer) {</code>
-      <code>function ($container) use ($originalContainer) {</code>
-      <code>function ($container) use ($originalContainer, $routeResult) {</code>
       <code>function ($container) use ($originalContainer, $routeResult) {</code>
     </MissingClosureReturnType>
     <MixedArgumentTypeCoercion occurrences="2"/>
@@ -155,8 +151,6 @@
     <MixedMethodCall occurrences="49">
       <code>get</code>
       <code>get</code>
-      <code>get</code>
-      <code>get</code>
       <code>getAttribute</code>
       <code>getAttribute</code>
       <code>getAttribute</code>
@@ -166,8 +160,6 @@
       <code>handle</code>
       <code>handle</code>
       <code>handle</code>
-      <code>has</code>
-      <code>has</code>
       <code>has</code>
       <code>has</code>
       <code>process</code>
@@ -191,12 +183,6 @@
       <code>shouldBeCalledTimes</code>
       <code>shouldBeCalledTimes</code>
       <code>shouldBeCalledTimes</code>
-      <code>shouldBeCalledTimes</code>
-      <code>shouldBeCalledTimes</code>
-      <code>shouldBeCalledTimes</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
       <code>will</code>
       <code>will</code>
       <code>will</code>
@@ -209,9 +195,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
       <code>willReturn</code>
-      <code>withAttribute</code>
-      <code>withAttribute</code>
-      <code>withAttribute</code>
       <code>withAttribute</code>
       <code>withAttribute</code>
       <code>withAttribute</code>
@@ -241,7 +224,7 @@
     </UndefinedThisPropertyFetch>
   </file>
   <file src="test/Template/TemplateVariableContainerMiddlewareTest.php">
-    <MixedMethodCall occurrences="23">
+    <MixedMethodCall occurrences="24">
       <code>getAttribute</code>
       <code>getAttribute</code>
       <code>handle</code>
@@ -252,22 +235,18 @@
       <code>reveal</code>
       <code>reveal</code>
       <code>reveal</code>
+      <code>reveal</code>
       <code>shouldBeCalledTimes</code>
       <code>shouldBeCalledTimes</code>
       <code>shouldBeCalledTimes</code>
       <code>shouldBeCalledTimes</code>
       <code>shouldBeCalledTimes</code>
-      <code>shouldBeCalledTimes</code>
-      <code>shouldNotBeCalled</code>
       <code>shouldNotBeCalled</code>
       <code>will</code>
       <code>willReturn</code>
       <code>willReturn</code>
       <code>willReturn</code>
       <code>willReturn</code>
-      <code>willReturn</code>
-      <code>withAttribute</code>
-      <code>withAttribute</code>
       <code>withAttribute</code>
       <code>withAttribute</code>
     </MixedMethodCall>
@@ -377,7 +356,6 @@
       <code>willReturn</code>
     </MixedMethodCall>
     <PossiblyInvalidMethodCall occurrences="2">
-      <code>willReturn</code>
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>

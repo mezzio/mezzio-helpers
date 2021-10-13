@@ -32,7 +32,6 @@ class TemplateVariableContainerMiddlewareTest extends TestCase
             ->willReturn(null)
             ->shouldBeCalledTimes(1);
 
-        $clonedRequest = $this->prophesize(ServerRequestInterface::class)->reveal();
         $this->request
             ->withAttribute(TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
             ->will([$this->request, 'reveal'])
