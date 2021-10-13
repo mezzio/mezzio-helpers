@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.7.0@d4377c0baf3ffbf0b1ec6998e8d1be2a40971005">
+<files psalm-version="4.7.2@83a0325c0a95c0ab531d6b90c877068b464377b5">
   <file src="src/BodyParams/JsonStrategy.php">
     <MixedAssignment occurrences="1">
       <code>$parsedBody</code>
@@ -17,15 +17,16 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/ServerUrlMiddlewareFactory.php">
-    <MixedArgument occurrences="1"/>
+    <MixedArgument occurrences="1">
+      <code>$container-&gt;get(ServerUrlHelper::class)</code>
+    </MixedArgument>
   </file>
   <file src="src/Template/RouteTemplateVariableMiddleware.php">
     <MixedAssignment occurrences="2">
       <code>$container</code>
       <code>$routeResult</code>
     </MixedAssignment>
-    <MixedMethodCall occurrences="2">
-      <code>with</code>
+    <MixedMethodCall occurrences="1">
       <code>with</code>
     </MixedMethodCall>
   </file>
@@ -81,89 +82,10 @@
       <code>$r-&gt;getValue($object)</code>
     </MixedArgument>
   </file>
-  <file src="test/BodyParams/BodyParamsMiddlewareTest.php">
-    <MissingClosureParamType occurrences="1">
-      <code>$args</code>
-    </MissingClosureParamType>
-    <MissingClosureReturnType occurrences="1">
-      <code>function ($args) use ($callback) {</code>
-    </MissingClosureReturnType>
-    <MixedArgument occurrences="6">
-      <code>$this-&gt;mockHandlerToNeverTrigger()-&gt;reveal()</code>
-    </MixedArgument>
-    <MixedArrayAccess occurrences="1">
-      <code>$args[0]</code>
-    </MixedArrayAccess>
-    <MixedAssignment occurrences="1">
-      <code>$request</code>
-    </MixedAssignment>
-    <PossiblyUndefinedMethod occurrences="6">
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
-  </file>
   <file src="test/ConfigProviderTest.php">
     <RedundantCondition occurrences="1">
       <code>assertIsArray</code>
     </RedundantCondition>
-  </file>
-  <file src="test/ContentLengthMiddlewareTest.php">
-    <MixedAssignment occurrences="3">
-      <code>$response</code>
-      <code>$response</code>
-      <code>$response</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="22">
-      <code>getBody</code>
-      <code>getBody</code>
-      <code>getSize</code>
-      <code>getSize</code>
-      <code>hasHeader</code>
-      <code>hasHeader</code>
-      <code>hasHeader</code>
-      <code>process</code>
-      <code>process</code>
-      <code>process</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>withHeader</code>
-    </MixedMethodCall>
-    <UndefinedThisPropertyAssignment occurrences="5">
-      <code>$this-&gt;handler</code>
-      <code>$this-&gt;middleware</code>
-      <code>$this-&gt;request</code>
-      <code>$this-&gt;response</code>
-      <code>$this-&gt;stream</code>
-    </UndefinedThisPropertyAssignment>
-    <UndefinedThisPropertyFetch occurrences="14">
-      <code>$this-&gt;handler</code>
-      <code>$this-&gt;handler</code>
-      <code>$this-&gt;handler</code>
-      <code>$this-&gt;middleware</code>
-      <code>$this-&gt;middleware</code>
-      <code>$this-&gt;middleware</code>
-      <code>$this-&gt;request</code>
-      <code>$this-&gt;request</code>
-      <code>$this-&gt;request</code>
-      <code>$this-&gt;response</code>
-      <code>$this-&gt;response</code>
-      <code>$this-&gt;response</code>
-      <code>$this-&gt;stream</code>
-      <code>$this-&gt;stream</code>
-    </UndefinedThisPropertyFetch>
   </file>
   <file src="test/ExceptionTest.php">
     <InvalidLiteralArgument occurrences="1">
@@ -180,18 +102,6 @@
     <DeprecatedMethod occurrences="1">
       <code>shouldDeferMissing</code>
     </DeprecatedMethod>
-    <ImplicitToStringCast occurrences="1">
-      <code>array&lt;string, Uri|string[]&gt;</code>
-    </ImplicitToStringCast>
-    <InvalidReturnStatement occurrences="5"/>
-    <InvalidReturnType occurrences="6">
-      <code>array&lt;string, Uri|string[]&gt;</code>
-      <code>array&lt;string, Uri|string|null[]&gt;</code>
-      <code>array&lt;string, Uri|string|null[]&gt;</code>
-      <code>array&lt;string, Uri|string|null[]&gt;</code>
-      <code>array&lt;string, Uri|string|null[]&gt;</code>
-      <code>array&lt;string, string|null[]&gt;</code>
-    </InvalidReturnType>
     <MixedMethodCall occurrences="2">
       <code>andReturn</code>
       <code>with</code>
@@ -218,24 +128,19 @@
     </UnusedVariable>
   </file>
   <file src="test/Template/RouteTemplateVariableMiddlewareTest.php">
-    <InvalidArgument occurrences="2"/>
-    <MissingClosureParamType occurrences="7">
+    <InvalidArgument occurrences="1"/>
+    <MissingClosureParamType occurrences="4">
       <code>$args</code>
       <code>$container</code>
       <code>$container</code>
       <code>$container</code>
-      <code>$container</code>
-      <code>$container</code>
-      <code>$container</code>
     </MissingClosureParamType>
-    <MissingClosureReturnType occurrences="5">
+    <MissingClosureReturnType occurrences="3">
       <code>function ($args) {</code>
       <code>function ($container) use ($originalContainer) {</code>
-      <code>function ($container) use ($originalContainer) {</code>
-      <code>function ($container) use ($originalContainer, $routeResult) {</code>
       <code>function ($container) use ($originalContainer, $routeResult) {</code>
     </MissingClosureReturnType>
-    <MixedArgumentTypeCoercion occurrences="4"/>
+    <MixedArgumentTypeCoercion occurrences="2"/>
     <MixedArrayAccess occurrences="1">
       <code>$args[1]</code>
     </MixedArrayAccess>
@@ -243,9 +148,7 @@
       <code>$originalContainer</code>
       <code>$originalContainer</code>
     </MixedAssignment>
-    <MixedMethodCall occurrences="62">
-      <code>get</code>
-      <code>get</code>
+    <MixedMethodCall occurrences="49">
       <code>get</code>
       <code>get</code>
       <code>getAttribute</code>
@@ -257,8 +160,6 @@
       <code>handle</code>
       <code>handle</code>
       <code>handle</code>
-      <code>has</code>
-      <code>has</code>
       <code>has</code>
       <code>has</code>
       <code>process</code>
@@ -282,12 +183,6 @@
       <code>shouldBeCalledTimes</code>
       <code>shouldBeCalledTimes</code>
       <code>shouldBeCalledTimes</code>
-      <code>shouldBeCalledTimes</code>
-      <code>shouldBeCalledTimes</code>
-      <code>shouldBeCalledTimes</code>
-      <code>will</code>
-      <code>will</code>
-      <code>will</code>
       <code>will</code>
       <code>will</code>
       <code>will</code>
@@ -300,9 +195,6 @@
       <code>willReturn</code>
       <code>willReturn</code>
       <code>willReturn</code>
-      <code>withAttribute</code>
-      <code>withAttribute</code>
-      <code>withAttribute</code>
       <code>withAttribute</code>
       <code>withAttribute</code>
       <code>withAttribute</code>
@@ -332,7 +224,7 @@
     </UndefinedThisPropertyFetch>
   </file>
   <file src="test/Template/TemplateVariableContainerMiddlewareTest.php">
-    <MixedMethodCall occurrences="28">
+    <MixedMethodCall occurrences="24">
       <code>getAttribute</code>
       <code>getAttribute</code>
       <code>handle</code>
@@ -343,22 +235,18 @@
       <code>reveal</code>
       <code>reveal</code>
       <code>reveal</code>
+      <code>reveal</code>
       <code>shouldBeCalledTimes</code>
       <code>shouldBeCalledTimes</code>
       <code>shouldBeCalledTimes</code>
       <code>shouldBeCalledTimes</code>
       <code>shouldBeCalledTimes</code>
-      <code>shouldBeCalledTimes</code>
-      <code>shouldNotBeCalled</code>
       <code>shouldNotBeCalled</code>
       <code>will</code>
       <code>willReturn</code>
       <code>willReturn</code>
       <code>willReturn</code>
       <code>willReturn</code>
-      <code>willReturn</code>
-      <code>withAttribute</code>
-      <code>withAttribute</code>
       <code>withAttribute</code>
       <code>withAttribute</code>
     </MixedMethodCall>
@@ -467,8 +355,7 @@
     <MixedMethodCall occurrences="1">
       <code>willReturn</code>
     </MixedMethodCall>
-    <PossiblyInvalidMethodCall occurrences="3">
-      <code>willReturn</code>
+    <PossiblyInvalidMethodCall occurrences="2">
       <code>willReturn</code>
       <code>willReturn</code>
     </PossiblyInvalidMethodCall>

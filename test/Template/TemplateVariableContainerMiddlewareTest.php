@@ -32,21 +32,13 @@ class TemplateVariableContainerMiddlewareTest extends TestCase
             ->willReturn(null)
             ->shouldBeCalledTimes(1);
 
-        $clonedRequest = $this->prophesize(ServerRequestInterface::class)->reveal();
         $this->request
             ->withAttribute(TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
             ->will([$this->request, 'reveal'])
             ->shouldBeCalledTimes(1);
-        $this->request
-            ->withAttribute(
-                \zend\expressive\helper\template\templatevariablecontainer::class,
-                Argument::type(TemplateVariableContainer::class)
-            )
-            ->willReturn($clonedRequest)
-            ->shouldBeCalledTimes(1);
 
         $this->handler
-            ->handle($clonedRequest)
+            ->handle($this->request->reveal())
             ->willReturn($this->response)
             ->shouldBeCalledTimes(1);
 
@@ -70,9 +62,6 @@ class TemplateVariableContainerMiddlewareTest extends TestCase
 
         $this->request
             ->withAttribute(TemplateVariableContainer::class, $container)
-            ->shouldNotBeCalled();
-        $this->request
-            ->withAttribute(\zend\expressive\helper\template\templatevariablecontainer::class, $container)
             ->shouldNotBeCalled();
 
         $this->handler

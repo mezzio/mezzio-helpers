@@ -53,19 +53,6 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
             )
             ->will([$this->request, 'reveal'])
             ->shouldBeCalledTimes(1);
-        $this->request
-            ->withAttribute(
-                // phpcs:ignore WebimpressCodingStandard.Formatting.StringClassReference.Found
-                'Zend\Expressive\Helper\Template\TemplateVariableContainer',
-                Argument::that(function ($container) {
-                    TestCase::assertInstanceOf(TemplateVariableContainer::class, $container);
-                    TestCase::assertTrue($container->has('route'));
-                    TestCase::assertNull($container->get('route'));
-                    return $container;
-                })
-            )
-            ->will([$this->request, 'reveal'])
-            ->shouldBeCalledTimes(1);
 
         $this->handler
             ->handle(Argument::that([$this->request, 'reveal']))
@@ -93,19 +80,6 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
         $this->request
             ->withAttribute(
                 TemplateVariableContainer::class,
-                Argument::that(function ($container) use ($originalContainer) {
-                    TestCase::assertNotSame($container, $originalContainer);
-                    TestCase::assertTrue($container->has('route'));
-                    TestCase::assertNull($container->get('route'));
-                    return $container;
-                })
-            )
-            ->will([$this->request, 'reveal'])
-            ->shouldBeCalledTimes(1);
-        $this->request
-            ->withAttribute(
-                // phpcs:ignore WebimpressCodingStandard.Formatting.StringClassReference.Found
-                'Zend\Expressive\Helper\Template\TemplateVariableContainer',
                 Argument::that(function ($container) use ($originalContainer) {
                     TestCase::assertNotSame($container, $originalContainer);
                     TestCase::assertTrue($container->has('route'));
@@ -144,19 +118,6 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
         $this->request
             ->withAttribute(
                 TemplateVariableContainer::class,
-                Argument::that(function ($container) use ($originalContainer, $routeResult) {
-                    TestCase::assertNotSame($container, $originalContainer);
-                    TestCase::assertTrue($container->has('route'));
-                    TestCase::assertSame($container->get('route'), $routeResult->reveal());
-                    return $container;
-                })
-            )
-            ->will([$this->request, 'reveal'])
-            ->shouldBeCalledTimes(1);
-        $this->request
-            ->withAttribute(
-                // phpcs:ignore WebimpressCodingStandard.Formatting.StringClassReference.Found
-                'Zend\Expressive\Helper\Template\TemplateVariableContainer',
                 Argument::that(function ($container) use ($originalContainer, $routeResult) {
                     TestCase::assertNotSame($container, $originalContainer);
                     TestCase::assertTrue($container->has('route'));

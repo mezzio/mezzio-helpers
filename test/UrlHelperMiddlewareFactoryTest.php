@@ -47,7 +47,6 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
     public function testFactoryRaisesExceptionWhenContainerDoesNotContainHelper(): void
     {
         $this->container->has(UrlHelper::class)->willReturn(false);
-        $this->container->has(\zend\expressive\helper\urlhelper::class)->willReturn(false);
         $factory = new UrlHelperMiddlewareFactory();
         $this->expectException(MissingHelperException::class);
         $factory($this->container->reveal());

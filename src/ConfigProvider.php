@@ -15,20 +15,11 @@ class ConfigProvider
 
     public function getDependencies(): array
     {
-        // @codingStandardsIgnoreStart
-        // phpcs:disable
         return [
-            // Legacy Zend Framework aliases
-            'aliases' => [
-                \Zend\Expressive\Helper\ServerUrlHelper::class => ServerUrlHelper::class,
-                \Zend\Expressive\Helper\Template\TemplateVariableContainerMiddleware::class => Template\TemplateVariableContainerMiddleware::class,
-                \Zend\Expressive\Helper\ServerUrlMiddleware::class => ServerUrlMiddleware::class,
-                \Zend\Expressive\Helper\UrlHelper::class => UrlHelper::class,
-                \Zend\Expressive\Helper\UrlHelperMiddleware::class => UrlHelperMiddleware::class,
-            ],
             'invokables' => [
-                ServerUrlHelper::class                              => ServerUrlHelper::class,
-                Template\TemplateVariableContainerMiddleware::class => Template\TemplateVariableContainerMiddleware::class,
+                ServerUrlHelper::class => ServerUrlHelper::class,
+                Template\TemplateVariableContainerMiddleware::class
+                => Template\TemplateVariableContainerMiddleware::class,
             ],
             'factories'  => [
                 ServerUrlMiddleware::class => ServerUrlMiddlewareFactory::class,
@@ -36,7 +27,5 @@ class ConfigProvider
                 UrlHelperMiddleware::class => UrlHelperMiddlewareFactory::class,
             ],
         ];
-        // phpcs:enable
-        // @codingStandardsIgnoreEnd
     }
 }
