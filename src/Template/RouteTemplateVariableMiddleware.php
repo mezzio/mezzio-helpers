@@ -41,9 +41,6 @@ class RouteTemplateVariableMiddleware implements MiddlewareInterface
         return $handler->handle($request->withAttribute(
             TemplateVariableContainer::class,
             $container->with('route', $routeResult)
-        )->withAttribute(
-            \Zend\Expressive\Helper\Template\TemplateVariableContainer::class,
-            $container->with('route', $routeResult)
         ));
     }
 }

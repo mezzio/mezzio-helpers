@@ -33,9 +33,6 @@ class TemplateVariableContainerMiddleware implements MiddlewareInterface
         return $handler->handle($request->withAttribute(
             TemplateVariableContainer::class,
             $container
-        )->withAttribute(
-            \zend\expressive\helper\template\templatevariablecontainer::class,
-            $container
         ));
     }
 }
