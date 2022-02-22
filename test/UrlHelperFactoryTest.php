@@ -8,20 +8,18 @@ use Mezzio\Helper\Exception\MissingRouterException;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Helper\UrlHelperFactory;
 use Mezzio\Router\RouterInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
 class UrlHelperFactoryTest extends TestCase
 {
     use AttributeAssertionsTrait;
-    use ProphecyTrait;
 
-    /** @var RouterInterface|ObjectProphecy */
+    /** @var RouterInterface&MockObject */
     private $router;
 
-    /** @var ContainerInterface|ObjectProphecy */
+    /** @var ContainerInterface&MockObject */
     private $container;
 
     /** @var UrlHelperFactory */
@@ -29,25 +27,25 @@ class UrlHelperFactoryTest extends TestCase
 
     public function setUp(): void
     {
-        $this->router    = $this->prophesize(RouterInterface::class);
-        $this->container = $this->prophesize(ContainerInterface::class);
+        $this->router    = $this->createMock(RouterInterface::class);
+        $this->container = $this->createMock(ContainerInterface::class);
 
         $this->factory = new UrlHelperFactory();
     }
 
     public function injectContainerService(string $name, object $service): void
     {
-        $this->container->has($name)->willReturn(true);
-        $this->container->get($name)->willReturn($service);
+        $this->container->method('has')->with($name)->willReturn(true);
+        $this->container->method('get')->with($name)->willReturn($service);
     }
 
     public function testFactoryReturnsHelperWithRouterInjected(): UrlHelper
     {
-        $this->injectContainerService(RouterInterface::class, $this->router->reveal());
+        $this->injectContainerService(RouterInterface::class, $this->router);
 
-        $helper = $this->factory->__invoke($this->container->reveal());
+        $helper = ($this->factory)($this->container);
         $this->assertInstanceOf(UrlHelper::class, $helper);
-        $this->assertAttributeSame($this->router->reveal(), 'router', $helper);
+        $this->assertAttributeSame($this->router, 'router', $helper);
         return $helper;
     }
 
@@ -62,18 +60,18 @@ class UrlHelperFactoryTest extends TestCase
     public function testFactoryRaisesExceptionWhenRouterIsNotPresentInContainer(): void
     {
         $this->expectException(MissingRouterException::class);
-        $this->factory->__invoke($this->container->reveal());
+        ($this->factory)($this->container);
     }
 
     public function testFactoryUsesBasePathAndRouterServiceProvidedAtInstantiation(): void
     {
-        $this->injectContainerService(Router::class, $this->router->reveal());
+        $this->injectContainerService(Router::class, $this->router);
         $factory = new UrlHelperFactory('/api', Router::class);
 
-        $helper = $factory($this->container->reveal());
+        $helper = $factory($this->container);
 
         $this->assertInstanceOf(UrlHelper::class, $helper);
-        $this->assertAttributeSame($this->router->reveal(), 'router', $helper);
+        $this->assertAttributeSame($this->router, 'router', $helper);
         $this->assertEquals('/api', $helper->getBasePath());
     }
 
