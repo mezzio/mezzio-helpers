@@ -22,8 +22,7 @@ class UrlHelperFactoryTest extends TestCase
     /** @var ContainerInterface&MockObject */
     private $container;
 
-    /** @var UrlHelperFactory */
-    private $factory;
+    private UrlHelperFactory $factory;
 
     public function setUp(): void
     {

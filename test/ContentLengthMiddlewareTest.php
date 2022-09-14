@@ -17,10 +17,8 @@ use function str_repeat;
 
 class ContentLengthMiddlewareTest extends TestCase
 {
-    /** @var ContentLengthMiddleware */
-    private $middleware;
-    /** @var ServerRequest */
-    private $serverRequest;
+    private ContentLengthMiddleware $middleware;
+    private ServerRequest $serverRequest;
 
     protected function setUp(): void
     {

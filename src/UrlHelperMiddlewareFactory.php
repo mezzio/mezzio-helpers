@@ -10,8 +10,7 @@ use function sprintf;
 
 class UrlHelperMiddlewareFactory
 {
-    /** @var string */
-    private $urlHelperServiceName;
+    private string $urlHelperServiceName;
 
     /**
      * Allow serialization

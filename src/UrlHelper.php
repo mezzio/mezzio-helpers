@@ -25,17 +25,13 @@ class UrlHelper
      */
     public const FRAGMENT_IDENTIFIER_REGEX = '/^([!$&\'()*+,;=._~:@\/?-]|%[0-9a-fA-F]{2}|[a-zA-Z0-9])+$/';
 
-    /** @var string */
-    private $basePath = '/';
+    private string $basePath = '/';
 
-    /** @var RouteResult */
-    private $result;
+    private ?RouteResult $result = null;
 
-    /** @var ServerRequestInterface */
-    private $request;
+    private ?ServerRequestInterface $request = null;
 
-    /** @var RouterInterface */
-    private $router;
+    private RouterInterface $router;
 
     public function __construct(RouterInterface $router)
     {

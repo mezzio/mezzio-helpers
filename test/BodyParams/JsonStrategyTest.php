@@ -17,8 +17,7 @@ use const JSON_ERROR_NONE;
 
 class JsonStrategyTest extends TestCase
 {
-    /** @var JsonStrategy */
-    private $strategy;
+    private JsonStrategy $strategy;
 
     public function setUp(): void
     {

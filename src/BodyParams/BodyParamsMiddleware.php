@@ -14,17 +14,15 @@ use function in_array;
 class BodyParamsMiddleware implements MiddlewareInterface
 {
     /** @var StrategyInterface[] */
-    private $strategies = [];
+    private array $strategies = [];
 
     /**
      * List of request methods that do not have any defined body semantics, and thus
      * will not have the body parsed.
      *
      * @see https://tools.ietf.org/html/rfc7231
-     *
-     * @var array
      */
-    private $nonBodyRequests = [
+    private array $nonBodyRequests = [
         'GET',
         'HEAD',
         'OPTIONS',

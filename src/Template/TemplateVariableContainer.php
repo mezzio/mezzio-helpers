@@ -72,7 +72,7 @@ use function count;
 class TemplateVariableContainer implements Countable
 {
     /** @var array<string, mixed> */
-    private $variables = [];
+    private array $variables = [];
 
     public function count(): int
     {

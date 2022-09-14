@@ -137,8 +137,8 @@
     </MissingClosureParamType>
     <MissingClosureReturnType occurrences="3">
       <code>function ($args) {</code>
-      <code>function ($container) use ($originalContainer) {</code>
-      <code>function ($container) use ($originalContainer, $routeResult) {</code>
+      <code>static function ($container) use ($originalContainer) {</code>
+      <code>static function ($container) use ($originalContainer, $routeResult) {</code>
     </MissingClosureReturnType>
     <MixedArgumentTypeCoercion occurrences="2"/>
     <MixedArrayAccess occurrences="1">
