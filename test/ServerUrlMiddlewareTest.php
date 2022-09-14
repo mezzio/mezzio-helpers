@@ -32,11 +32,12 @@ class ServerUrlMiddlewareTest extends TestCase
         $invoked = false;
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
-        $handler->handle(Argument::type(RequestInterface::class))->will(function ($req) use (&$invoked) {
-            $invoked = true;
-
-            return new Response();
-        });
+        $handler->handle(Argument::type(RequestInterface::class))->will(
+            function ($req) use (&$invoked): Response {
+                    $invoked = true;
+                    return new Response();
+            }
+        );
 
         $test = $middleware->process($request->reveal(), $handler->reveal());
         //$this->assertSame($response->reveal(), $test, 'Unexpected return value from middleware');

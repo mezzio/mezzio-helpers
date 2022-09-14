@@ -6,6 +6,7 @@ namespace Mezzio\Helper;
 
 use Psr\Http\Message\UriInterface;
 
+use function assert;
 use function preg_match;
 use function rtrim;
 
@@ -14,8 +15,7 @@ use function rtrim;
  */
 class ServerUrlHelper
 {
-    /** @var UriInterface */
-    private $uri;
+    private ?UriInterface $uri = null;
 
     /**
      * Return a path relative to the current request URI.
@@ -33,7 +33,7 @@ class ServerUrlHelper
      */
     public function __invoke(?string $path = null): string
     {
-        $path = $path ?? '';
+        $path ??= '';
 
         if ($this->uri instanceof UriInterface) {
             return $this->createUrlFromUri($path);
@@ -75,6 +75,8 @@ class ServerUrlHelper
         $path     = $matches['path'];
         $query    = $matches['query'] ?? '';
         $fragment = $matches['fragment'] ?? '';
+
+        assert($this->uri instanceof UriInterface);
 
         $uri = $this->uri
             ->withQuery('')

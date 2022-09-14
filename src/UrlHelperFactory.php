@@ -12,10 +12,9 @@ use function sprintf;
 class UrlHelperFactory
 {
     /** @var string Base path for the URL helper */
-    private $basePath;
+    private string $basePath;
 
-    /** @var string $routerServiceName */
-    private $routerServiceName;
+    private string $routerServiceName;
 
     /**
      * Allow serialization

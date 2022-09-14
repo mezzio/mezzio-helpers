@@ -12,8 +12,7 @@ use Psr\Http\Message\StreamInterface;
 
 class FormUrlEncodedStrategyTest extends TestCase
 {
-    /** @var FormUrlEncodedStrategy */
-    private $strategy;
+    private FormUrlEncodedStrategy $strategy;
 
     public function setUp(): void
     {

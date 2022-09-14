@@ -24,11 +24,9 @@ class BodyParamsMiddlewareTest extends TestCase
 {
     use AttributeAssertionsTrait;
 
-    /** @var Stream */
-    private $body;
+    private Stream $body;
 
-    /** @var BodyParamsMiddleware */
-    private $bodyParams;
+    private BodyParamsMiddleware $bodyParams;
 
     public function setUp(): void
     {
@@ -80,7 +78,7 @@ class BodyParamsMiddlewareTest extends TestCase
 
         $this->bodyParams->process(
             $serverRequest,
-            $this->mockHandler(function (ServerRequestInterface $request) use (&$serverRequest) {
+            $this->mockHandler(static function (ServerRequestInterface $request) use (&$serverRequest): Response {
                 $serverRequest = $request;
                 return new Response();
             })
@@ -117,7 +115,7 @@ class BodyParamsMiddlewareTest extends TestCase
 
         $this->bodyParams->process(
             $originalRequest,
-            $this->mockHandler(function (ServerRequestInterface $request) use (&$finalRequest) {
+            $this->mockHandler(static function (ServerRequestInterface $request) use (&$finalRequest): Response {
                 $finalRequest = $request;
                 return new Response();
             })
@@ -158,10 +156,12 @@ class BodyParamsMiddlewareTest extends TestCase
 
         $response = $middleware->process(
             $serverRequest,
-            $this->mockHandler(function (ServerRequestInterface $request) use ($expectedReturn, $expectedResponse) {
-                $this->assertSame($expectedReturn, $request);
-                return $expectedResponse;
-            })
+            $this->mockHandler(
+                function (ServerRequestInterface $request) use ($expectedReturn, $expectedResponse): Response {
+                    $this->assertSame($expectedReturn, $request);
+                    return $expectedResponse;
+                }
+            )
         );
 
         $this->assertSame($expectedResponse, $response);
@@ -176,10 +176,12 @@ class BodyParamsMiddlewareTest extends TestCase
 
         $response = $middleware->process(
             $serverRequest,
-            $this->mockHandler(function (ServerRequestInterface $request) use ($serverRequest, $expectedResponse) {
-                $this->assertSame($serverRequest, $request);
-                return $expectedResponse;
-            })
+            $this->mockHandler(
+                function (ServerRequestInterface $request) use ($serverRequest, $expectedResponse): Response {
+                    $this->assertSame($serverRequest, $request);
+                    return $expectedResponse;
+                }
+            )
         );
 
         $this->assertSame($expectedResponse, $response);
@@ -242,10 +244,8 @@ class BodyParamsMiddlewareTest extends TestCase
         );
 
         $handlerTriggered = false;
-
-        $result = $this->bodyParams->process(
-            $serverRequest,
-            $this->mockHandler(function (ServerRequestInterface $request) use ($serverRequest, &$handlerTriggered) {
+        $callback         =
+            function (ServerRequestInterface $request) use ($serverRequest, &$handlerTriggered): Response {
                 $handlerTriggered = true;
 
                 $this->assertNotSame(
@@ -267,7 +267,10 @@ class BodyParamsMiddlewareTest extends TestCase
                 );
 
                 return new Response();
-            })
+            };
+        $result           = $this->bodyParams->process(
+            $serverRequest,
+            $this->mockHandler($callback)
         );
 
         $this->assertInstanceOf(Response::class, $result);

@@ -31,9 +31,7 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
     {
         $this->request
             ->getAttribute(TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
-            ->will(function ($args) {
-                return $args[1];
-            })
+            ->will(fn($args) => $args[1])
             ->shouldBeCalledTimes(1);
 
         $this->request
@@ -80,7 +78,7 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
         $this->request
             ->withAttribute(
                 TemplateVariableContainer::class,
-                Argument::that(function ($container) use ($originalContainer) {
+                Argument::that(static function ($container) use ($originalContainer) {
                     TestCase::assertNotSame($container, $originalContainer);
                     TestCase::assertTrue($container->has('route'));
                     TestCase::assertNull($container->get('route'));
@@ -118,7 +116,7 @@ class RouteTemplateVariableMiddlewareTest extends TestCase
         $this->request
             ->withAttribute(
                 TemplateVariableContainer::class,
-                Argument::that(function ($container) use ($originalContainer, $routeResult) {
+                Argument::that(static function ($container) use ($originalContainer, $routeResult) {
                     TestCase::assertNotSame($container, $originalContainer);
                     TestCase::assertTrue($container->has('route'));
                     TestCase::assertSame($container->get('route'), $routeResult->reveal());
