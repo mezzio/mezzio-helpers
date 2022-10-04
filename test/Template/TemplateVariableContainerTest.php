@@ -9,38 +9,43 @@ use PHPUnit\Framework\TestCase;
 
 use function array_merge;
 
-class TemplateVariableContainerTest extends TestCase
+/** @covers \Mezzio\Helper\Template\TemplateVariableContainer */
+final class TemplateVariableContainerTest extends TestCase
 {
-    public function setUp(): void
+    private TemplateVariableContainer $container;
+
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->container = new TemplateVariableContainer();
     }
 
     public function testContainerIsEmptyByDefault(): void
     {
-        $this->assertCount(0, $this->container);
+        self::assertCount(0, $this->container);
     }
 
     public function testSettingVariablesReturnsNewInstanceContainingValue(): TemplateVariableContainer
     {
         $container = $this->container->with('key', 'value');
 
-        $this->assertNotSame($container, $this->container);
-        $this->assertCount(1, $container);
-        $this->assertTrue($container->has('key'));
-        $this->assertSame('value', $container->get('key'));
+        self::assertNotSame($container, $this->container);
+        self::assertCount(1, $container);
+        self::assertTrue($container->has('key'));
+        self::assertSame('value', $container->get('key'));
 
         return $container;
     }
 
     public function testHasReturnsFalseForUnsetVariables(): void
     {
-        $this->assertFalse($this->container->has('key'));
+        self::assertFalse($this->container->has('key'));
     }
 
     public function testGetReturnsNullForUnsetVariables(): void
     {
-        $this->assertNull($this->container->get('key'));
+        self::assertNull($this->container->get('key'));
     }
 
     /**
@@ -50,9 +55,9 @@ class TemplateVariableContainerTest extends TestCase
     {
         $container = $original->without('key');
 
-        $this->assertNotSame($container, $original);
-        $this->assertTrue($original->has('key'));
-        $this->assertFalse($container->has('key'));
+        self::assertNotSame($container, $original);
+        self::assertTrue($original->has('key'));
+        self::assertFalse($container->has('key'));
     }
 
     public function testMergeReturnsNewInstanceContainingMergedArray(): void
@@ -65,13 +70,13 @@ class TemplateVariableContainerTest extends TestCase
 
         $container = $this->container->merge($values);
 
-        $this->assertNotSame($container, $this->container);
+        self::assertNotSame($container, $this->container);
 
         foreach ($values as $key => $value) {
-            $this->assertFalse($this->container->has($key));
-            $this->assertTrue($container->has($key));
-            $this->assertNull($this->container->get($key));
-            $this->assertEquals($value, $container->get($key));
+            self::assertFalse($this->container->has($key));
+            self::assertTrue($container->has($key));
+            self::assertNull($this->container->get($key));
+            self::assertSame($value, $container->get($key));
         }
     }
 
@@ -94,6 +99,6 @@ class TemplateVariableContainerTest extends TestCase
 
         $merged = $container->mergeForTemplate($localValues);
 
-        $this->assertSame($expected, $merged);
+        self::assertSame($expected, $merged);
     }
 }

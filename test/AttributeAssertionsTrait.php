@@ -13,6 +13,7 @@ trait AttributeAssertionsTrait
     {
         $r = new ReflectionProperty($object, $attribute);
         $r->setAccessible(true);
+
         self::assertSame($expected, $r->getValue($object));
     }
 
@@ -21,6 +22,7 @@ trait AttributeAssertionsTrait
     {
         $r = new ReflectionProperty($object, $attribute);
         $r->setAccessible(true);
+
         self::assertEquals($expected, $r->getValue($object));
     }
 
@@ -29,6 +31,7 @@ trait AttributeAssertionsTrait
     {
         $r = new ReflectionProperty($object, $attribute);
         $r->setAccessible(true);
+
         self::assertContains($expected, $r->getValue($object));
     }
 }

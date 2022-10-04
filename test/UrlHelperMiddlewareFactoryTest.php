@@ -8,60 +8,77 @@ use Mezzio\Helper\Exception\MissingHelperException;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Helper\UrlHelperMiddleware;
 use Mezzio\Helper\UrlHelperMiddlewareFactory;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
-class UrlHelperMiddlewareFactoryTest extends TestCase
+/** @covers \Mezzio\Helper\UrlHelperMiddlewareFactory */
+final class UrlHelperMiddlewareFactoryTest extends TestCase
 {
     use AttributeAssertionsTrait;
-    use ProphecyTrait;
 
-    /** @var ContainerInterface|ObjectProphecy */
-    private $container;
+    /** @var ContainerInterface&MockObject */
+    private ContainerInterface $container;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->container = $this->prophesize(ContainerInterface::class);
+        parent::setUp();
+
+        $this->container = $this->createMock(ContainerInterface::class);
     }
 
     public function injectContainer(string $name, object $service): void
     {
-        $service = $service instanceof ObjectProphecy ? $service->reveal() : $service;
-        $this->container->has($name)->willReturn(true);
-        $this->container->get($name)->willReturn($service);
+        $this->container
+            ->expects(self::once())
+            ->method('has')
+            ->with($name)
+            ->willReturn(true);
+
+        $this->container
+            ->expects(self::once())
+            ->method('get')
+            ->with($name)
+            ->willReturn($service);
     }
 
     public function testFactoryCreatesAndReturnsMiddlewareWhenHelperIsPresentInContainer(): void
     {
-        $helper = $this->prophesize(UrlHelper::class)->reveal();
+        $helper = $this->createMock(UrlHelper::class);
         $this->injectContainer(UrlHelper::class, $helper);
 
         $factory    = new UrlHelperMiddlewareFactory();
-        $middleware = $factory($this->container->reveal());
-        $this->assertInstanceOf(UrlHelperMiddleware::class, $middleware);
-        $this->assertAttributeSame($helper, 'helper', $middleware);
+        $middleware = $factory($this->container);
+
+        self::assertInstanceOf(UrlHelperMiddleware::class, $middleware);
+        self::assertAttributeSame($helper, 'helper', $middleware);
     }
 
     public function testFactoryRaisesExceptionWhenContainerDoesNotContainHelper(): void
     {
-        $this->container->has(UrlHelper::class)->willReturn(false);
+        $this->container
+            ->expects(self::once())
+            ->method('has')
+            ->with(UrlHelper::class)
+            ->willReturn(false);
+
         $factory = new UrlHelperMiddlewareFactory();
+
         $this->expectException(MissingHelperException::class);
-        $factory($this->container->reveal());
+
+        $factory($this->container);
     }
 
     public function testFactoryUsesUrlHelperServiceProvidedAtInstantiation(): void
     {
-        $helper = $this->prophesize(UrlHelper::class)->reveal();
+        $helper = $this->createMock(UrlHelper::class);
         $this->injectContainer(MyUrlHelper::class, $helper);
         $factory = new UrlHelperMiddlewareFactory(MyUrlHelper::class);
 
-        $middleware = $factory($this->container->reveal());
+        $middleware = $factory($this->container);
 
-        $this->assertInstanceOf(UrlHelperMiddleware::class, $middleware);
-        $this->assertAttributeSame($helper, 'helper', $middleware);
+        self::assertInstanceOf(UrlHelperMiddleware::class, $middleware);
+        self::assertAttributeSame($helper, 'helper', $middleware);
     }
 
     public function testFactoryAllowsSerialization(): void
@@ -70,7 +87,7 @@ class UrlHelperMiddlewareFactoryTest extends TestCase
             'urlHelperServiceName' => MyUrlHelper::class,
         ]);
 
-        $this->assertInstanceOf(UrlHelperMiddlewareFactory::class, $factory);
-        $this->assertAttributeSame(MyUrlHelper::class, 'urlHelperServiceName', $factory);
+        self::assertInstanceOf(UrlHelperMiddlewareFactory::class, $factory);
+        self::assertAttributeSame(MyUrlHelper::class, 'urlHelperServiceName', $factory);
     }
 }

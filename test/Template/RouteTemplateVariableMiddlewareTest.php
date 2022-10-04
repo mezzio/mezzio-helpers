@@ -7,132 +7,171 @@ namespace MezzioTest\Helper\Template;
 use Mezzio\Helper\Template\RouteTemplateVariableMiddleware;
 use Mezzio\Helper\Template\TemplateVariableContainer;
 use Mezzio\Router\RouteResult;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class RouteTemplateVariableMiddlewareTest extends TestCase
+/** @covers \Mezzio\Helper\Template\RouteTemplateVariableMiddleware */
+final class RouteTemplateVariableMiddlewareTest extends TestCase
 {
-    use ProphecyTrait;
+    /** @var ServerRequestInterface&MockObject */
+    private ServerRequestInterface $request;
 
-    public function setUp(): void
+    /** @var ResponseInterface&MockObject */
+    private ResponseInterface $response;
+
+    /** @var RequestHandlerInterface&MockObject */
+    private RequestHandlerInterface $handler;
+
+    /** @var TemplateVariableContainer&MockObject */
+    private TemplateVariableContainer $container;
+
+    private RouteTemplateVariableMiddleware $middleware;
+
+    protected function setUp(): void
     {
-        $this->request    = $this->prophesize(ServerRequestInterface::class);
-        $this->response   = $this->prophesize(ResponseInterface::class);
-        $this->handler    = $this->prophesize(RequestHandlerInterface::class);
-        $this->container  = new TemplateVariableContainer();
+        parent::setUp();
+
+        $this->request   = $this->createMock(ServerRequestInterface::class);
+        $this->response  = $this->createMock(ResponseInterface::class);
+        $this->handler   = $this->createMock(RequestHandlerInterface::class);
+        $this->container = $this->createMock(TemplateVariableContainer::class);
+
         $this->middleware = new RouteTemplateVariableMiddleware();
     }
 
     public function testMiddlewareInjectsVariableContainerWithNullRouteIfNoVariableContainerOrRouteResultPresent(): void
     {
-        $this->request
-            ->getAttribute(TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
-            ->will(fn($args) => $args[1])
-            ->shouldBeCalledTimes(1);
+        $routeResult       = null;
+        $fallbackContainer = new TemplateVariableContainer();
 
         $this->request
-            ->getAttribute(RouteResult::class, null)
-            ->willReturn(null)
-            ->shouldBeCalledTimes(1);
-
-        $this->request
-            ->withAttribute(
-                TemplateVariableContainer::class,
-                Argument::that(function ($container) {
-                    TestCase::assertInstanceOf(TemplateVariableContainer::class, $container);
-                    TestCase::assertTrue($container->has('route'));
-                    TestCase::assertNull($container->get('route'));
-                    return $container;
-                })
+            ->expects(self::exactly(2))
+            ->method('getAttribute')
+            ->withConsecutive(
+                [TemplateVariableContainer::class, $fallbackContainer],
+                [RouteResult::class, null],
             )
-            ->will([$this->request, 'reveal'])
-            ->shouldBeCalledTimes(1);
+            ->willReturn(
+                $fallbackContainer,
+                $routeResult
+            );
+
+        $this->request
+            ->expects(self::once())
+            ->method('withAttribute')
+            ->with(
+                TemplateVariableContainer::class,
+                self::callback(static function (TemplateVariableContainer $container) use ($routeResult): bool {
+                    self::assertTrue($container->has('route'));
+                    self::assertSame($routeResult, $container->get('route'));
+                    self::assertSame(1, $container->count());
+
+                    return true;
+                }),
+            )
+            ->willReturn($this->request);
 
         $this->handler
-            ->handle(Argument::that([$this->request, 'reveal']))
-            ->will([$this->response, 'reveal']);
+            ->expects(self::once())
+            ->method('handle')
+            ->with($this->request)
+            ->willReturn($this->response);
 
-        $this->assertSame(
-            $this->response->reveal(),
-            $this->middleware->process($this->request->reveal(), $this->handler->reveal())
+        self::assertSame(
+            $this->response,
+            $this->middleware->process($this->request, $this->handler)
         );
     }
 
     public function testMiddlewareWillInjectNullValueForRouteIfNoRouteResultInRequest(): void
     {
-        $this->request
-            ->getAttribute(TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
-            ->willReturn($this->container)
-            ->shouldBeCalledTimes(1);
+        $routeResult = null;
+
+        $this->container
+            ->expects(self::once())
+            ->method('with')
+            ->with('route', $routeResult)
+            ->willReturnSelf();
 
         $this->request
-            ->getAttribute(RouteResult::class, null)
-            ->willReturn(null)
-            ->shouldBeCalledTimes(1);
-
-        $originalContainer = $this->container;
-        $this->request
-            ->withAttribute(
-                TemplateVariableContainer::class,
-                Argument::that(static function ($container) use ($originalContainer) {
-                    TestCase::assertNotSame($container, $originalContainer);
-                    TestCase::assertTrue($container->has('route'));
-                    TestCase::assertNull($container->get('route'));
-                    return $container;
-                })
+            ->expects(self::exactly(2))
+            ->method('getAttribute')
+            ->withConsecutive(
+                [TemplateVariableContainer::class, new TemplateVariableContainer()],
+                [RouteResult::class, null],
             )
-            ->will([$this->request, 'reveal'])
-            ->shouldBeCalledTimes(1);
+            ->willReturn($this->container, $routeResult);
+
+        $this->request
+            ->expects(self::once())
+            ->method('withAttribute')
+            ->with(
+                TemplateVariableContainer::class,
+                $this->container
+            )
+            ->willReturn($this->request);
+
+        $this->request
+            ->expects(self::once())
+            ->method('withAttribute')
+            ->with(
+                TemplateVariableContainer::class,
+                $this->container
+            )
+            ->willReturn($this->request);
 
         $this->handler
-            ->handle(Argument::that([$this->request, 'reveal']))
-            ->will([$this->response, 'reveal']);
+            ->expects(self::once())
+            ->method('handle')
+            ->with($this->request)
+            ->willReturn($this->response);
 
-        $this->assertSame(
-            $this->response->reveal(),
-            $this->middleware->process($this->request->reveal(), $this->handler->reveal())
+        self::assertSame(
+            $this->response,
+            $this->middleware->process($this->request, $this->handler)
         );
     }
 
     public function testMiddlewareWillInjectRoutePulledFromRequestRouteResult(): void
     {
-        $routeResult = $this->prophesize(RouteResult::class);
+        $routeResult = $this->createMock(RouteResult::class);
+
+        $this->container
+            ->expects(self::once())
+            ->method('with')
+            ->with('route', $routeResult)
+            ->willReturnSelf();
 
         $this->request
-            ->getAttribute(TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
-            ->willReturn($this->container)
-            ->shouldBeCalledTimes(1);
-
-        $this->request
-            ->getAttribute(RouteResult::class, null)
-            ->will([$routeResult, 'reveal'])
-            ->shouldBeCalledTimes(1);
-
-        $originalContainer = $this->container;
-        $this->request
-            ->withAttribute(
-                TemplateVariableContainer::class,
-                Argument::that(static function ($container) use ($originalContainer, $routeResult) {
-                    TestCase::assertNotSame($container, $originalContainer);
-                    TestCase::assertTrue($container->has('route'));
-                    TestCase::assertSame($container->get('route'), $routeResult->reveal());
-                    return $container;
-                })
+            ->expects(self::exactly(2))
+            ->method('getAttribute')
+            ->withConsecutive(
+                [TemplateVariableContainer::class, new TemplateVariableContainer()],
+                [RouteResult::class, null],
             )
-            ->will([$this->request, 'reveal'])
-            ->shouldBeCalledTimes(1);
+            ->willReturn($this->container, $routeResult);
+
+        $this->request
+            ->expects(self::once())
+            ->method('withAttribute')
+            ->with(
+                TemplateVariableContainer::class,
+                $this->container
+            )
+            ->willReturn($this->request);
 
         $this->handler
-            ->handle(Argument::that([$this->request, 'reveal']))
-            ->will([$this->response, 'reveal']);
+            ->expects(self::once())
+            ->method('handle')
+            ->with($this->request)
+            ->willReturn($this->response);
 
-        $this->assertSame(
-            $this->response->reveal(),
-            $this->middleware->process($this->request->reveal(), $this->handler->reveal())
+        self::assertSame(
+            $this->response,
+            $this->middleware->process($this->request, $this->handler)
         );
     }
 }
