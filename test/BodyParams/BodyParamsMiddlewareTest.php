@@ -11,6 +11,7 @@ use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
 use Mezzio\Helper\BodyParams\StrategyInterface;
 use Mezzio\Helper\Exception\MalformedRequestBodyException;
 use MezzioTest\Helper\AttributeAssertionsTrait;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -20,7 +21,8 @@ use function fwrite;
 use function get_class;
 use function json_encode;
 
-class BodyParamsMiddlewareTest extends TestCase
+/** @covers \Mezzio\Helper\BodyParams\BodyParamsMiddleware */
+final class BodyParamsMiddlewareTest extends TestCase
 {
     use AttributeAssertionsTrait;
 
@@ -28,8 +30,10 @@ class BodyParamsMiddlewareTest extends TestCase
 
     private BodyParamsMiddleware $bodyParams;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->bodyParams = new BodyParamsMiddleware();
 
         $stream = fopen('php://memory', 'r+');
@@ -39,10 +43,13 @@ class BodyParamsMiddlewareTest extends TestCase
         $this->body->rewind();
     }
 
+    /** @return RequestHandlerInterface&MockObject */
     private function mockHandler(callable $callback): RequestHandlerInterface
     {
         $handler = $this->createMock(RequestHandlerInterface::class);
-        $handler->expects(self::once())
+
+        $handler
+            ->expects(self::once())
             ->method('handle')
             ->with(self::isInstanceOf(ServerRequestInterface::class))
             ->willReturnCallback($callback);
@@ -50,11 +57,14 @@ class BodyParamsMiddlewareTest extends TestCase
         return $handler;
     }
 
+    /** @return RequestHandlerInterface&MockObject */
     private function mockHandlerToNeverTrigger(): RequestHandlerInterface
     {
         $handler = $this->createMock(RequestHandlerInterface::class);
 
-        $handler->expects(self::never())->method('handle');
+        $handler
+            ->expects(self::never())
+            ->method('handle');
 
         return $handler;
     }
@@ -80,15 +90,16 @@ class BodyParamsMiddlewareTest extends TestCase
             $serverRequest,
             $this->mockHandler(static function (ServerRequestInterface $request) use (&$serverRequest): Response {
                 $serverRequest = $request;
+
                 return new Response();
             })
         );
 
-        $this->assertSame(
+        self::assertSame(
             json_encode(['foo' => 'bar']),
             $serverRequest->getAttribute('rawBody')
         );
-        $this->assertSame(['foo' => 'bar'], $serverRequest->getParsedBody());
+        self::assertSame(['foo' => 'bar'], $serverRequest->getParsedBody());
     }
 
     /** @return array<array-key, string[]> */
@@ -117,24 +128,28 @@ class BodyParamsMiddlewareTest extends TestCase
             $originalRequest,
             $this->mockHandler(static function (ServerRequestInterface $request) use (&$finalRequest): Response {
                 $finalRequest = $request;
+
                 return new Response();
             })
         );
 
-        $this->assertSame($originalRequest, $finalRequest);
+        self::assertSame($originalRequest, $finalRequest);
     }
 
     public function testCanClearStrategies(): void
     {
         $this->bodyParams->clearStrategies();
-        $this->assertAttributeSame([], 'strategies', $this->bodyParams);
+
+        self::assertAttributeSame([], 'strategies', $this->bodyParams);
     }
 
     public function testCanAttachCustomStrategies(): void
     {
         $strategy = $this->createMock(StrategyInterface::class);
+
         $this->bodyParams->addStrategy($strategy);
-        $this->assertAttributeContains($strategy, 'strategies', $this->bodyParams);
+
+        self::assertAttributeContains($strategy, 'strategies', $this->bodyParams);
     }
 
     public function testCustomStrategiesCanMatchRequests(): void
@@ -144,27 +159,33 @@ class BodyParamsMiddlewareTest extends TestCase
         $expectedReturn   = $this->createMock(ServerRequestInterface::class);
         $expectedResponse = new Response();
         $strategy         = $this->createMock(StrategyInterface::class);
-        $strategy->expects(self::once())
+
+        $strategy
+            ->expects(self::once())
             ->method('match')
             ->with('foo/bar')
             ->willReturn(true);
-        $strategy->expects(self::once())
+
+        $strategy
+            ->expects(self::once())
             ->method('parse')
             ->with($serverRequest)
             ->willReturn($expectedReturn);
+
         $middleware->addStrategy($strategy);
 
         $response = $middleware->process(
             $serverRequest,
             $this->mockHandler(
-                function (ServerRequestInterface $request) use ($expectedReturn, $expectedResponse): Response {
-                    $this->assertSame($expectedReturn, $request);
+                static function (ServerRequestInterface $request) use ($expectedReturn, $expectedResponse): Response {
+                    self::assertSame($expectedReturn, $request);
+
                     return $expectedResponse;
                 }
             )
         );
 
-        $this->assertSame($expectedResponse, $response);
+        self::assertSame($expectedResponse, $response);
     }
 
     public function testCallsNextWithOriginalRequestWhenNoStrategiesMatch(): void
@@ -177,14 +198,15 @@ class BodyParamsMiddlewareTest extends TestCase
         $response = $middleware->process(
             $serverRequest,
             $this->mockHandler(
-                function (ServerRequestInterface $request) use ($serverRequest, $expectedResponse): Response {
-                    $this->assertSame($serverRequest, $request);
+                static function (ServerRequestInterface $request) use ($serverRequest, $expectedResponse): Response {
+                    self::assertSame($serverRequest, $request);
+
                     return $expectedResponse;
                 }
             )
         );
 
-        $this->assertSame($expectedResponse, $response);
+        self::assertSame($expectedResponse, $response);
     }
 
     public function testThrowsMalformedRequestBodyExceptionWhenRequestBodyIsNotValidJson(): void
@@ -194,24 +216,26 @@ class BodyParamsMiddlewareTest extends TestCase
         $middleware    = $this->bodyParams;
         $serverRequest = new ServerRequest([], [], '', 'PUT', $this->body, ['Content-type' => 'foo/bar']);
         $strategy      = $this->createMock(StrategyInterface::class);
-        $strategy->expects(self::once())
+
+        $strategy
+            ->expects(self::once())
             ->method('match')
             ->with('foo/bar')
             ->willReturn(true);
-        $strategy->expects(self::once())
+
+        $strategy
+            ->expects(self::once())
             ->method('parse')
             ->with($serverRequest)
             ->willThrowException($expectedException);
+
         $middleware->addStrategy($strategy);
 
         $this->expectException(get_class($expectedException));
         $this->expectExceptionMessage($expectedException->getMessage());
         $this->expectExceptionCode($expectedException->getCode());
 
-        $middleware->process(
-            $serverRequest,
-            $this->mockHandlerToNeverTrigger()
-        );
+        $middleware->process($serverRequest, $this->mockHandlerToNeverTrigger());
     }
 
     /** @return array<string, string[]> */
@@ -245,22 +269,22 @@ class BodyParamsMiddlewareTest extends TestCase
 
         $handlerTriggered = false;
         $callback         =
-            function (ServerRequestInterface $request) use ($serverRequest, &$handlerTriggered): Response {
+            static function (ServerRequestInterface $request) use ($serverRequest, &$handlerTriggered): Response {
                 $handlerTriggered = true;
 
-                $this->assertNotSame(
+                self::assertNotSame(
                     $request,
                     $serverRequest,
                     'Request passed to handler is the same as the one passed to BodyParamsMiddleware and should not be'
                 );
 
-                $this->assertSame(
+                self::assertSame(
                     json_encode(['foo' => 'bar']),
                     $request->getAttribute('rawBody'),
                     'Request passed to handler does not contain expected rawBody contents'
                 );
 
-                $this->assertSame(
+                self::assertSame(
                     ['foo' => 'bar'],
                     $request->getParsedBody(),
                     'Request passed to handler does not contain expected parsed body'
@@ -273,7 +297,7 @@ class BodyParamsMiddlewareTest extends TestCase
             $this->mockHandler($callback)
         );
 
-        $this->assertInstanceOf(Response::class, $result);
-        $this->assertTrue($handlerTriggered);
+        self::assertInstanceOf(Response::class, $result);
+        self::assertTrue($handlerTriggered);
     }
 }

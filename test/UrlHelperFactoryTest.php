@@ -12,20 +12,23 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class UrlHelperFactoryTest extends TestCase
+/** @covers \Mezzio\Helper\UrlHelperFactory */
+final class UrlHelperFactoryTest extends TestCase
 {
     use AttributeAssertionsTrait;
 
     /** @var RouterInterface&MockObject */
-    private $router;
+    private RouterInterface $router;
 
     /** @var ContainerInterface&MockObject */
-    private $container;
+    private ContainerInterface $container;
 
     private UrlHelperFactory $factory;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->router    = $this->createMock(RouterInterface::class);
         $this->container = $this->createMock(ContainerInterface::class);
 
@@ -34,8 +37,17 @@ class UrlHelperFactoryTest extends TestCase
 
     public function injectContainerService(string $name, object $service): void
     {
-        $this->container->method('has')->with($name)->willReturn(true);
-        $this->container->method('get')->with($name)->willReturn($service);
+        $this->container
+            ->expects(self::once())
+            ->method('has')
+            ->with($name)
+            ->willReturn(true);
+
+        $this->container
+            ->expects(self::once())
+            ->method('get')
+            ->with($name)
+            ->willReturn($service);
     }
 
     public function testFactoryReturnsHelperWithRouterInjected(): UrlHelper
@@ -43,8 +55,10 @@ class UrlHelperFactoryTest extends TestCase
         $this->injectContainerService(RouterInterface::class, $this->router);
 
         $helper = ($this->factory)($this->container);
-        $this->assertInstanceOf(UrlHelper::class, $helper);
-        $this->assertAttributeSame($this->router, 'router', $helper);
+
+        self::assertInstanceOf(UrlHelper::class, $helper);
+        self::assertAttributeSame($this->router, 'router', $helper);
+
         return $helper;
     }
 
@@ -53,12 +67,13 @@ class UrlHelperFactoryTest extends TestCase
      */
     public function testHelperUsesDefaultBasePathWhenNoneProvidedAtInstantiation(UrlHelper $helper): void
     {
-        $this->assertEquals('/', $helper->getBasePath());
+        self::assertSame('/', $helper->getBasePath());
     }
 
     public function testFactoryRaisesExceptionWhenRouterIsNotPresentInContainer(): void
     {
         $this->expectException(MissingRouterException::class);
+
         ($this->factory)($this->container);
     }
 
@@ -69,9 +84,9 @@ class UrlHelperFactoryTest extends TestCase
 
         $helper = $factory($this->container);
 
-        $this->assertInstanceOf(UrlHelper::class, $helper);
-        $this->assertAttributeSame($this->router, 'router', $helper);
-        $this->assertEquals('/api', $helper->getBasePath());
+        self::assertInstanceOf(UrlHelper::class, $helper);
+        self::assertAttributeSame($this->router, 'router', $helper);
+        self::assertSame('/api', $helper->getBasePath());
     }
 
     public function testFactoryAllowsSerialization(): void
@@ -81,8 +96,8 @@ class UrlHelperFactoryTest extends TestCase
             'routerServiceName' => Router::class,
         ]);
 
-        $this->assertInstanceOf(UrlHelperFactory::class, $factory);
-        $this->assertAttributeSame('/api', 'basePath', $factory);
-        $this->assertAttributeSame(Router::class, 'routerServiceName', $factory);
+        self::assertInstanceOf(UrlHelperFactory::class, $factory);
+        self::assertAttributeSame('/api', 'basePath', $factory);
+        self::assertAttributeSame(Router::class, 'routerServiceName', $factory);
     }
 }

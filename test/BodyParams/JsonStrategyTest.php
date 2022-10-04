@@ -15,12 +15,15 @@ use function json_last_error;
 
 use const JSON_ERROR_NONE;
 
-class JsonStrategyTest extends TestCase
+/** @covers \Mezzio\Helper\BodyParams\JsonStrategy */
+final class JsonStrategyTest extends TestCase
 {
     private JsonStrategy $strategy;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->strategy = new JsonStrategy();
     }
 
@@ -43,7 +46,7 @@ class JsonStrategyTest extends TestCase
      */
     public function testMatchesJsonTypes(string $contentType): void
     {
-        $this->assertTrue($this->strategy->match($contentType));
+        self::assertTrue($this->strategy->match($contentType));
     }
 
     /** @return array<array-key, string[]> */
@@ -65,18 +68,23 @@ class JsonStrategyTest extends TestCase
      */
     public function testDoesNotMatchNonJsonTypes(string $contentType): void
     {
-        $this->assertFalse($this->strategy->match($contentType));
+        self::assertFalse($this->strategy->match($contentType));
     }
 
-    /** @psalm-return ServerRequestInterface&MockObject */
+    /** @return ServerRequestInterface&MockObject */
     private function requestWillReturnBodyWithString(string $body): ServerRequestInterface
     {
         $stream = $this->createMock(StreamInterface::class);
-        $stream->expects(self::once())
+
+        $stream
+            ->expects(self::once())
             ->method('__toString')
             ->willReturn($body);
+
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects(self::once())
+
+        $request
+            ->expects(self::once())
             ->method('getBody')
             ->willReturn($stream);
 
@@ -88,17 +96,19 @@ class JsonStrategyTest extends TestCase
         $body    = '{"foo":"bar"}';
         $request = $this->requestWillReturnBodyWithString($body);
 
-        $request->expects(self::once())
+        $request
+            ->expects(self::once())
             ->method('withAttribute')
             ->with('rawBody', $body)
             ->willReturnSelf();
 
-        $request->expects(self::once())
+        $request
+            ->expects(self::once())
             ->method('withParsedBody')
             ->with(['foo' => 'bar'])
             ->willReturnSelf();
 
-        $this->assertSame($request, $this->strategy->parse($request));
+        self::assertSame($request, $this->strategy->parse($request));
     }
 
     public function testThrowsExceptionOnMalformedJsonInRequestBody(): void
@@ -118,17 +128,19 @@ class JsonStrategyTest extends TestCase
         $body    = '';
         $request = $this->requestWillReturnBodyWithString($body);
 
-        $request->expects(self::once())
+        $request
+            ->expects(self::once())
             ->method('withAttribute')
             ->with('rawBody', $body)
             ->willReturnSelf();
 
-        $request->expects(self::once())
+        $request
+            ->expects(self::once())
             ->method('withParsedBody')
             ->with(null)
             ->willReturnSelf();
 
-        $this->assertSame($request, $this->strategy->parse($request));
+        self::assertSame($request, $this->strategy->parse($request));
     }
 
     /**
@@ -138,18 +150,22 @@ class JsonStrategyTest extends TestCase
     {
         $body    = '';
         $request = $this->requestWillReturnBodyWithString($body);
-        $request->expects(self::once())
+
+        $request
+            ->expects(self::once())
             ->method('withAttribute')
             ->with('rawBody', $body)
             ->willReturnSelf();
 
-        $request->expects(self::once())
+        $request
+            ->expects(self::once())
             ->method('withParsedBody')
             ->with(null)
             ->willReturnSelf();
 
         $this->strategy->parse($request);
-        $this->assertSame(json_last_error(), JSON_ERROR_NONE);
+
+        self::assertSame(json_last_error(), JSON_ERROR_NONE);
     }
 
     /** @psalm-return iterable<string, array{0: string}> */
@@ -169,12 +185,15 @@ class JsonStrategyTest extends TestCase
     public function testParsedBodyEvaluatingToNonArrayValueResultsInNull(string $json): void
     {
         $request = $this->requestWillReturnBodyWithString($json);
-        $request->expects(self::once())
+
+        $request
+            ->expects(self::once())
             ->method('withAttribute')
             ->with('rawBody', $json)
             ->willReturnSelf();
 
-        $request->expects(self::once())
+        $request
+            ->expects(self::once())
             ->method('withParsedBody')
             ->with(null)
             ->willReturnSelf();

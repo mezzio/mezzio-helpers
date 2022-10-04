@@ -7,23 +7,31 @@ namespace MezzioTest\Helper;
 use Mezzio\Helper\ConfigProvider;
 use Mezzio\Helper\ServerUrlHelper;
 use Mezzio\Helper\ServerUrlMiddleware;
+use Mezzio\Helper\ServerUrlMiddlewareFactory;
+use Mezzio\Helper\Template\TemplateVariableContainerMiddleware;
 use Mezzio\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelperFactory;
 use Mezzio\Helper\UrlHelperMiddleware;
+use Mezzio\Helper\UrlHelperMiddlewareFactory;
 use PHPUnit\Framework\TestCase;
 
-class ConfigProviderTest extends TestCase
+/** @covers \Mezzio\Helper\ConfigProvider */
+final class ConfigProviderTest extends TestCase
 {
     private ConfigProvider $provider;
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->provider = new ConfigProvider();
     }
 
     public function testInvocationReturnsArray(): array
     {
         $config = ($this->provider)();
-        $this->assertIsArray($config);
+
+        self::assertIsArray($config);
 
         return $config;
     }
@@ -33,17 +41,19 @@ class ConfigProviderTest extends TestCase
      */
     public function testReturnedArrayContainsDependencies(array $config): void
     {
-        $this->assertArrayHasKey('dependencies', $config);
-        $this->assertIsArray($config['dependencies']);
-
-        $this->assertArrayHasKey('invokables', $config['dependencies']);
-        $this->assertIsArray($config['dependencies']['invokables']);
-        $this->assertArrayHasKey(ServerUrlHelper::class, $config['dependencies']['invokables']);
-
-        $this->assertArrayHasKey('factories', $config['dependencies']);
-        $this->assertIsArray($config['dependencies']['factories']);
-        $this->assertArrayHasKey(ServerUrlMiddleware::class, $config['dependencies']['factories']);
-        $this->assertArrayHasKey(UrlHelper::class, $config['dependencies']['factories']);
-        $this->assertArrayHasKey(UrlHelperMiddleware::class, $config['dependencies']['factories']);
+        self::assertSame([
+            'dependencies' => [
+                'invokables' => [
+                    ServerUrlHelper::class => ServerUrlHelper::class,
+                    TemplateVariableContainerMiddleware::class
+                    => TemplateVariableContainerMiddleware::class,
+                ],
+                'factories'  => [
+                    ServerUrlMiddleware::class => ServerUrlMiddlewareFactory::class,
+                    UrlHelper::class           => UrlHelperFactory::class,
+                    UrlHelperMiddleware::class => UrlHelperMiddlewareFactory::class,
+                ],
+            ],
+        ], $config);
     }
 }

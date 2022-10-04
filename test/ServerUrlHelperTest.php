@@ -6,14 +6,20 @@ namespace MezzioTest\Helper;
 
 use Laminas\Diactoros\Uri;
 use Mezzio\Helper\ServerUrlHelper;
-use Mockery;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
 
-class ServerUrlHelperTest extends TestCase
+/** @covers \Mezzio\Helper\ServerUrlHelper */
+final class ServerUrlHelperTest extends TestCase
 {
-    use MockeryPHPUnitIntegration;
+    private ServerUrlHelper $helper;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->helper = new ServerUrlHelper();
+    }
 
     /**
      * @psalm-return array<string, array{
@@ -37,8 +43,7 @@ class ServerUrlHelperTest extends TestCase
      */
     public function testInvocationReturnsPathOnlyIfNoUriInjected(?string $path, string $expected): void
     {
-        $helper = new ServerUrlHelper();
-        $this->assertEquals($expected, $helper($path));
+        self::assertSame($expected, $this->helper->__invoke($path));
     }
 
     /**
@@ -51,6 +56,7 @@ class ServerUrlHelperTest extends TestCase
     public function plainPathsForUseWithUri(): array
     {
         $uri = new Uri('https://example.com/resource');
+
         return [
             'null'          => [$uri, null,       'https://example.com/resource'],
             'empty'         => [$uri, '',         'https://example.com/resource'],
@@ -68,9 +74,9 @@ class ServerUrlHelperTest extends TestCase
         ?string $path,
         string $expected
     ): void {
-        $helper = new ServerUrlHelper();
-        $helper->setUri($uri);
-        $this->assertEquals((string) $expected, $helper($path));
+        $this->helper->setUri($uri);
+
+        self::assertSame($expected, $this->helper->__invoke($path));
     }
 
     /**
@@ -83,6 +89,7 @@ class ServerUrlHelperTest extends TestCase
     public function uriWithQueryString(): array
     {
         $uri = new Uri('https://example.com/resource?bar=baz');
+
         return [
             'null'          => [$uri, null,       'https://example.com/resource'],
             'empty'         => [$uri, '',         'https://example.com/resource'],
@@ -97,9 +104,9 @@ class ServerUrlHelperTest extends TestCase
      */
     public function testStripsQueryStringFromInjectedUri(UriInterface $uri, ?string $path, string $expected): void
     {
-        $helper = new ServerUrlHelper();
-        $helper->setUri($uri);
-        $this->assertEquals($expected, $helper($path));
+        $this->helper->setUri($uri);
+
+        self::assertSame($expected, $this->helper->__invoke($path));
     }
 
     /**
@@ -112,6 +119,7 @@ class ServerUrlHelperTest extends TestCase
     public function uriWithFragment(): array
     {
         $uri = new Uri('https://example.com/resource#bar');
+
         return [
             'null'          => [$uri, null,       'https://example.com/resource'],
             'empty'         => [$uri, '',         'https://example.com/resource'],
@@ -126,9 +134,9 @@ class ServerUrlHelperTest extends TestCase
      */
     public function testStripsFragmentFromInjectedUri(UriInterface $uri, ?string $path, string $expected): void
     {
-        $helper = new ServerUrlHelper();
-        $helper->setUri($uri);
-        $this->assertEquals($expected, $helper($path));
+        $this->helper->setUri($uri);
+
+        self::assertSame($expected, $this->helper->__invoke($path));
     }
 
     /**
@@ -141,6 +149,7 @@ class ServerUrlHelperTest extends TestCase
     public function pathsWithQueryString(): array
     {
         $uri = new Uri('https://example.com/resource');
+
         return [
             'empty-path'    => [$uri, '?foo=bar',         'https://example.com/resource?foo=bar'],
             'root-path'     => [$uri, '/?foo=bar',        'https://example.com/?foo=bar'],
@@ -154,9 +163,9 @@ class ServerUrlHelperTest extends TestCase
      */
     public function testUsesQueryStringFromProvidedPath(UriInterface $uri, ?string $path, string $expected): void
     {
-        $helper = new ServerUrlHelper();
-        $helper->setUri($uri);
-        $this->assertEquals($expected, $helper($path));
+        $this->helper->setUri($uri);
+
+        self::assertSame($expected, $this->helper->__invoke($path));
     }
 
     /**
@@ -169,6 +178,7 @@ class ServerUrlHelperTest extends TestCase
     public function pathsWithFragment(): array
     {
         $uri = new Uri('https://example.com/resource');
+
         return [
             'empty-path'    => [$uri, '#bar',         'https://example.com/resource#bar'],
             'root-path'     => [$uri, '/#bar',        'https://example.com/#bar'],
@@ -182,21 +192,40 @@ class ServerUrlHelperTest extends TestCase
      */
     public function testUsesFragmentFromProvidedPath(UriInterface $uri, ?string $path, string $expected): void
     {
-        $helper = new ServerUrlHelper();
-        $helper->setUri($uri);
-        $this->assertEquals($expected, $helper($path));
+        $this->helper->setUri($uri);
+
+        self::assertSame($expected, $this->helper->__invoke($path));
     }
 
     public function testGenerateProxiesToInvokeMethod(): void
     {
         $path = '/foo';
 
-        $helper = Mockery::mock(ServerUrlHelper::class)->shouldDeferMissing();
-        $helper->shouldReceive('__invoke')
-            ->once()
-            ->with($path)
-            ->andReturn('it worked');
+        $helper = new class extends ServerUrlHelper
+        {
+            public bool $invoked = false;
 
-        $this->assertSame('it worked', $helper->generate($path));
+            /** {@inheritDoc} */
+            public function __invoke(?string $path = null): string
+            {
+                $this->invoked = true;
+
+                return 'it worked';
+            }
+
+            /** {@inheritDoc} */
+            public function generate(?string $path = null): string
+            {
+                return parent::generate($path);
+            }
+        };
+
+        self::assertFalse($helper->invoked);
+
+        $generatedPath = $helper->generate($path);
+
+        self::assertTrue($helper->invoked);
+        self::assertSame('it worked', $generatedPath);
+        self::assertSame('it worked', $helper->__invoke($path));
     }
 }

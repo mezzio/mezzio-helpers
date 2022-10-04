@@ -9,33 +9,63 @@ use Mezzio\Helper\ServerUrlHelper;
 use Mezzio\Helper\ServerUrlMiddleware;
 use Mezzio\Helper\ServerUrlMiddlewareFactory;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Container\ContainerInterface;
 
-class ServerUrlMiddlewareFactoryTest extends TestCase
+use function sprintf;
+
+/** @covers \Mezzio\Helper\ServerUrlMiddlewareFactory */
+final class ServerUrlMiddlewareFactoryTest extends TestCase
 {
-    use ProphecyTrait;
+    private ServerUrlMiddlewareFactory $factory;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->factory = new ServerUrlMiddlewareFactory();
+    }
 
     public function testCreatesAndReturnsMiddlewareWhenHelperIsPresentInContainer(): void
     {
-        $helper    = $this->prophesize(ServerUrlHelper::class);
-        $container = $this->prophesize(ContainerInterface::class);
-        $container->has(ServerUrlHelper::class)->willReturn(true);
-        $container->get(ServerUrlHelper::class)->willReturn($helper->reveal());
+        $helper    = $this->createMock(ServerUrlHelper::class);
+        $container = $this->createMock(ContainerInterface::class);
 
-        $factory    = new ServerUrlMiddlewareFactory();
-        $middleware = $factory($container->reveal());
-        $this->assertInstanceOf(ServerUrlMiddleware::class, $middleware);
+        $container
+            ->expects(self::once())
+            ->method('has')
+            ->with(ServerUrlHelper::class)
+            ->willReturn(true);
+
+        $container
+            ->expects(self::once())
+            ->method('get')
+            ->with(ServerUrlHelper::class)
+            ->willReturn($helper);
+
+        self::assertEquals(new ServerUrlMiddleware($helper), $this->factory->__invoke($container));
     }
 
     public function testRaisesExceptionWhenContainerDoesNotContainHelper(): void
     {
-        $container = $this->prophesize(ContainerInterface::class);
-        $container->has(ServerUrlHelper::class)->willReturn(false);
+        $container = $this->createMock(ContainerInterface::class);
 
-        $factory = new ServerUrlMiddlewareFactory();
+        $container
+            ->expects(self::once())
+            ->method('has')
+            ->with(ServerUrlHelper::class)
+            ->willReturn(false);
 
-        $this->expectException(MissingHelperException::class);
-        $factory($container->reveal());
+        $container
+            ->expects(self::never())
+            ->method('get')
+            ->with(ServerUrlHelper::class);
+
+        $this->expectExceptionObject(new MissingHelperException(sprintf(
+            '%s requires a %s service at instantiation; none found',
+            ServerUrlMiddleware::class,
+            ServerUrlHelper::class
+        )));
+
+        $this->factory->__invoke($container);
     }
 }

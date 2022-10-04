@@ -6,75 +6,87 @@ namespace MezzioTest\Helper\Template;
 
 use Mezzio\Helper\Template\TemplateVariableContainer;
 use Mezzio\Helper\Template\TemplateVariableContainerMiddleware;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class TemplateVariableContainerMiddlewareTest extends TestCase
+/** @covers \Mezzio\Helper\Template\TemplateVariableContainerMiddleware */
+final class TemplateVariableContainerMiddlewareTest extends TestCase
 {
-    use ProphecyTrait;
+    /** @var ServerRequestInterface&MockObject */
+    private ServerRequestInterface $request;
 
-    public function setUp(): void
+    /** @var ResponseInterface&MockObject */
+    private ResponseInterface $response;
+
+    /** @var RequestHandlerInterface&MockObject */
+    private RequestHandlerInterface $handler;
+
+    private TemplateVariableContainerMiddleware $middleware;
+
+    protected function setUp(): void
     {
-        $this->handler    = $this->prophesize(RequestHandlerInterface::class);
-        $this->request    = $this->prophesize(ServerRequestInterface::class);
-        $this->response   = $this->prophesize(ResponseInterface::class)->reveal();
+        parent::setUp();
+
+        $this->handler  = $this->createMock(RequestHandlerInterface::class);
+        $this->request  = $this->createMock(ServerRequestInterface::class);
+        $this->response = $this->createMock(ResponseInterface::class);
+
         $this->middleware = new TemplateVariableContainerMiddleware();
     }
 
     public function testProcessInjectsVariableContainerIntoRequestPassedToHandler(): void
     {
         $this->request
-            ->getAttribute(TemplateVariableContainer::class)
-            ->willReturn(null)
-            ->shouldBeCalledTimes(1);
+            ->expects(self::once())
+            ->method('getAttribute')
+            ->with(TemplateVariableContainer::class)
+            ->willReturn(null);
 
         $this->request
-            ->withAttribute(TemplateVariableContainer::class, Argument::type(TemplateVariableContainer::class))
-            ->will([$this->request, 'reveal'])
-            ->shouldBeCalledTimes(1);
+            ->expects(self::once())
+            ->method('withAttribute')
+            ->with(TemplateVariableContainer::class, new TemplateVariableContainer())
+            ->willReturn($this->request);
 
         $this->handler
-            ->handle($this->request->reveal())
-            ->willReturn($this->response)
-            ->shouldBeCalledTimes(1);
+            ->expects(self::once())
+            ->method('handle')
+            ->with($this->request)
+            ->willReturn($this->response);
 
-        $this->assertSame(
+        self::assertSame(
             $this->response,
-            $this->middleware->process(
-                $this->request->reveal(),
-                $this->handler->reveal()
-            )
+            $this->middleware->process($this->request, $this->handler)
         );
     }
 
     public function testProcessIsANoOpIfVariableContainerIsAlreadyInRequest(): void
     {
-        $container = new TemplateVariableContainer();
+        $container = $this->createMock(TemplateVariableContainer::class);
 
         $this->request
-            ->getAttribute(TemplateVariableContainer::class)
-            ->willReturn($container)
-            ->shouldBeCalledTimes(1);
+            ->expects(self::once())
+            ->method('getAttribute')
+            ->with(TemplateVariableContainer::class)
+            ->willReturn($container);
 
         $this->request
-            ->withAttribute(TemplateVariableContainer::class, $container)
-            ->shouldNotBeCalled();
+            ->expects(self::never())
+            ->method('withAttribute')
+            ->with(TemplateVariableContainer::class, new TemplateVariableContainer());
 
         $this->handler
-            ->handle(Argument::that([$this->request, 'reveal']))
-            ->willReturn($this->response)
-            ->shouldBeCalledTimes(1);
+            ->expects(self::once())
+            ->method('handle')
+            ->with($this->request)
+            ->willReturn($this->response);
 
-        $this->assertSame(
+        self::assertSame(
             $this->response,
-            $this->middleware->process(
-                $this->request->reveal(),
-                $this->handler->reveal()
-            )
+            $this->middleware->process($this->request, $this->handler)
         );
     }
 }
