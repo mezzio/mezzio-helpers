@@ -18,7 +18,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use function fopen;
 use function fwrite;
-use function get_class;
 use function json_encode;
 
 /** @covers \Mezzio\Helper\BodyParams\BodyParamsMiddleware */
@@ -231,7 +230,7 @@ final class BodyParamsMiddlewareTest extends TestCase
 
         $middleware->addStrategy($strategy);
 
-        $this->expectException(get_class($expectedException));
+        $this->expectException($expectedException::class);
         $this->expectExceptionMessage($expectedException->getMessage());
         $this->expectExceptionCode($expectedException->getCode());
 
