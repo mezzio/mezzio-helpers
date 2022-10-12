@@ -419,9 +419,8 @@ final class UrlHelperTest extends TestCase
 
     /**
      * @dataProvider invalidBasePathProvider
-     * @param mixed $basePath
      */
-    public function testThrowsExceptionWhenSettingInvalidBasePaths($basePath): void
+    public function testThrowsExceptionWhenSettingInvalidBasePaths(mixed $basePath): void
     {
         $this->expectException(TypeError::class);
 

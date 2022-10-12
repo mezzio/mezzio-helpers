@@ -31,11 +31,8 @@ class UrlHelper
 
     private ?ServerRequestInterface $request = null;
 
-    private RouterInterface $router;
-
-    public function __construct(RouterInterface $router)
+    public function __construct(private RouterInterface $router)
     {
-        $this->router = $router;
     }
 
     /**
@@ -226,7 +223,6 @@ class UrlHelper
      * @param string $route Route name
      * @param RouteResult $result RouteResult instance
      * @param array $params Params to be merged with request params
-     * @return array
      */
     private function mergeQueryParams(string $route, RouteResult $result, array $params): array
     {

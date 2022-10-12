@@ -94,10 +94,9 @@ class TemplateVariableContainer implements Countable
     }
 
     /**
-     * @param mixed $value
      * @return self Returns a new instance that contains the given key/value pair
      */
-    public function with(string $key, $value): self
+    public function with(string $key, mixed $value): self
     {
         $new                  = clone $this;
         $new->variables[$key] = $value;

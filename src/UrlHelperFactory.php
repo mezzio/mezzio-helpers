@@ -11,11 +11,6 @@ use function sprintf;
 
 class UrlHelperFactory
 {
-    /** @var string Base path for the URL helper */
-    private string $basePath;
-
-    private string $routerServiceName;
-
     /**
      * Allow serialization
      */
@@ -31,11 +26,13 @@ class UrlHelperFactory
      * Allows varying behavior per-instance.
      *
      * Defaults to '/' for the base path, and the FQCN of the RouterInterface.
+     *
+     * @param string $basePath Base path for the URL helper
      */
-    public function __construct(string $basePath = '/', string $routerServiceName = RouterInterface::class)
-    {
-        $this->basePath          = $basePath;
-        $this->routerServiceName = $routerServiceName;
+    public function __construct(
+        private string $basePath = '/',
+        private string $routerServiceName = RouterInterface::class
+    ) {
     }
 
     /**
