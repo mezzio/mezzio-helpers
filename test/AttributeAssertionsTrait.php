@@ -8,8 +8,7 @@ use ReflectionProperty;
 
 trait AttributeAssertionsTrait
 {
-    /** @param mixed $expected */
-    public static function assertAttributeSame($expected, string $attribute, object $object): void
+    public static function assertAttributeSame(mixed $expected, string $attribute, object $object): void
     {
         $r = new ReflectionProperty($object, $attribute);
         $r->setAccessible(true);
@@ -17,8 +16,7 @@ trait AttributeAssertionsTrait
         self::assertSame($expected, $r->getValue($object));
     }
 
-    /** @param mixed $expected */
-    public static function assertAttributeEquals($expected, string $attribute, object $object): void
+    public static function assertAttributeEquals(mixed $expected, string $attribute, object $object): void
     {
         $r = new ReflectionProperty($object, $attribute);
         $r->setAccessible(true);
@@ -26,8 +24,7 @@ trait AttributeAssertionsTrait
         self::assertEquals($expected, $r->getValue($object));
     }
 
-    /** @param mixed $expected */
-    public static function assertAttributeContains($expected, string $attribute, object $object): void
+    public static function assertAttributeContains(mixed $expected, string $attribute, object $object): void
     {
         $r = new ReflectionProperty($object, $attribute);
         $r->setAccessible(true);

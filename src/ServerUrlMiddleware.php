@@ -12,11 +12,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ServerUrlMiddleware implements MiddlewareInterface
 {
-    private ServerUrlHelper $helper;
-
-    public function __construct(ServerUrlHelper $helper)
+    public function __construct(private ServerUrlHelper $helper)
     {
-        $this->helper = $helper;
     }
 
     /**

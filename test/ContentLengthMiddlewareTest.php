@@ -33,11 +33,8 @@ final class ContentLengthMiddlewareTest extends TestCase
     private function handlerWillReturnResponse(ResponseInterface $response): RequestHandlerInterface
     {
         return new class ($response) implements RequestHandlerInterface {
-            public ResponseInterface $response;
-
-            public function __construct(ResponseInterface $response)
+            public function __construct(public ResponseInterface $response)
             {
-                $this->response = $response;
             }
 
             public function handle(ServerRequestInterface $request): ResponseInterface
