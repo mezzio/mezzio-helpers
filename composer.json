@@ -47,7 +47,7 @@
         "laminas/laminas-diactoros": "^2.19",
         "phpunit/phpunit": "^9.5.25",
         "psalm/plugin-phpunit": "^0.18.0",
-        "vimeo/psalm": "^4.29"
+        "vimeo/psalm": "^5.0"
     },
     "suggest": {
         "ext-json": "If you wish to use the JsonStrategy with BodyParamsMiddleware"
