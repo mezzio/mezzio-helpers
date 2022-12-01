@@ -409,10 +409,10 @@ final class UrlHelperTest extends TestCase
     }
 
     /** @return array<array-key, mixed[]> */
-    public function invalidBasePathProvider(): array
+    public static function invalidBasePathProvider(): array
     {
         return [
-            [new stdClass('foo')],
+            [new stdClass()],
             [['bar']],
         ];
     }
@@ -425,6 +425,7 @@ final class UrlHelperTest extends TestCase
         $this->expectException(TypeError::class);
 
         $helper = $this->createHelper();
+        /** @psalm-suppress MixedArgument */
         $helper->setBasePath($basePath);
     }
 
@@ -470,8 +471,8 @@ final class UrlHelperTest extends TestCase
         self::assertSame('URL', $helper('foo', [], [], null, ['router' => ['bar' => 'baz']]));
     }
 
-    /** @return array<string, mixed[]> */
-    public function queryParametersAndFragmentProvider(): array
+    /** @return array<string, array{0: array, 1: string|null, 2: string}> */
+    public static function queryParametersAndFragmentProvider(): array
     {
         return [
             'none'           => [[], null, ''],
@@ -504,7 +505,7 @@ final class UrlHelperTest extends TestCase
     }
 
     /** @return array<array-key, string[]> */
-    public function invalidFragmentProvider(): array
+    public static function invalidFragmentProvider(): array
     {
         return [
             [''],

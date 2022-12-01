@@ -72,8 +72,8 @@ final class UrlHelperMiddlewareFactoryTest extends TestCase
     public function testFactoryUsesUrlHelperServiceProvidedAtInstantiation(): void
     {
         $helper = $this->createMock(UrlHelper::class);
-        $this->injectContainer(MyUrlHelper::class, $helper);
-        $factory = new UrlHelperMiddlewareFactory(MyUrlHelper::class);
+        $this->injectContainer('MyUrlHelper', $helper);
+        $factory = new UrlHelperMiddlewareFactory('MyUrlHelper');
 
         $middleware = $factory($this->container);
 
@@ -84,10 +84,10 @@ final class UrlHelperMiddlewareFactoryTest extends TestCase
     public function testFactoryAllowsSerialization(): void
     {
         $factory = UrlHelperMiddlewareFactory::__set_state([
-            'urlHelperServiceName' => MyUrlHelper::class,
+            'urlHelperServiceName' => 'MyUrlHelper',
         ]);
 
         self::assertInstanceOf(UrlHelperMiddlewareFactory::class, $factory);
-        self::assertAttributeSame(MyUrlHelper::class, 'urlHelperServiceName', $factory);
+        self::assertAttributeSame('MyUrlHelper', 'urlHelperServiceName', $factory);
     }
 }
