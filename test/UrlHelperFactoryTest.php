@@ -79,8 +79,8 @@ final class UrlHelperFactoryTest extends TestCase
 
     public function testFactoryUsesBasePathAndRouterServiceProvidedAtInstantiation(): void
     {
-        $this->injectContainerService(Router::class, $this->router);
-        $factory = new UrlHelperFactory('/api', Router::class);
+        $this->injectContainerService('Router', $this->router);
+        $factory = new UrlHelperFactory('/api', 'Router');
 
         $helper = $factory($this->container);
 
@@ -93,11 +93,11 @@ final class UrlHelperFactoryTest extends TestCase
     {
         $factory = UrlHelperFactory::__set_state([
             'basePath'          => '/api',
-            'routerServiceName' => Router::class,
+            'routerServiceName' => 'Router',
         ]);
 
         self::assertInstanceOf(UrlHelperFactory::class, $factory);
         self::assertAttributeSame('/api', 'basePath', $factory);
-        self::assertAttributeSame(Router::class, 'routerServiceName', $factory);
+        self::assertAttributeSame('Router', 'routerServiceName', $factory);
     }
 }

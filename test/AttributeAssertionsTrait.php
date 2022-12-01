@@ -29,6 +29,8 @@ trait AttributeAssertionsTrait
         $r = new ReflectionProperty($object, $attribute);
         $r->setAccessible(true);
 
-        self::assertContains($expected, $r->getValue($object));
+        $value = $r->getValue($object);
+        self::assertIsIterable($value);
+        self::assertContains($expected, $value);
     }
 }
