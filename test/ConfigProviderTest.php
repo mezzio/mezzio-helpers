@@ -31,6 +31,7 @@ final class ConfigProviderTest extends TestCase
     {
         $config = ($this->provider)();
 
+        /** @psalm-suppress RedundantCondition */
         self::assertIsArray($config);
 
         return $config;

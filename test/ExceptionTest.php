@@ -8,17 +8,22 @@ use Generator;
 use Mezzio\Helper\Exception\ExceptionInterface;
 use PHPUnit\Framework\TestCase;
 
+use function assert;
 use function basename;
 use function glob;
 use function is_a;
+use function is_int;
 use function strrpos;
 use function substr;
 
 final class ExceptionTest extends TestCase
 {
-    public function exception(): Generator
+    /** @return Generator<string, array{0: string}> */
+    public static function exception(): Generator
     {
-        $namespace = substr(ExceptionInterface::class, 0, strrpos(ExceptionInterface::class, '\\') + 1);
+        $endPos = strrpos(ExceptionInterface::class, '\\');
+        assert(is_int($endPos));
+        $namespace = substr(ExceptionInterface::class, 0, $endPos + 1);
 
         $exceptions = glob(__DIR__ . '/../src/Exception/*.php');
         foreach ($exceptions as $exception) {

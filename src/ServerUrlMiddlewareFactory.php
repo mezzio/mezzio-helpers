@@ -6,6 +6,7 @@ namespace Mezzio\Helper;
 
 use Psr\Container\ContainerInterface;
 
+use function assert;
 use function sprintf;
 
 class ServerUrlMiddlewareFactory
@@ -25,6 +26,9 @@ class ServerUrlMiddlewareFactory
             ));
         }
 
-        return new ServerUrlMiddleware($container->get(ServerUrlHelper::class));
+        $helper = $container->get(ServerUrlHelper::class);
+        assert($helper instanceof ServerUrlHelper);
+
+        return new ServerUrlMiddleware($helper);
     }
 }

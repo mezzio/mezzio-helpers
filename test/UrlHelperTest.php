@@ -362,7 +362,7 @@ final class UrlHelperTest extends TestCase
     public function testGenerateProxiesToInvokeMethod(): void
     {
         $routeName          = 'foo';
-        $routeParams        = ['bar'];
+        $routeParams        = ['route' => 'bar'];
         $queryParams        = ['foo' => 'bar'];
         $fragmentIdentifier = 'foobar';
         $options            = ['router' => ['foobar' => 'baz'], 'reuse_result_params' => false];
@@ -471,7 +471,7 @@ final class UrlHelperTest extends TestCase
         self::assertSame('URL', $helper('foo', [], [], null, ['router' => ['bar' => 'baz']]));
     }
 
-    /** @return array<string, array{0: array, 1: string|null, 2: string}> */
+    /** @return array<string, array{0: array<string, mixed>, 1: string|null, 2: string}> */
     public static function queryParametersAndFragmentProvider(): array
     {
         return [
@@ -484,6 +484,7 @@ final class UrlHelperTest extends TestCase
 
     /**
      * @dataProvider queryParametersAndFragmentProvider
+     * @param array<string, mixed> $queryParams
      */
     public function testQueryParametersAndFragment(
         array $queryParams,

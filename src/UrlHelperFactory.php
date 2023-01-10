@@ -7,12 +7,15 @@ namespace Mezzio\Helper;
 use Mezzio\Router\RouterInterface;
 use Psr\Container\ContainerInterface;
 
+use function assert;
 use function sprintf;
 
 class UrlHelperFactory
 {
     /**
      * Allow serialization
+     *
+     * @param array{basePath?: string, routerServiceName?: string} $data
      */
     public static function __set_state(array $data): self
     {
@@ -50,7 +53,9 @@ class UrlHelperFactory
             ));
         }
 
-        $helper = new UrlHelper($container->get($this->routerServiceName));
+        $router = $container->get($this->routerServiceName);
+        assert($router instanceof RouterInterface);
+        $helper = new UrlHelper($router);
         $helper->setBasePath($this->basePath);
         return $helper;
     }

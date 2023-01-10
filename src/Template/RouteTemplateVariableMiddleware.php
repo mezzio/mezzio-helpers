@@ -10,6 +10,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+use function assert;
+
 /**
  * Inject the currently matched route into the template variable container.
  *
@@ -36,7 +38,10 @@ class RouteTemplateVariableMiddleware implements MiddlewareInterface
             new TemplateVariableContainer()
         );
 
+        assert($container instanceof TemplateVariableContainer);
+
         $routeResult = $request->getAttribute(RouteResult::class, null);
+        assert($routeResult instanceof RouteResult || $routeResult === null);
 
         return $handler->handle($request->withAttribute(
             TemplateVariableContainer::class,
