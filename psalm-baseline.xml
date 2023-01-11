@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.0.0@4e177bf0c9f03c17d2fbfd83b7cc9c47605274d8">
+<files psalm-version="5.4.0@62db5d4f6a7ae0a20f7cc5a4952d730272fc0863">
   <file src="src/BodyParams/JsonStrategy.php">
     <MixedAssignment occurrences="1">
       <code>$parsedBody</code>
@@ -10,84 +10,20 @@
       <code>(string) $specification</code>
     </RedundantCast>
   </file>
-  <file src="src/ServerUrlMiddlewareFactory.php">
-    <MixedArgument occurrences="1">
-      <code>$container-&gt;get(ServerUrlHelper::class)</code>
-    </MixedArgument>
-  </file>
-  <file src="src/Template/RouteTemplateVariableMiddleware.php">
-    <MixedAssignment occurrences="2">
-      <code>$container</code>
-      <code>$routeResult</code>
-    </MixedAssignment>
-    <MixedMethodCall occurrences="1">
-      <code>with</code>
-    </MixedMethodCall>
-  </file>
-  <file src="src/Template/TemplateVariableContainer.php">
-    <MixedPropertyTypeCoercion occurrences="1">
-      <code>array_merge($this-&gt;variables, $values)</code>
-    </MixedPropertyTypeCoercion>
-  </file>
   <file src="src/Template/TemplateVariableContainerMiddleware.php">
     <MixedAssignment occurrences="1">
       <code>$container</code>
     </MixedAssignment>
   </file>
   <file src="src/UrlHelper.php">
-    <MixedArgument occurrences="2">
-      <code>$routerOptions</code>
-      <code>$routerOptions</code>
-    </MixedArgument>
-    <MixedAssignment occurrences="1">
-      <code>$routerOptions</code>
-    </MixedAssignment>
-    <PossiblyFalseArgument occurrences="1">
-      <code>$name</code>
-    </PossiblyFalseArgument>
-    <PossiblyNullReference occurrences="1">
-      <code>getQueryParams</code>
-    </PossiblyNullReference>
-  </file>
-  <file src="src/UrlHelperFactory.php">
-    <MixedArgument occurrences="3">
-      <code>$container-&gt;get($this-&gt;routerServiceName)</code>
-      <code>$data['basePath'] ?? '/'</code>
-      <code>$data['routerServiceName'] ?? RouterInterface::class</code>
-    </MixedArgument>
+    <RedundantCastGivenDocblockType occurrences="2">
+      <code>(bool) $options['reuse_query_params']</code>
+      <code>(bool) $options['reuse_result_params']</code>
+    </RedundantCastGivenDocblockType>
   </file>
   <file src="src/UrlHelperMiddleware.php">
     <MixedAssignment occurrences="1">
       <code>$result</code>
     </MixedAssignment>
-  </file>
-  <file src="src/UrlHelperMiddlewareFactory.php">
-    <MixedArgument occurrences="2">
-      <code>$container-&gt;get($this-&gt;urlHelperServiceName)</code>
-      <code>$data['urlHelperServiceName'] ?? UrlHelper::class</code>
-    </MixedArgument>
-  </file>
-  <file src="test/ConfigProviderTest.php">
-    <RedundantCondition occurrences="1">
-      <code>assertIsArray</code>
-    </RedundantCondition>
-  </file>
-  <file src="test/ExceptionTest.php">
-    <MixedInferredReturnType occurrences="1">
-      <code>Generator</code>
-    </MixedInferredReturnType>
-    <PossiblyFalseOperand occurrences="1">
-      <code>strrpos(ExceptionInterface::class, '\\')</code>
-    </PossiblyFalseOperand>
-  </file>
-  <file src="test/ServerUrlHelperTest.php">
-    <DocblockTypeContradiction occurrences="1">
-      <code>assertTrue</code>
-    </DocblockTypeContradiction>
-  </file>
-  <file src="test/UrlHelperTest.php">
-    <DocblockTypeContradiction occurrences="1">
-      <code>assertTrue</code>
-    </DocblockTypeContradiction>
   </file>
 </files>

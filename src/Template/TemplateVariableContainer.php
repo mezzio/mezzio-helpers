@@ -121,6 +121,7 @@ class TemplateVariableContainer implements Countable
      * This method will overwrite any existing value with the same key with the
      * new value if it occurs in $values.
      *
+     * @param array<string, mixed> $values
      * @return self Returns a new instance with the merged values.
      */
     public function merge(array $values): self
@@ -136,6 +137,9 @@ class TemplateVariableContainer implements Countable
      * Use this method to merge handler-specific template values with those in
      * the container in order to pass the result to the renderer's `render()`
      * method.
+     *
+     * @param array<string, mixed> $values
+     * @return array<string, mixed>
      */
     public function mergeForTemplate(array $values): array
     {

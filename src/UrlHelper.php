@@ -10,12 +10,21 @@ use Mezzio\Router\RouterInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 use function array_merge;
+use function assert;
 use function count;
 use function http_build_query;
+use function is_string;
 use function ltrim;
 use function preg_match;
 use function sprintf;
 
+/**
+ * @psalm-type UrlGeneratorOptions = array{
+ *     router?: array<array-key, mixed>,
+ *     reuse_result_params?: bool,
+ *     reuse_query_params?: bool,
+ * }
+ */
 class UrlHelper
 {
     /**
@@ -38,7 +47,9 @@ class UrlHelper
     /**
      * Generate a URL based on a given route.
      *
-     * @param array $options Can have the following keys:
+     * @param array<string, mixed> $routeParams
+     * @param array<string, mixed> $queryParams
+     * @param UrlGeneratorOptions $options Can have the following keys:
      *     - router (array): contains options to be passed to the router
      *     - reuse_result_params (bool): indicates if the current RouteResult
      *       parameters will be used, defaults to true
@@ -107,6 +118,10 @@ class UrlHelper
      * Proxies to __invoke().
      *
      * @see UrlHelper::__invoke()
+     *
+     * @param array<string, mixed> $routeParams
+     * @param array<string, mixed> $queryParams
+     * @param UrlGeneratorOptions $options
      */
     public function generate(
         ?string $routeName = null,
@@ -174,7 +189,8 @@ class UrlHelper
             );
         }
 
-        $name   = $result->getMatchedRouteName();
+        $name = $result->getMatchedRouteName();
+        assert(is_string($name)); // Cannot be false if the result is not a failure
         $params = array_merge($result->getMatchedParams(), $params);
         return $this->router->generateUri($name, $params, $routerOptions);
     }
@@ -234,7 +250,7 @@ class UrlHelper
             return $params;
         }
 
-        return array_merge($this->getRequest()->getQueryParams(), $params);
+        return array_merge($this->getRequest()?->getQueryParams() ?? [], $params);
     }
 
     /**
