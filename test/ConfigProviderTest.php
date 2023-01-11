@@ -18,30 +18,10 @@ use PHPUnit\Framework\TestCase;
 /** @covers \Mezzio\Helper\ConfigProvider */
 final class ConfigProviderTest extends TestCase
 {
-    private ConfigProvider $provider;
-
-    protected function setUp(): void
+    public function testReturnedArrayContainsDependencies(): void
     {
-        parent::setUp();
+        $config = (new ConfigProvider())();
 
-        $this->provider = new ConfigProvider();
-    }
-
-    public function testInvocationReturnsArray(): array
-    {
-        $config = ($this->provider)();
-
-        /** @psalm-suppress RedundantCondition */
-        self::assertIsArray($config);
-
-        return $config;
-    }
-
-    /**
-     * @depends testInvocationReturnsArray
-     */
-    public function testReturnedArrayContainsDependencies(array $config): void
-    {
         self::assertSame([
             'dependencies' => [
                 'invokables' => [
