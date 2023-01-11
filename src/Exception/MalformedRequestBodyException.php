@@ -7,6 +7,7 @@ namespace Mezzio\Helper\Exception;
 use Exception;
 use InvalidArgumentException;
 
+/** @final */
 class MalformedRequestBodyException extends InvalidArgumentException implements ExceptionInterface
 {
     /** @param string $message */
