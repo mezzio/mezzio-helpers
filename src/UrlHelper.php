@@ -41,21 +41,7 @@ class UrlHelper implements UrlHelperInterface
     {
     }
 
-    /**
-     * Generate a URL based on a given route.
-     *
-     * @param array<string, mixed> $routeParams
-     * @param array<string, mixed> $queryParams
-     * @param UrlGeneratorOptions $options Can have the following keys:
-     *     - router (array): contains options to be passed to the router
-     *     - reuse_result_params (bool): indicates if the current RouteResult
-     *       parameters will be used, defaults to true
-     * @throws Exception\RuntimeException For attempts to use the currently matched
-     *     route but routing failed.
-     * @throws Exception\RuntimeException For attempts to use a matched result
-     *     when none has been previously injected in the instance.
-     * @throws InvalidArgumentException For malformed fragment identifiers.
-     */
+    /** @inheritDoc */
     public function __invoke(
         ?string $routeName = null,
         array $routeParams = [],
@@ -109,17 +95,7 @@ class UrlHelper implements UrlHelperInterface
         return $path;
     }
 
-    /**
-     * Generate a URL based on a given route.
-     *
-     * Proxies to __invoke().
-     *
-     * @see UrlHelper::__invoke()
-     *
-     * @param array<string, mixed> $routeParams
-     * @param array<string, mixed> $queryParams
-     * @param UrlGeneratorOptions $options
-     */
+    /** @inheritDoc */
     public function generate(
         ?string $routeName = null,
         array $routeParams = [],
