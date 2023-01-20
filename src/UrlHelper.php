@@ -19,13 +19,10 @@ use function preg_match;
 use function sprintf;
 
 /**
- * @psalm-type UrlGeneratorOptions = array{
- *     router?: array<array-key, mixed>,
- *     reuse_result_params?: bool,
- *     reuse_query_params?: bool,
- * }
+ * @psalm-import-type UrlGeneratorOptions from UrlHelperInterface
+ * @final
  */
-class UrlHelper
+class UrlHelper implements UrlHelperInterface
 {
     /**
      * Regular expression used to validate fragment identifiers.

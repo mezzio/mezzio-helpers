@@ -359,7 +359,7 @@ final class UrlHelperTest extends TestCase
         self::assertSame('/prefix/foo/baz', $helper());
     }
 
-    public function testGenerateProxiesToInvokeMethod(): void
+    public function testGenerateAndInvokeMethodProduceTheSameResult(): void
     {
         $routeName          = 'foo';
         $routeParams        = ['route' => 'bar'];
@@ -367,44 +367,10 @@ final class UrlHelperTest extends TestCase
         $fragmentIdentifier = 'foobar';
         $options            = ['router' => ['foobar' => 'baz'], 'reuse_result_params' => false];
 
-        $helper = new class ($this->router) extends UrlHelper
-        {
-            public bool $invoked = false;
-
-            /** {@inheritDoc} */
-            public function __invoke(
-                ?string $routeName = null,
-                array $routeParams = [],
-                array $queryParams = [],
-                ?string $fragmentIdentifier = null,
-                array $options = []
-            ): string {
-                $this->invoked = true;
-
-                return 'it worked';
-            }
-
-            /** {@inheritDoc} */
-            public function generate(
-                ?string $routeName = null,
-                array $routeParams = [],
-                array $queryParams = [],
-                ?string $fragmentIdentifier = null,
-                array $options = []
-            ): string {
-                return parent::generate($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options);
-            }
-        };
-
-        self::assertFalse($helper->invoked);
-
-        $generatedPath = $helper->generate($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options);
-
-        self::assertTrue($helper->invoked);
-        self::assertSame('it worked', $generatedPath);
+        $helper = $this->createHelper();
         self::assertSame(
-            'it worked',
-            $helper->__invoke($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options)
+            $helper->__invoke($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options),
+            $helper->generate($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options),
         );
     }
 

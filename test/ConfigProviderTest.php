@@ -11,6 +11,7 @@ use Mezzio\Helper\ServerUrlMiddlewareFactory;
 use Mezzio\Helper\Template\TemplateVariableContainerMiddleware;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Helper\UrlHelperFactory;
+use Mezzio\Helper\UrlHelperInterface;
 use Mezzio\Helper\UrlHelperMiddleware;
 use Mezzio\Helper\UrlHelperMiddlewareFactory;
 use PHPUnit\Framework\TestCase;
@@ -33,6 +34,9 @@ final class ConfigProviderTest extends TestCase
                     ServerUrlMiddleware::class => ServerUrlMiddlewareFactory::class,
                     UrlHelper::class           => UrlHelperFactory::class,
                     UrlHelperMiddleware::class => UrlHelperMiddlewareFactory::class,
+                ],
+                'aliases'    => [
+                    UrlHelperInterface::class => UrlHelper::class,
                 ],
             ],
         ], $config);

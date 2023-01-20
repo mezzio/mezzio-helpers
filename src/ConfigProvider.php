@@ -6,6 +6,7 @@ namespace Mezzio\Helper;
 
 class ConfigProvider
 {
+    /** @return array<string, mixed> */
     public function __invoke(): array
     {
         return [
@@ -13,6 +14,7 @@ class ConfigProvider
         ];
     }
 
+    /** @return array<string, mixed> */
     public function getDependencies(): array
     {
         return [
@@ -25,6 +27,9 @@ class ConfigProvider
                 ServerUrlMiddleware::class => ServerUrlMiddlewareFactory::class,
                 UrlHelper::class           => UrlHelperFactory::class,
                 UrlHelperMiddleware::class => UrlHelperMiddlewareFactory::class,
+            ],
+            'aliases'    => [
+                UrlHelperInterface::class => UrlHelper::class,
             ],
         ];
     }
