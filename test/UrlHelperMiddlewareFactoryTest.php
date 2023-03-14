@@ -6,6 +6,7 @@ namespace MezzioTest\Helper;
 
 use Mezzio\Helper\Exception\MissingHelperException;
 use Mezzio\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelperInterface;
 use Mezzio\Helper\UrlHelperMiddleware;
 use Mezzio\Helper\UrlHelperMiddlewareFactory;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -89,5 +90,17 @@ final class UrlHelperMiddlewareFactoryTest extends TestCase
 
         self::assertInstanceOf(UrlHelperMiddlewareFactory::class, $factory);
         self::assertAttributeSame('MyUrlHelper', 'urlHelperServiceName', $factory);
+    }
+
+    public function testFactoryAllowsCustomUrlHelperInterfaceImplementations(): void
+    {
+        $helper = $this->createMock(UrlHelperInterface::class);
+        $this->injectContainer('MyUrlHelper', $helper);
+        $factory = new UrlHelperMiddlewareFactory('MyUrlHelper');
+
+        $middleware = $factory($this->container);
+
+        self::assertInstanceOf(UrlHelperMiddleware::class, $middleware);
+        self::assertAttributeSame($helper, 'helper', $middleware);
     }
 }

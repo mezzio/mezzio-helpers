@@ -46,7 +46,7 @@ class UrlHelperMiddlewareFactory
         }
 
         $helper = $container->get($this->urlHelperServiceName);
-        assert($helper instanceof UrlHelper);
+        assert($helper instanceof UrlHelperInterface);
 
         return new UrlHelperMiddleware($helper);
     }
