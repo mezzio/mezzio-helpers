@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MezzioTest\Helper;
 
-use Mezzio\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelperInterface;
 use Mezzio\Helper\UrlHelperMiddleware;
 use Mezzio\Router\RouteResult;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -16,8 +16,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 /** @covers \Mezzio\Helper\UrlHelperMiddleware */
 final class UrlHelperMiddlewareTest extends TestCase
 {
-    /** @var UrlHelper&MockObject */
-    private UrlHelper $helper;
+    /** @var UrlHelperInterface&MockObject */
+    private UrlHelperInterface $helper;
 
     private UrlHelperMiddleware $middleware;
 
@@ -25,7 +25,7 @@ final class UrlHelperMiddlewareTest extends TestCase
     {
         parent::setUp();
 
-        $this->helper = $this->createMock(UrlHelper::class);
+        $this->helper = $this->createMock(UrlHelperInterface::class);
 
         $this->middleware = new UrlHelperMiddleware($this->helper);
     }
