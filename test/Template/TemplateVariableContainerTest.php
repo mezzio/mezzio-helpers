@@ -24,6 +24,7 @@ final class TemplateVariableContainerTest extends TestCase
     public function testContainerIsEmptyByDefault(): void
     {
         self::assertCount(0, $this->container);
+        self::assertSame(0, $this->container->count());
     }
 
     public function testSettingVariablesReturnsNewInstanceContainingValue(): TemplateVariableContainer
