@@ -8,11 +8,13 @@ use Mezzio\Helper\Exception\MissingRouterException;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Helper\UrlHelperFactory;
 use Mezzio\Router\RouterInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-/** @covers \Mezzio\Helper\UrlHelperFactory */
+#[CoversClass(UrlHelperFactory::class)]
 final class UrlHelperFactoryTest extends TestCase
 {
     use AttributeAssertionsTrait;
@@ -62,9 +64,7 @@ final class UrlHelperFactoryTest extends TestCase
         return $helper;
     }
 
-    /**
-     * @depends testFactoryReturnsHelperWithRouterInjected
-     */
+    #[Depends('testFactoryReturnsHelperWithRouterInjected')]
     public function testHelperUsesDefaultBasePathWhenNoneProvidedAtInstantiation(UrlHelper $helper): void
     {
         self::assertSame('/', $helper->getBasePath());

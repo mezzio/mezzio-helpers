@@ -11,6 +11,8 @@ use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
 use Mezzio\Helper\BodyParams\StrategyInterface;
 use Mezzio\Helper\Exception\MalformedRequestBodyException;
 use MezzioTest\Helper\AttributeAssertionsTrait;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,7 +22,7 @@ use function fopen;
 use function fwrite;
 use function json_encode;
 
-/** @covers \Mezzio\Helper\BodyParams\BodyParamsMiddleware */
+#[CoversClass(BodyParamsMiddleware::class)]
 final class BodyParamsMiddlewareTest extends TestCase
 {
     use AttributeAssertionsTrait;
@@ -69,7 +71,7 @@ final class BodyParamsMiddlewareTest extends TestCase
     }
 
     /** @return array<array-key, string[]> */
-    public function jsonProvider(): array
+    public static function jsonProvider(): array
     {
         return [
             ['application/json'],
@@ -78,9 +80,7 @@ final class BodyParamsMiddlewareTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider jsonProvider
-     */
+    #[DataProvider('jsonProvider')]
     public function testParsesRawBodyAndPreservesRawBodyInRequestAttribute(string $contentType): void
     {
         $serverRequest = new ServerRequest([], [], '', 'PUT', $this->body, ['Content-type' => $contentType]);
@@ -102,7 +102,7 @@ final class BodyParamsMiddlewareTest extends TestCase
     }
 
     /** @return array<array-key, string[]> */
-    public function notApplicableProvider(): array
+    public static function notApplicableProvider(): array
     {
         return [
             ['GET', 'application/json'],
@@ -113,9 +113,7 @@ final class BodyParamsMiddlewareTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider notApplicableProvider
-     */
+    #[DataProvider('notApplicableProvider')]
     public function testRequestIsUnchangedWhenBodyParamsMiddlewareIsNotApplicable(
         string $method,
         string $contentType
@@ -238,7 +236,7 @@ final class BodyParamsMiddlewareTest extends TestCase
     }
 
     /** @return array<string, string[]> */
-    public function jsonBodyRequests(): array
+    public static function jsonBodyRequests(): array
     {
         return [
             'POST'   => ['POST'],
@@ -248,9 +246,7 @@ final class BodyParamsMiddlewareTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider jsonBodyRequests
-     */
+    #[DataProvider('jsonBodyRequests')]
     public function testParsesJsonBodyWhenExpected(string $method): void
     {
         $stream = fopen('php://memory', 'wb+');

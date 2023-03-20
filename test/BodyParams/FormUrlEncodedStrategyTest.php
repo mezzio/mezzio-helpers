@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace MezzioTest\Helper\BodyParams;
 
 use Mezzio\Helper\BodyParams\FormUrlEncodedStrategy;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
-/** @covers \Mezzio\Helper\BodyParams\FormUrlEncodedStrategy */
+#[CoversClass(FormUrlEncodedStrategy::class)]
 final class FormUrlEncodedStrategyTest extends TestCase
 {
     private FormUrlEncodedStrategy $strategy;
@@ -23,7 +25,7 @@ final class FormUrlEncodedStrategyTest extends TestCase
     }
 
     /** @return array<array-key, string[]> */
-    public function formContentTypes(): array
+    public static function formContentTypes(): array
     {
         return [
             ['application/x-www-form-urlencoded'],
@@ -33,16 +35,14 @@ final class FormUrlEncodedStrategyTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider formContentTypes
-     */
+    #[DataProvider('formContentTypes')]
     public function testMatchesFormUrlencodedTypes(string $contentType): void
     {
         self::assertTrue($this->strategy->match($contentType));
     }
 
     /** @return array<array-key, string[]> */
-    public function invalidContentTypes(): array
+    public static function invalidContentTypes(): array
     {
         return [
             ['application/x-www-form-urlencoded2'],
@@ -52,9 +52,7 @@ final class FormUrlEncodedStrategyTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidContentTypes
-     */
+    #[DataProvider('invalidContentTypes')]
     public function testDoesNotMatchNonFormUrlencodedTypes(string $contentType): void
     {
         self::assertFalse($this->strategy->match($contentType));

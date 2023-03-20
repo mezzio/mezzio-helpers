@@ -10,13 +10,16 @@ use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\Exception\RuntimeException as RouterException;
 use Mezzio\Router\RouteResult;
 use Mezzio\Router\RouterInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
 use TypeError;
 
-/** @covers \Mezzio\Helper\UrlHelper */
+#[CoversClass(UrlHelper::class)]
 final class UrlHelperTest extends TestCase
 {
     use AttributeAssertionsTrait;
@@ -383,9 +386,7 @@ final class UrlHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidBasePathProvider
-     */
+    #[DataProvider('invalidBasePathProvider')]
     public function testThrowsExceptionWhenSettingInvalidBasePaths(mixed $basePath): void
     {
         $this->expectException(TypeError::class);
@@ -449,9 +450,9 @@ final class UrlHelperTest extends TestCase
     }
 
     /**
-     * @dataProvider queryParametersAndFragmentProvider
      * @param array<string, mixed> $queryParams
      */
+    #[DataProvider('queryParametersAndFragmentProvider')]
     public function testQueryParametersAndFragment(
         array $queryParams,
         ?string $fragmentIdentifier,
@@ -480,9 +481,7 @@ final class UrlHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidFragmentProvider
-     */
+    #[DataProvider('invalidFragmentProvider')]
     public function testRejectsInvalidFragmentIdentifier(string $fragmentIdentifier): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -516,9 +515,7 @@ final class UrlHelperTest extends TestCase
         self::assertSame('/foo', $helper->generate('foo'));
     }
 
-    /**
-     * @group 42
-     */
+    #[Group('42')]
     public function testAppendsQueryStringAndFragmentWhenPresentAndRouteNameIsNotProvided(): void
     {
         $result = $this->createMock(RouteResult::class);

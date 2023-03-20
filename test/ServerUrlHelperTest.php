@@ -6,10 +6,12 @@ namespace MezzioTest\Helper;
 
 use Laminas\Diactoros\Uri;
 use Mezzio\Helper\ServerUrlHelper;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
 
-/** @covers \Mezzio\Helper\ServerUrlHelper */
+#[CoversClass(ServerUrlHelper::class)]
 final class ServerUrlHelperTest extends TestCase
 {
     private ServerUrlHelper $helper;
@@ -27,7 +29,7 @@ final class ServerUrlHelperTest extends TestCase
      *     1: string
      * }>
      */
-    public function plainPaths(): array
+    public static function plainPaths(): array
     {
         return [
             'null'          => [null,       '/'],
@@ -38,9 +40,7 @@ final class ServerUrlHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider plainPaths
-     */
+    #[DataProvider('plainPaths')]
     public function testInvocationReturnsPathOnlyIfNoUriInjected(?string $path, string $expected): void
     {
         self::assertSame($expected, $this->helper->__invoke($path));
@@ -53,7 +53,7 @@ final class ServerUrlHelperTest extends TestCase
      *     2: string
      * }>
      */
-    public function plainPathsForUseWithUri(): array
+    public static function plainPathsForUseWithUri(): array
     {
         $uri = new Uri('https://example.com/resource');
 
@@ -66,9 +66,7 @@ final class ServerUrlHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider plainPathsForUseWithUri
-     */
+    #[DataProvider('plainPathsForUseWithUri')]
     public function testInvocationReturnsUriComposingPathWhenUriInjected(
         UriInterface $uri,
         ?string $path,
@@ -86,7 +84,7 @@ final class ServerUrlHelperTest extends TestCase
      *     2: string
      * }>
      */
-    public function uriWithQueryString(): array
+    public static function uriWithQueryString(): array
     {
         $uri = new Uri('https://example.com/resource?bar=baz');
 
@@ -99,9 +97,7 @@ final class ServerUrlHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider uriWithQueryString
-     */
+    #[DataProvider('uriWithQueryString')]
     public function testStripsQueryStringFromInjectedUri(UriInterface $uri, ?string $path, string $expected): void
     {
         $this->helper->setUri($uri);
@@ -116,7 +112,7 @@ final class ServerUrlHelperTest extends TestCase
      *     2: string
      * }>
      */
-    public function uriWithFragment(): array
+    public static function uriWithFragment(): array
     {
         $uri = new Uri('https://example.com/resource#bar');
 
@@ -129,9 +125,7 @@ final class ServerUrlHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider uriWithFragment
-     */
+    #[DataProvider('uriWithFragment')]
     public function testStripsFragmentFromInjectedUri(UriInterface $uri, ?string $path, string $expected): void
     {
         $this->helper->setUri($uri);
@@ -146,7 +140,7 @@ final class ServerUrlHelperTest extends TestCase
      *     2: string
      * }>
      */
-    public function pathsWithQueryString(): array
+    public static function pathsWithQueryString(): array
     {
         $uri = new Uri('https://example.com/resource');
 
@@ -158,9 +152,7 @@ final class ServerUrlHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider pathsWithQueryString
-     */
+    #[DataProvider('pathsWithQueryString')]
     public function testUsesQueryStringFromProvidedPath(UriInterface $uri, ?string $path, string $expected): void
     {
         $this->helper->setUri($uri);
@@ -175,7 +167,7 @@ final class ServerUrlHelperTest extends TestCase
      *     2: string
      * }>
      */
-    public function pathsWithFragment(): array
+    public static function pathsWithFragment(): array
     {
         $uri = new Uri('https://example.com/resource');
 
@@ -187,9 +179,7 @@ final class ServerUrlHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider pathsWithFragment
-     */
+    #[DataProvider('pathsWithFragment')]
     public function testUsesFragmentFromProvidedPath(UriInterface $uri, ?string $path, string $expected): void
     {
         $this->helper->setUri($uri);

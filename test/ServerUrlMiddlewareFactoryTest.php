@@ -8,12 +8,13 @@ use Mezzio\Helper\Exception\MissingHelperException;
 use Mezzio\Helper\ServerUrlHelper;
 use Mezzio\Helper\ServerUrlMiddleware;
 use Mezzio\Helper\ServerUrlMiddlewareFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
 use function sprintf;
 
-/** @covers \Mezzio\Helper\ServerUrlMiddlewareFactory */
+#[CoversClass(ServerUrlMiddlewareFactory::class)]
 final class ServerUrlMiddlewareFactoryTest extends TestCase
 {
     private ServerUrlMiddlewareFactory $factory;

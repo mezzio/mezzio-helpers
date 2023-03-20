@@ -7,6 +7,7 @@ namespace MezzioTest\Helper;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\ServerRequest;
 use Mezzio\Helper\ContentLengthMiddleware;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,7 +16,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use function str_repeat;
 
-/** @covers \Mezzio\Helper\ContentLengthMiddleware */
+#[CoversClass(ContentLengthMiddleware::class)]
 final class ContentLengthMiddlewareTest extends TestCase
 {
     private ContentLengthMiddleware $middleware;

@@ -4,174 +4,101 @@ declare(strict_types=1);
 
 namespace MezzioTest\Helper\Template;
 
+use Laminas\Diactoros\Response\TextResponse;
+use Laminas\Diactoros\ServerRequest;
 use Mezzio\Helper\Template\RouteTemplateVariableMiddleware;
 use Mezzio\Helper\Template\TemplateVariableContainer;
 use Mezzio\Router\RouteResult;
-use PHPUnit\Framework\MockObject\MockObject;
+use MezzioTest\Helper\RequestHandler;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 
-/** @covers \Mezzio\Helper\Template\RouteTemplateVariableMiddleware */
+#[CoversClass(RouteTemplateVariableMiddleware::class)]
 final class RouteTemplateVariableMiddlewareTest extends TestCase
 {
-    /** @var ServerRequestInterface&MockObject */
-    private ServerRequestInterface $request;
-
-    /** @var ResponseInterface&MockObject */
-    private ResponseInterface $response;
-
-    /** @var RequestHandlerInterface&MockObject */
-    private RequestHandlerInterface $handler;
-
-    /** @var TemplateVariableContainer&MockObject */
-    private TemplateVariableContainer $container;
-
     private RouteTemplateVariableMiddleware $middleware;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->request   = $this->createMock(ServerRequestInterface::class);
-        $this->response  = $this->createMock(ResponseInterface::class);
-        $this->handler   = $this->createMock(RequestHandlerInterface::class);
-        $this->container = $this->createMock(TemplateVariableContainer::class);
-
         $this->middleware = new RouteTemplateVariableMiddleware();
     }
 
-    public function testMiddlewareInjectsVariableContainerWithNullRouteIfNoVariableContainerOrRouteResultPresent(): void
+    public function testThatTheResponseIsUnmodified(): void
     {
-        $routeResult       = null;
-        $fallbackContainer = new TemplateVariableContainer();
-
-        $this->request
-            ->expects(self::exactly(2))
-            ->method('getAttribute')
-            ->withConsecutive(
-                [TemplateVariableContainer::class, $fallbackContainer],
-                [RouteResult::class, null],
-            )
-            ->willReturn(
-                $fallbackContainer,
-                $routeResult
-            );
-
-        $this->request
-            ->expects(self::once())
-            ->method('withAttribute')
-            ->with(
-                TemplateVariableContainer::class,
-                self::callback(static function (TemplateVariableContainer $container) use ($routeResult): bool {
-                    self::assertTrue($container->has('route'));
-                    self::assertSame($routeResult, $container->get('route'));
-                    self::assertSame(1, $container->count());
-
-                    return true;
-                }),
-            )
-            ->willReturn($this->request);
-
-        $this->handler
-            ->expects(self::once())
-            ->method('handle')
-            ->with($this->request)
-            ->willReturn($this->response);
+        $response = new TextResponse('Foo');
+        $handler  = new RequestHandler($response);
 
         self::assertSame(
-            $this->response,
-            $this->middleware->process($this->request, $this->handler)
+            $response,
+            $this->middleware->process(new ServerRequest(), $handler),
         );
     }
 
-    public function testMiddlewareWillInjectNullValueForRouteIfNoRouteResultInRequest(): void
+    public function testThatAVariableContainerWillBeAddedAsARequestAttributeWhenNoneIsPresent(): void
     {
-        $routeResult = null;
+        $request = new ServerRequest();
+        self::assertNull($request->getAttribute(TemplateVariableContainer::class));
 
-        $this->container
-            ->expects(self::once())
-            ->method('with')
-            ->with('route', $routeResult)
-            ->willReturnSelf();
+        $handler = new RequestHandler();
+        $this->middleware->process($request, $handler);
 
-        $this->request
-            ->expects(self::exactly(2))
-            ->method('getAttribute')
-            ->withConsecutive(
-                [TemplateVariableContainer::class, new TemplateVariableContainer()],
-                [RouteResult::class, null],
-            )
-            ->willReturn($this->container, $routeResult);
-
-        $this->request
-            ->expects(self::once())
-            ->method('withAttribute')
-            ->with(
-                TemplateVariableContainer::class,
-                $this->container
-            )
-            ->willReturn($this->request);
-
-        $this->request
-            ->expects(self::once())
-            ->method('withAttribute')
-            ->with(
-                TemplateVariableContainer::class,
-                $this->container
-            )
-            ->willReturn($this->request);
-
-        $this->handler
-            ->expects(self::once())
-            ->method('handle')
-            ->with($this->request)
-            ->willReturn($this->response);
-
-        self::assertSame(
-            $this->response,
-            $this->middleware->process($this->request, $this->handler)
+        self::assertTrue($handler->didExecute());
+        $received = $handler->received();
+        self::assertNotSame($request, $received);
+        self::assertInstanceOf(
+            TemplateVariableContainer::class,
+            $received->getAttribute(TemplateVariableContainer::class),
         );
     }
 
-    public function testMiddlewareWillInjectRoutePulledFromRequestRouteResult(): void
+    public function testThatExistingVariablesInTheContainerWillBePreserved(): void
     {
-        $routeResult = $this->createMock(RouteResult::class);
+        $container = (new TemplateVariableContainer())
+            ->with('foo', 'bar');
 
-        $this->container
-            ->expects(self::once())
-            ->method('with')
-            ->with('route', $routeResult)
-            ->willReturnSelf();
+        $request = (new ServerRequest())
+            ->withAttribute(TemplateVariableContainer::class, $container);
 
-        $this->request
-            ->expects(self::exactly(2))
-            ->method('getAttribute')
-            ->withConsecutive(
-                [TemplateVariableContainer::class, new TemplateVariableContainer()],
-                [RouteResult::class, null],
-            )
-            ->willReturn($this->container, $routeResult);
+        $handler = new RequestHandler();
+        $this->middleware->process($request, $handler);
 
-        $this->request
-            ->expects(self::once())
-            ->method('withAttribute')
-            ->with(
-                TemplateVariableContainer::class,
-                $this->container
-            )
-            ->willReturn($this->request);
+        self::assertTrue($handler->didExecute());
+        $received = $handler->received();
+        self::assertNotSame($request, $received);
 
-        $this->handler
-            ->expects(self::once())
-            ->method('handle')
-            ->with($this->request)
-            ->willReturn($this->response);
+        $newContainer = $received->getAttribute(TemplateVariableContainer::class);
+        self::assertInstanceOf(TemplateVariableContainer::class, $newContainer);
 
-        self::assertSame(
-            $this->response,
-            $this->middleware->process($this->request, $this->handler)
-        );
+        self::assertSame('bar', $newContainer->get('foo'));
+    }
+
+    public function testThatTheRouteVariableWillBeInjectedWithNullWhenThereIsNoRouteResult(): void
+    {
+        $handler = new RequestHandler();
+        $this->middleware->process(new ServerRequest(), $handler);
+        $received  = $handler->received();
+        $container = $received->getAttribute(TemplateVariableContainer::class);
+        self::assertInstanceOf(TemplateVariableContainer::class, $container);
+
+        self::assertTrue($container->has('route'));
+        self::assertNull($container->get('route'));
+    }
+
+    public function testThatTheRouteVariableWillContainTheRouteResultInstanceWhenPresent(): void
+    {
+        $result  = $this->createMock(RouteResult::class);
+        $request = (new ServerRequest())
+            ->withAttribute(RouteResult::class, $result);
+
+        $handler = new RequestHandler();
+        $this->middleware->process($request, $handler);
+        $received  = $handler->received();
+        $container = $received->getAttribute(TemplateVariableContainer::class);
+        self::assertInstanceOf(TemplateVariableContainer::class, $container);
+
+        self::assertTrue($container->has('route'));
+        self::assertSame($result, $container->get('route'));
     }
 }

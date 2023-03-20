@@ -6,13 +6,14 @@ namespace MezzioTest\Helper;
 
 use Mezzio\Helper\ServerUrlHelper;
 use Mezzio\Helper\ServerUrlMiddleware;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-/** @covers \Mezzio\Helper\ServerUrlMiddleware */
+#[CoversClass(ServerUrlMiddleware::class)]
 final class ServerUrlMiddlewareTest extends TestCase
 {
     public function testMiddlewareInjectsHelperWithUri(): void

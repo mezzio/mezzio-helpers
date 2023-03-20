@@ -7,13 +7,14 @@ namespace MezzioTest\Helper;
 use Mezzio\Helper\UrlHelperInterface;
 use Mezzio\Helper\UrlHelperMiddleware;
 use Mezzio\Router\RouteResult;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-/** @covers \Mezzio\Helper\UrlHelperMiddleware */
+#[CoversClass(UrlHelperMiddleware::class)]
 final class UrlHelperMiddlewareTest extends TestCase
 {
     /** @var UrlHelperInterface&MockObject */
