@@ -6,6 +6,9 @@ namespace MezzioTest\Helper\BodyParams;
 
 use Mezzio\Helper\BodyParams\JsonStrategy;
 use Mezzio\Helper\Exception\MalformedRequestBodyException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,7 +18,7 @@ use function json_last_error;
 
 use const JSON_ERROR_NONE;
 
-/** @covers \Mezzio\Helper\BodyParams\JsonStrategy */
+#[CoversClass(JsonStrategy::class)]
 final class JsonStrategyTest extends TestCase
 {
     private JsonStrategy $strategy;
@@ -28,7 +31,7 @@ final class JsonStrategyTest extends TestCase
     }
 
     /** @return array<array-key, string[]> */
-    public function jsonContentTypes(): array
+    public static function jsonContentTypes(): array
     {
         return [
             ['application/json'],
@@ -41,16 +44,14 @@ final class JsonStrategyTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider jsonContentTypes
-     */
+    #[DataProvider('jsonContentTypes')]
     public function testMatchesJsonTypes(string $contentType): void
     {
         self::assertTrue($this->strategy->match($contentType));
     }
 
     /** @return array<array-key, string[]> */
-    public function invalidContentTypes(): array
+    public static function invalidContentTypes(): array
     {
         return [
             ['application/json+xml'],
@@ -63,9 +64,7 @@ final class JsonStrategyTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidContentTypes
-     */
+    #[DataProvider('invalidContentTypes')]
     public function testDoesNotMatchNonJsonTypes(string $contentType): void
     {
         self::assertFalse($this->strategy->match($contentType));
@@ -143,9 +142,7 @@ final class JsonStrategyTest extends TestCase
         self::assertSame($request, $this->strategy->parse($request));
     }
 
-    /**
-     * @runInSeparateProcess
-     */
+    #[RunInSeparateProcess]
     public function testEmptyRequestBodyIsNotJsonDecoded(): void
     {
         $body    = '';
@@ -169,7 +166,7 @@ final class JsonStrategyTest extends TestCase
     }
 
     /** @psalm-return iterable<string, array{0: string}> */
-    public function provideNonArrayJsonRequestBody(): iterable
+    public static function provideNonArrayJsonRequestBody(): iterable
     {
         yield 'null'    => ['null'];
         yield 'true'    => ['true'];
@@ -179,9 +176,7 @@ final class JsonStrategyTest extends TestCase
         yield 'string'  => ['"string"'];
     }
 
-    /**
-     * @dataProvider provideNonArrayJsonRequestBody
-     */
+    #[DataProvider('provideNonArrayJsonRequestBody')]
     public function testParsedBodyEvaluatingToNonArrayValueResultsInNull(string $json): void
     {
         $request = $this->requestWillReturnBodyWithString($json);

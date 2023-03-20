@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace MezzioTest\Helper\Template;
 
 use Mezzio\Helper\Template\TemplateVariableContainer;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 use function array_merge;
 
-/** @covers \Mezzio\Helper\Template\TemplateVariableContainer */
+#[CoversClass(TemplateVariableContainer::class)]
 final class TemplateVariableContainerTest extends TestCase
 {
     private TemplateVariableContainer $container;
@@ -49,9 +51,7 @@ final class TemplateVariableContainerTest extends TestCase
         self::assertNull($this->container->get('key'));
     }
 
-    /**
-     * @depends testSettingVariablesReturnsNewInstanceContainingValue
-     */
+    #[Depends('testSettingVariablesReturnsNewInstanceContainingValue')]
     public function testCallingWithoutReturnsNewInstanceWithoutValue(TemplateVariableContainer $original): void
     {
         $container = $original->without('key');

@@ -10,9 +10,10 @@ use Mezzio\Helper\Template\RouteTemplateVariableMiddleware;
 use Mezzio\Helper\Template\TemplateVariableContainer;
 use Mezzio\Router\RouteResult;
 use MezzioTest\Helper\RequestHandler;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/** @covers \Mezzio\Helper\Template\RouteTemplateVariableMiddleware */
+#[CoversClass(RouteTemplateVariableMiddleware::class)]
 final class RouteTemplateVariableMiddlewareTest extends TestCase
 {
     private RouteTemplateVariableMiddleware $middleware;

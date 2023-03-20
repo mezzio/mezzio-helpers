@@ -26,4 +26,46 @@
       <code>$result</code>
     </MixedAssignment>
   </file>
+  <file src="test/BodyParams/BodyParamsMiddlewareTest.php">
+    <PossiblyUnusedMethod>
+      <code>jsonBodyRequests</code>
+      <code>jsonProvider</code>
+      <code>notApplicableProvider</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="test/BodyParams/FormUrlEncodedStrategyTest.php">
+    <PossiblyUnusedMethod>
+      <code>formContentTypes</code>
+      <code>invalidContentTypes</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="test/BodyParams/JsonStrategyTest.php">
+    <PossiblyUnusedMethod>
+      <code>invalidContentTypes</code>
+      <code>jsonContentTypes</code>
+      <code>provideNonArrayJsonRequestBody</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="test/ExceptionTest.php">
+    <PossiblyUnusedMethod>
+      <code>exception</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="test/ServerUrlHelperTest.php">
+    <PossiblyUnusedMethod>
+      <code>pathsWithFragment</code>
+      <code>pathsWithQueryString</code>
+      <code>plainPaths</code>
+      <code>plainPathsForUseWithUri</code>
+      <code>uriWithFragment</code>
+      <code>uriWithQueryString</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="test/UrlHelperTest.php">
+    <PossiblyUnusedMethod>
+      <code>invalidBasePathProvider</code>
+      <code>invalidFragmentProvider</code>
+      <code>queryParametersAndFragmentProvider</code>
+    </PossiblyUnusedMethod>
+  </file>
 </files>

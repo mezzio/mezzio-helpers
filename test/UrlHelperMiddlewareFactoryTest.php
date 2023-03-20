@@ -9,11 +9,12 @@ use Mezzio\Helper\UrlHelper;
 use Mezzio\Helper\UrlHelperInterface;
 use Mezzio\Helper\UrlHelperMiddleware;
 use Mezzio\Helper\UrlHelperMiddlewareFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-/** @covers \Mezzio\Helper\UrlHelperMiddlewareFactory */
+#[CoversClass(UrlHelperMiddlewareFactory::class)]
 final class UrlHelperMiddlewareFactoryTest extends TestCase
 {
     use AttributeAssertionsTrait;

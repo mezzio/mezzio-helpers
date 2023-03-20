@@ -14,9 +14,10 @@ use Mezzio\Helper\UrlHelperFactory;
 use Mezzio\Helper\UrlHelperInterface;
 use Mezzio\Helper\UrlHelperMiddleware;
 use Mezzio\Helper\UrlHelperMiddlewareFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/** @covers \Mezzio\Helper\ConfigProvider */
+#[CoversClass(ConfigProvider::class)]
 final class ConfigProviderTest extends TestCase
 {
     public function testReturnedArrayContainsDependencies(): void

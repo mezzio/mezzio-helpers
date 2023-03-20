@@ -6,13 +6,14 @@ namespace MezzioTest\Helper\Template;
 
 use Mezzio\Helper\Template\TemplateVariableContainer;
 use Mezzio\Helper\Template\TemplateVariableContainerMiddleware;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-/** @covers \Mezzio\Helper\Template\TemplateVariableContainerMiddleware */
+#[CoversClass(TemplateVariableContainerMiddleware::class)]
 final class TemplateVariableContainerMiddlewareTest extends TestCase
 {
     /** @var ServerRequestInterface&MockObject */
