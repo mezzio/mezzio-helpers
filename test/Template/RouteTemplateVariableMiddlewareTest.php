@@ -27,7 +27,7 @@ final class RouteTemplateVariableMiddlewareTest extends TestCase
     public function testThatTheResponseIsUnmodified(): void
     {
         $response = new TextResponse('Foo');
-        $handler = new RequestHandler($response);
+        $handler  = new RequestHandler($response);
 
         self::assertSame(
             $response,
