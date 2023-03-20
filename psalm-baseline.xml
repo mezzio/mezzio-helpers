@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.4.0@62db5d4f6a7ae0a20f7cc5a4952d730272fc0863">
+<files psalm-version="5.8.0@9cf4f60a333f779ad3bc704a555920e81d4fdcda">
   <file src="src/BodyParams/JsonStrategy.php">
-    <MixedAssignment occurrences="1">
+    <MixedAssignment>
       <code>$parsedBody</code>
     </MixedAssignment>
   </file>
   <file src="src/ServerUrlHelper.php">
-    <RedundantCast occurrences="1">
+    <RedundantCast>
       <code>(string) $specification</code>
     </RedundantCast>
   </file>
   <file src="src/Template/TemplateVariableContainerMiddleware.php">
-    <MixedAssignment occurrences="1">
+    <MixedAssignment>
       <code>$container</code>
     </MixedAssignment>
   </file>
   <file src="src/UrlHelper.php">
-    <RedundantCastGivenDocblockType occurrences="2">
-      <code>(bool) $options['reuse_query_params']</code>
-      <code>(bool) $options['reuse_result_params']</code>
+    <RedundantCastGivenDocblockType>
+      <code><![CDATA[(bool) $options['reuse_query_params']]]></code>
+      <code><![CDATA[(bool) $options['reuse_result_params']]]></code>
     </RedundantCastGivenDocblockType>
   </file>
   <file src="src/UrlHelperMiddleware.php">
-    <MixedAssignment occurrences="1">
+    <MixedAssignment>
       <code>$result</code>
     </MixedAssignment>
   </file>
