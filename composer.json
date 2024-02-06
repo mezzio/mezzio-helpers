@@ -45,9 +45,9 @@
         "ext-json": "*",
         "laminas/laminas-coding-standard": "~2.5.0",
         "laminas/laminas-diactoros": "^3.3",
-        "phpunit/phpunit": "^10.4.2",
+        "phpunit/phpunit": "^10.5.10",
         "psalm/plugin-phpunit": "^0.18.4",
-        "vimeo/psalm": "^5.15"
+        "vimeo/psalm": "^5.21.1"
     },
     "suggest": {
         "ext-json": "If you wish to use the JsonStrategy with BodyParamsMiddleware"
