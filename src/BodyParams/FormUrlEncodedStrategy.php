@@ -20,7 +20,7 @@ class FormUrlEncodedStrategy implements StrategyInterface
     {
         $parsedBody = $request->getParsedBody();
 
-        if (! empty($parsedBody)) {
+        if ($parsedBody !== null && $parsedBody !== []) {
             return $request;
         }
 
