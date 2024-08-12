@@ -59,7 +59,7 @@ final class UrlHelperTest extends TestCase
         $helper();
     }
 
-    public function testRaisesExceptionOnInvocationIfNoRouteProvidedAndResultIndicatesFailure(): void
+    public function testReturnBasePathOnInvocationIfNoRouteProvidedAndResultIndicatesFailure(): void
     {
         $result = $this->createMock(RouteResult::class);
         $result
@@ -69,11 +69,9 @@ final class UrlHelperTest extends TestCase
 
         $helper = $this->createHelper();
         $helper->setRouteResult($result);
+        $helper->setBasePath('/foo');
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('routing failed');
-
-        $helper();
+        self::assertSame('/foo', $helper());
     }
 
     public function testRaisesExceptionOnInvocationIfRouterCannotGenerateUriForRouteProvided(): void

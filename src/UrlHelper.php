@@ -65,7 +65,12 @@ class UrlHelper implements UrlHelperInterface
         $routerOptions = $options['router'] ?? [];
 
         if ($routeName === null) {
-            $path = $basePath . $this->generateUriFromResult($routeParams, $result, $routerOptions);
+            $path = $basePath;
+
+            if (! $result->isFailure()) {
+                $path .= $this->generateUriFromResult($routeParams, $result, $routerOptions);
+            }
+
             $path = $this->appendQueryStringArguments($path, $queryParams);
             $path = $this->appendFragment($path, $fragmentIdentifier);
             return $path;
@@ -151,17 +156,8 @@ class UrlHelper implements UrlHelperInterface
         return $this->basePath;
     }
 
-    /**
-     * @throws Exception\RuntimeException If current result is a routing failure.
-     */
     private function generateUriFromResult(array $params, RouteResult $result, array $routerOptions): string
     {
-        if ($result->isFailure()) {
-            throw new Exception\RuntimeException(
-                'Attempting to use matched result when routing failed; aborting'
-            );
-        }
-
         $name = $result->getMatchedRouteName();
         assert(is_string($name)); // Cannot be false if the result is not a failure
         $params = array_merge($result->getMatchedParams(), $params);
