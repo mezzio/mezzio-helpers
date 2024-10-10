@@ -74,6 +74,7 @@
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
     "conflict": {
-        "zendframework/zend-expressive-helpers": "*"
+        "zendframework/zend-expressive-helpers": "*",
+        "amphp/amp": "<2.6.4"
     }
 }
