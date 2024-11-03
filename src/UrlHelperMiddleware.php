@@ -15,7 +15,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class UrlHelperMiddleware implements MiddlewareInterface
 {
-    public function __construct(private UrlHelperInterface $helper)
+    public function __construct(private readonly UrlHelperInterface $helper)
     {
     }
 

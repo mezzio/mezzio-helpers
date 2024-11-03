@@ -33,8 +33,8 @@ class UrlHelperFactory
      * @param string $basePath Base path for the URL helper
      */
     public function __construct(
-        private string $basePath = '/',
-        private string $routerServiceName = RouterInterface::class
+        private readonly string $basePath = '/',
+        private readonly string $routerServiceName = RouterInterface::class
     ) {
     }
 

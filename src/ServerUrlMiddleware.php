@@ -12,7 +12,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ServerUrlMiddleware implements MiddlewareInterface
 {
-    public function __construct(private ServerUrlHelper $helper)
+    public function __construct(private readonly ServerUrlHelper $helper)
     {
     }
 

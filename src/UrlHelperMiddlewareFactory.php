@@ -26,7 +26,7 @@ class UrlHelperMiddlewareFactory
     /**
      * Allow varying behavior based on URL helper service name.
      */
-    public function __construct(private string $urlHelperServiceName = UrlHelper::class)
+    public function __construct(private readonly string $urlHelperServiceName = UrlHelper::class)
     {
     }
 
