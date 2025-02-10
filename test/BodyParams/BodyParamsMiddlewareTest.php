@@ -22,6 +22,8 @@ use function fopen;
 use function fwrite;
 use function json_encode;
 
+use const JSON_THROW_ON_ERROR;
+
 #[CoversClass(BodyParamsMiddleware::class)]
 final class BodyParamsMiddlewareTest extends TestCase
 {
@@ -38,7 +40,8 @@ final class BodyParamsMiddlewareTest extends TestCase
         $this->bodyParams = new BodyParamsMiddleware();
 
         $stream = fopen('php://memory', 'r+');
-        fwrite($stream, json_encode(['foo' => 'bar']));
+        self::assertNotFalse($stream);
+        fwrite($stream, json_encode(['foo' => 'bar'], JSON_THROW_ON_ERROR));
 
         $this->body = new Stream($stream);
         $this->body->rewind();
@@ -250,7 +253,8 @@ final class BodyParamsMiddlewareTest extends TestCase
     public function testParsesJsonBodyWhenExpected(string $method): void
     {
         $stream = fopen('php://memory', 'wb+');
-        fwrite($stream, json_encode(['foo' => 'bar']));
+        self::assertNotFalse($stream);
+        fwrite($stream, json_encode(['foo' => 'bar'], JSON_THROW_ON_ERROR));
         $body = new Stream($stream);
 
         $serverRequest = new ServerRequest(
