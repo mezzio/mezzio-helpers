@@ -75,6 +75,8 @@
     },
     "conflict": {
         "zendframework/zend-expressive-helpers": "*",
-        "amphp/amp": "<2.6.4"
+        "amphp/amp": "<2.6.4",
+        "amphp/dns": "<2.1.2",
+        "amphp/socket": "<2.3.1"
     }
 }
