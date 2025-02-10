@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.8.0@9cf4f60a333f779ad3bc704a555920e81d4fdcda">
+<files psalm-version="6.5.0@38fc8444edf0cebc9205296ee6e30e906ade783b">
   <file src="src/BodyParams/JsonStrategy.php">
     <MixedAssignment>
-      <code>$parsedBody</code>
+      <code><![CDATA[$parsedBody]]></code>
     </MixedAssignment>
   </file>
   <file src="src/ServerUrlHelper.php">
     <RedundantCast>
-      <code>(string) $specification</code>
+      <code><![CDATA[(string) $specification]]></code>
     </RedundantCast>
   </file>
   <file src="src/Template/TemplateVariableContainerMiddleware.php">
     <MixedAssignment>
-      <code>$container</code>
+      <code><![CDATA[$container]]></code>
     </MixedAssignment>
   </file>
   <file src="src/UrlHelper.php">
@@ -23,49 +23,49 @@
   </file>
   <file src="src/UrlHelperMiddleware.php">
     <MixedAssignment>
-      <code>$result</code>
+      <code><![CDATA[$result]]></code>
     </MixedAssignment>
   </file>
   <file src="test/BodyParams/BodyParamsMiddlewareTest.php">
     <PossiblyUnusedMethod>
-      <code>jsonBodyRequests</code>
-      <code>jsonProvider</code>
-      <code>notApplicableProvider</code>
+      <code><![CDATA[jsonBodyRequests]]></code>
+      <code><![CDATA[jsonProvider]]></code>
+      <code><![CDATA[notApplicableProvider]]></code>
     </PossiblyUnusedMethod>
   </file>
   <file src="test/BodyParams/FormUrlEncodedStrategyTest.php">
     <PossiblyUnusedMethod>
-      <code>formContentTypes</code>
-      <code>invalidContentTypes</code>
+      <code><![CDATA[formContentTypes]]></code>
+      <code><![CDATA[invalidContentTypes]]></code>
     </PossiblyUnusedMethod>
   </file>
   <file src="test/BodyParams/JsonStrategyTest.php">
     <PossiblyUnusedMethod>
-      <code>invalidContentTypes</code>
-      <code>jsonContentTypes</code>
-      <code>provideNonArrayJsonRequestBody</code>
+      <code><![CDATA[invalidContentTypes]]></code>
+      <code><![CDATA[jsonContentTypes]]></code>
+      <code><![CDATA[provideNonArrayJsonRequestBody]]></code>
     </PossiblyUnusedMethod>
   </file>
   <file src="test/ExceptionTest.php">
     <PossiblyUnusedMethod>
-      <code>exception</code>
+      <code><![CDATA[exception]]></code>
     </PossiblyUnusedMethod>
   </file>
   <file src="test/ServerUrlHelperTest.php">
     <PossiblyUnusedMethod>
-      <code>pathsWithFragment</code>
-      <code>pathsWithQueryString</code>
-      <code>plainPaths</code>
-      <code>plainPathsForUseWithUri</code>
-      <code>uriWithFragment</code>
-      <code>uriWithQueryString</code>
+      <code><![CDATA[pathsWithFragment]]></code>
+      <code><![CDATA[pathsWithQueryString]]></code>
+      <code><![CDATA[plainPaths]]></code>
+      <code><![CDATA[plainPathsForUseWithUri]]></code>
+      <code><![CDATA[uriWithFragment]]></code>
+      <code><![CDATA[uriWithQueryString]]></code>
     </PossiblyUnusedMethod>
   </file>
   <file src="test/UrlHelperTest.php">
     <PossiblyUnusedMethod>
-      <code>invalidBasePathProvider</code>
-      <code>invalidFragmentProvider</code>
-      <code>queryParametersAndFragmentProvider</code>
+      <code><![CDATA[invalidBasePathProvider]]></code>
+      <code><![CDATA[invalidFragmentProvider]]></code>
+      <code><![CDATA[queryParametersAndFragmentProvider]]></code>
     </PossiblyUnusedMethod>
   </file>
 </files>
