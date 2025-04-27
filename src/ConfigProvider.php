@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mezzio\Helper;
 
+/** @final */
 class ConfigProvider
 {
     /** @return array<string, mixed> */

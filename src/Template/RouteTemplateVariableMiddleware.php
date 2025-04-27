@@ -28,6 +28,8 @@ use function assert;
  * either be a Mezzio\Router\RouteResult instance, or empty.
  *
  * This middleware can replace the `UrlHelperMiddleware` in your pipeline.
+ *
+ * @final
  */
 class RouteTemplateVariableMiddleware implements MiddlewareInterface
 {

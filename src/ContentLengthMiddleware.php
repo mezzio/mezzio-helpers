@@ -15,6 +15,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  * If the response returned by a handler does not contain a Content-Length
  * header, and the body size is non-null, this middleware will return a new
  * response that contains a Content-Length header based on the body size.
+ *
+ * @final
  */
 class ContentLengthMiddleware implements MiddlewareInterface
 {

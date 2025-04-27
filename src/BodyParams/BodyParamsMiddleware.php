@@ -11,6 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use function in_array;
 
+/** @final */
 class BodyParamsMiddleware implements MiddlewareInterface
 {
     /** @var StrategyInterface[] */
