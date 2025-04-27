@@ -8,10 +8,12 @@ use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\ServerRequest;
 use Mezzio\Helper\Template\RouteTemplateVariableMiddleware;
 use Mezzio\Helper\Template\TemplateVariableContainer;
+use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
 use MezzioTest\Helper\RequestHandler;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Server\MiddlewareInterface;
 
 #[CoversClass(RouteTemplateVariableMiddleware::class)]
 final class RouteTemplateVariableMiddlewareTest extends TestCase
@@ -88,7 +90,13 @@ final class RouteTemplateVariableMiddlewareTest extends TestCase
 
     public function testThatTheRouteVariableWillContainTheRouteResultInstanceWhenPresent(): void
     {
-        $result  = $this->createMock(RouteResult::class);
+        $result = RouteResult::fromRoute(new Route(
+            '/foo',
+            $this->createMock(MiddlewareInterface::class),
+            null,
+            'foo',
+        ));
+
         $request = (new ServerRequest())
             ->withAttribute(RouteResult::class, $result);
 

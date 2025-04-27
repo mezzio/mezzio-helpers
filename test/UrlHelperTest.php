@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Mezzio\Helper\Exception\RuntimeException;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\Exception\RuntimeException as RouterException;
+use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
 use Mezzio\Router\RouterInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -16,6 +17,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use stdClass;
 use TypeError;
 
@@ -59,14 +61,31 @@ final class UrlHelperTest extends TestCase
         $helper();
     }
 
+    /**
+     * @param non-empty-string $path
+     * @param array<string, mixed> $matchedParams
+     */
+    private function generateRouteResult(
+        bool $failure,
+        string $path = '/foo',
+        string|null $name = null,
+        array $matchedParams = [],
+    ): RouteResult {
+        if ($failure) {
+            return RouteResult::fromRouteFailure(null);
+        }
+
+        return RouteResult::fromRoute(new Route(
+            $path,
+            $this->createMock(MiddlewareInterface::class),
+            null,
+            $name,
+        ), $matchedParams);
+    }
+
     public function testRaisesExceptionOnInvocationIfNoRouteProvidedAndResultIndicatesFailure(): void
     {
-        $result = $this->createMock(RouteResult::class);
-        $result
-            ->expects(self::atLeastOnce())
-            ->method('isFailure')
-            ->willReturn(true);
-
+        $result = $this->generateRouteResult(true);
         $helper = $this->createHelper();
         $helper->setRouteResult($result);
 
@@ -93,22 +112,7 @@ final class UrlHelperTest extends TestCase
 
     public function testWhenNoRouteProvidedTheHelperUsesComposedResultToGenerateUrl(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::once())
-            ->method('isFailure')
-            ->willReturn(false);
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedRouteName')
-            ->willReturn('foo');
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedParams')
-            ->willReturn(['bar' => 'baz']);
+        $result = $this->generateRouteResult(false, '/foo', 'foo', ['bar' => 'baz']);
 
         $this->router
             ->expects(self::once())
@@ -124,22 +128,7 @@ final class UrlHelperTest extends TestCase
 
     public function testWhenNoRouteProvidedTheHelperMergesPassedParametersWithResultParametersToGenerateUrl(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::once())
-            ->method('isFailure')
-            ->willReturn(false);
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedRouteName')
-            ->willReturn('foo');
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedParams')
-            ->willReturn(['bar' => 'baz']);
+        $result = $this->generateRouteResult(false, '/foo', 'foo', ['bar' => 'baz']);
 
         $this->router
             ->expects(self::once())
@@ -168,21 +157,7 @@ final class UrlHelperTest extends TestCase
 
     public function testIfRouteResultRouteNameDoesNotMatchRequestedNameItWillNotMergeParamsToGenerateUri(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::once())
-            ->method('isFailure')
-            ->willReturn(false);
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedRouteName')
-            ->willReturn('not-resource');
-
-        $result
-            ->expects(self::never())
-            ->method('getMatchedParams');
+        $result = $this->generateRouteResult(false, '/foo', 'not-resource', ['some' => 'params']);
 
         $this->router
             ->expects(self::once())
@@ -198,22 +173,7 @@ final class UrlHelperTest extends TestCase
 
     public function testMergesRouteResultParamsWithProvidedParametersToGenerateUri(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::once())
-            ->method('isFailure')
-            ->willReturn(false);
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedRouteName')
-            ->willReturn('resource');
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedParams')
-            ->willReturn(['id' => 1]);
+        $result = $this->generateRouteResult(false, '/foo', 'resource', ['id' => 1]);
 
         $this->router
             ->expects(self::once())
@@ -229,22 +189,7 @@ final class UrlHelperTest extends TestCase
 
     public function testProvidedParametersOverrideAnyPresentInARouteResultWhenGeneratingUri(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::once())
-            ->method('isFailure')
-            ->willReturn(false);
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedRouteName')
-            ->willReturn('resource');
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedParams')
-            ->willReturn(['id' => 1]);
+        $result = $this->generateRouteResult(false, '/foo', 'resource', ['id' => 1]);
 
         $this->router
             ->expects(self::once())
@@ -260,19 +205,7 @@ final class UrlHelperTest extends TestCase
 
     public function testWillNotReuseRouteResultParamsIfReuseResultParamsFlagIsFalseWhenGeneratingUri(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::never())
-            ->method('isFailure');
-
-        $result
-            ->expects(self::never())
-            ->method('getMatchedRouteName');
-
-        $result
-            ->expects(self::never())
-            ->method('getMatchedParams');
+        $result = $this->generateRouteResult(false, '/foo', 'resource', ['id' => 1]);
 
         $this->router
             ->expects(self::once())
@@ -288,7 +221,7 @@ final class UrlHelperTest extends TestCase
 
     public function testCanInjectRouteResult(): void
     {
-        $result = $this->createMock(RouteResult::class);
+        $result = $this->generateRouteResult(false, '/foo', 'resource', ['id' => 1]);
 
         $helper = $this->createHelper();
         $helper->setRouteResult($result);
@@ -328,22 +261,7 @@ final class UrlHelperTest extends TestCase
 
     public function testBasePathIsPrependedToGeneratedPathWhenUsingRouteResult(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::exactly(2))
-            ->method('isFailure')
-            ->willReturn(false);
-
-        $result
-            ->expects(self::exactly(2))
-            ->method('getMatchedRouteName')
-            ->willReturn('foo');
-
-        $result
-            ->expects(self::exactly(2))
-            ->method('getMatchedParams')
-            ->willReturn(['bar' => 'baz']);
+        $result = $this->generateRouteResult(false, '/foo', 'foo', ['bar' => 'baz']);
 
         $this->router
             ->expects(self::exactly(2))
@@ -398,20 +316,7 @@ final class UrlHelperTest extends TestCase
 
     public function testIfRouteResultIsFailureItWillNotMergeParamsToGenerateUri(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::once())
-            ->method('isFailure')
-            ->willReturn(true);
-
-        $result
-            ->expects(self::never())
-            ->method('getMatchedRouteName');
-
-        $result
-            ->expects(self::never())
-            ->method('getMatchedParams');
+        $result = $this->generateRouteResult(true);
 
         $this->router
             ->expects(self::once())
@@ -456,7 +361,7 @@ final class UrlHelperTest extends TestCase
     public function testQueryParametersAndFragment(
         array $queryParams,
         ?string $fragmentIdentifier,
-        string $expected
+        string $expected,
     ): void {
         $this->router
             ->expects(self::once())
@@ -468,7 +373,7 @@ final class UrlHelperTest extends TestCase
 
         self::assertSame(
             '/foo/baz' . $expected,
-            $helper('foo', ['bar' => 'baz'], $queryParams, $fragmentIdentifier)
+            $helper('foo', ['bar' => 'baz'], $queryParams, $fragmentIdentifier),
         );
     }
 
@@ -518,22 +423,7 @@ final class UrlHelperTest extends TestCase
     #[Group('42')]
     public function testAppendsQueryStringAndFragmentWhenPresentAndRouteNameIsNotProvided(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::once())
-            ->method('isFailure')
-            ->willReturn(false);
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedRouteName')
-            ->willReturn('matched-route');
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedParams')
-            ->willReturn(['foo' => 'bar']);
+        $result = $this->generateRouteResult(false, '/foo', 'matched-route', ['foo' => 'bar']);
 
         $this->router
             ->expects(self::once())
@@ -550,8 +440,8 @@ final class UrlHelperTest extends TestCase
                 null,
                 ['foo' => 'baz'],
                 ['query' => 'params', 'are' => 'present'],
-                'fragment/exists'
-            )
+                'fragment/exists',
+            ),
         );
     }
 
@@ -564,7 +454,7 @@ final class UrlHelperTest extends TestCase
 
     public function testGetRouteResultWithRouteResultSet(): void
     {
-        $result = $this->createMock(RouteResult::class);
+        $result = $this->generateRouteResult(false);
 
         $helper = $this->createHelper();
         $helper->setRouteResult($result);
@@ -574,22 +464,7 @@ final class UrlHelperTest extends TestCase
 
     public function testWillNotReuseQueryParamsIfReuseQueryParamsFlagIsFalseWhenGeneratingUri(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::once())
-            ->method('isFailure')
-            ->willReturn(false);
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedRouteName')
-            ->willReturn('resource');
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedParams')
-            ->willReturn([]);
+        $result = $this->generateRouteResult(false, '/foo', 'resource');
 
         $this->router
             ->expects(self::once())
@@ -612,22 +487,7 @@ final class UrlHelperTest extends TestCase
 
     public function testWillReuseQueryParamsIfReuseQueryParamsFlagIsTrueWhenGeneratingUri(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::exactly(2))
-            ->method('isFailure')
-            ->willReturn(false);
-
-        $result
-            ->expects(self::exactly(2))
-            ->method('getMatchedRouteName')
-            ->willReturn('resource');
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedParams')
-            ->willReturn([]);
+        $result = $this->generateRouteResult(false, '/foo', 'resource');
 
         $this->router
             ->expects(self::once())
@@ -651,22 +511,7 @@ final class UrlHelperTest extends TestCase
 
     public function testWillNotReuseQueryParamsIfReuseQueryParamsFlagIsMissingGeneratingUri(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::once())
-            ->method('isFailure')
-            ->willReturn(false);
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedRouteName')
-            ->willReturn('resource');
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedParams')
-            ->willReturn([]);
+        $result = $this->generateRouteResult(false, '/foo', 'resource');
 
         $this->router
             ->expects(self::once())
@@ -689,22 +534,7 @@ final class UrlHelperTest extends TestCase
 
     public function testCanOverrideRequestQueryParams(): void
     {
-        $result = $this->createMock(RouteResult::class);
-
-        $result
-            ->expects(self::once())
-            ->method('isFailure')
-            ->willReturn(false);
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedRouteName')
-            ->willReturn('resource');
-
-        $result
-            ->expects(self::once())
-            ->method('getMatchedParams')
-            ->willReturn([]);
+        $result = $this->generateRouteResult(false, '/foo', 'resource');
 
         $this->router
             ->expects(self::once())
