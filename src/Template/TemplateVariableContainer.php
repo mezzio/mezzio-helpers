@@ -68,6 +68,8 @@ use function count;
  *     ])
  * );
  * </code>
+ *
+ * @final
  */
 class TemplateVariableContainer implements Countable
 {

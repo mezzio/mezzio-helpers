@@ -6,12 +6,14 @@ namespace MezzioTest\Helper;
 
 use Mezzio\Helper\UrlHelperInterface;
 use Mezzio\Helper\UrlHelperMiddleware;
+use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[CoversClass(UrlHelperMiddleware::class)]
@@ -35,8 +37,12 @@ final class UrlHelperMiddlewareTest extends TestCase
     {
         $response = $this->createMock(ResponseInterface::class);
 
-        $routeResult = $this->createMock(RouteResult::class);
-        $request     = $this->createMock(ServerRequestInterface::class);
+        $routeResult = RouteResult::fromRoute(new Route(
+            '/foo',
+            $this->createMock(MiddlewareInterface::class),
+        ));
+
+        $request = $this->createMock(ServerRequestInterface::class);
 
         $request
             ->expects(self::once())

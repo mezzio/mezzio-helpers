@@ -16,6 +16,7 @@ use function sprintf;
 
 use const JSON_ERROR_NONE;
 
+/** @final */
 class JsonStrategy implements StrategyInterface
 {
     public function match(string $contentType): bool

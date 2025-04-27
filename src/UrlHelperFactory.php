@@ -10,6 +10,7 @@ use Psr\Container\ContainerInterface;
 use function assert;
 use function sprintf;
 
+/** @final */
 class UrlHelperFactory
 {
     /**

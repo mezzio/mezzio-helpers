@@ -12,6 +12,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Pipeline middleware for injecting a UrlHelper with a RouteResult.
+ *
+ * @final
  */
 class UrlHelperMiddleware implements MiddlewareInterface
 {

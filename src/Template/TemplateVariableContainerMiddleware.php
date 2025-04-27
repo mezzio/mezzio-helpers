@@ -18,6 +18,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  * Otherwise, it does nothing.
  *
  * The middleware uses a key named after the container class.
+ *
+ * @final
  */
 class TemplateVariableContainerMiddleware implements MiddlewareInterface
 {

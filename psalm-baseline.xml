@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="6.5.0@38fc8444edf0cebc9205296ee6e30e906ade783b">
+<files psalm-version="6.10.1@f9fd6bc117e9ce1e854c2ed6777e7135aaa4966b">
   <file src="src/BodyParams/JsonStrategy.php">
     <MixedAssignment>
       <code><![CDATA[$parsedBody]]></code>
     </MixedAssignment>
-  </file>
-  <file src="src/ServerUrlHelper.php">
-    <RedundantCast>
-      <code><![CDATA[(string) $specification]]></code>
-    </RedundantCast>
   </file>
   <file src="src/Template/TemplateVariableContainerMiddleware.php">
     <MixedAssignment>
@@ -25,47 +20,5 @@
     <MixedAssignment>
       <code><![CDATA[$result]]></code>
     </MixedAssignment>
-  </file>
-  <file src="test/BodyParams/BodyParamsMiddlewareTest.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[jsonBodyRequests]]></code>
-      <code><![CDATA[jsonProvider]]></code>
-      <code><![CDATA[notApplicableProvider]]></code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="test/BodyParams/FormUrlEncodedStrategyTest.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[formContentTypes]]></code>
-      <code><![CDATA[invalidContentTypes]]></code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="test/BodyParams/JsonStrategyTest.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[invalidContentTypes]]></code>
-      <code><![CDATA[jsonContentTypes]]></code>
-      <code><![CDATA[provideNonArrayJsonRequestBody]]></code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="test/ExceptionTest.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[exception]]></code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="test/ServerUrlHelperTest.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[pathsWithFragment]]></code>
-      <code><![CDATA[pathsWithQueryString]]></code>
-      <code><![CDATA[plainPaths]]></code>
-      <code><![CDATA[plainPathsForUseWithUri]]></code>
-      <code><![CDATA[uriWithFragment]]></code>
-      <code><![CDATA[uriWithQueryString]]></code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="test/UrlHelperTest.php">
-    <PossiblyUnusedMethod>
-      <code><![CDATA[invalidBasePathProvider]]></code>
-      <code><![CDATA[invalidFragmentProvider]]></code>
-      <code><![CDATA[queryParametersAndFragmentProvider]]></code>
-    </PossiblyUnusedMethod>
   </file>
 </files>
