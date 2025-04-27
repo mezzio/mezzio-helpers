@@ -69,7 +69,7 @@ class ServerUrlHelper
     {
         preg_match(
             '%^(?P<path>[^?#]*)(?:(?:\?(?P<query>[^#]*))?(?:\#(?P<fragment>.*))?)$%',
-            (string) $specification,
+            $specification,
             $matches
         );
         $path     = $matches['path'];
