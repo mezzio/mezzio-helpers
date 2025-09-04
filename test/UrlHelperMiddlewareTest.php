@@ -86,10 +86,7 @@ final class UrlHelperMiddlewareTest extends TestCase
         $helper     = new UrlHelper($this->createMock(RouterInterface::class));
         $middleware = new UrlHelperMiddleware($helper);
 
-        $routeResult = RouteResult::fromRoute(new Route(
-            '/my-path',
-            $this->createMock(MiddlewareInterface::class),
-        ));
+        $routeResult = RouteResult::fromRouteFailure([]);
         self::assertSame($response, $middleware->process(
             (new ServerRequest())->withAttribute(RouteResult::class, $routeResult),
             $handler,

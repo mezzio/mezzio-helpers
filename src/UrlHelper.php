@@ -114,6 +114,10 @@ class UrlHelper implements UrlHelperInterface
      */
     public function setRouteResult(RouteResult $result): void
     {
+        if (null === $this->request) {
+            throw new Exception\RuntimeException('A request must be set before using this method');
+        }
+
         $this->setRequest($this->request->withAttribute(RouteResult::class, $result));
     }
 

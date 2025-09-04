@@ -70,6 +70,8 @@ interface UrlHelperInterface
 
     /**
      * Make the current routing result available to the helper so that it can re-use matched parameters if desired
+     *
+     * @deprecated The RouteResult should be an attribute on the Request
      */
     public function setRouteResult(RouteResult $result): void;
 }

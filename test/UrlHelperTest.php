@@ -524,4 +524,37 @@ final class UrlHelperTest extends TestCase
 
         self::assertSame('URL?foo=foo', ($this->helper)('resource', [], ['foo' => 'foo']));
     }
+
+    public function testSetRouteResultRequireTheRequestToBePreviouslySet(): void
+    {
+        $result = $this->generateRouteResult(true);
+
+        $request = $this->createMock(ServerRequestInterface::class);
+
+        $request
+            ->expects(self::once())
+            ->method('withAttribute')
+            ->willReturnCallback(function (string $name, $value) use ($result): ServerRequestInterface {
+                self::assertSame(RouteResult::class, $name);
+                self::assertSame($result, $value);
+
+                return $this->createRequest($value);
+            });
+
+        $this->helper->setRequest($request);
+        $this->helper->setRouteResult($result);
+
+        self::assertSame($result, $this->helper->getRouteResult());
+        self::assertNotSame($request, $this->helper->getRequest());
+    }
+
+    public function testSetRouteResultApiSetsANewRequestWithAttributeSet(): void
+    {
+        $result = $this->generateRouteResult(true);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('A request must be set before using this method');
+
+        $this->helper->setRouteResult($result);
+    }
 }
