@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace MezzioTest\Helper;
 
+use Laminas\Diactoros\ServerRequest;
+use Mezzio\Helper\UrlHelper;
 use Mezzio\Helper\UrlHelperInterface;
 use Mezzio\Helper\UrlHelperMiddleware;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
+use Mezzio\Router\RouterInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +36,7 @@ final class UrlHelperMiddlewareTest extends TestCase
         $this->middleware = new UrlHelperMiddleware($this->helper);
     }
 
-    public function testInvocationInjectsHelperWithRouteResultWhenPresentInRequest(): void
+    public function testInvocationInjectsHelperWithRequest(): void
     {
         $response = $this->createMock(ResponseInterface::class);
 
@@ -44,14 +47,8 @@ final class UrlHelperMiddlewareTest extends TestCase
 
         $request = $this->createMock(ServerRequestInterface::class);
 
-        $request
-            ->expects(self::once())
-            ->method('getAttribute')
-            ->with(RouteResult::class, false)
-            ->willReturn($routeResult);
-
         $this->helper
-            ->expects(self::once())
+            ->expects(self::never())
             ->method('setRouteResult')
             ->with($routeResult);
 
@@ -71,36 +68,37 @@ final class UrlHelperMiddlewareTest extends TestCase
         self::assertSame($response, $this->middleware->process($request, $handler));
     }
 
-    public function testInvocationDoesNotInjectHelperWithRouteResultWhenAbsentInRequest(): void
+    public function testCanHandleMultipleSubsequentRequests(): void
     {
         $response = $this->createMock(ResponseInterface::class);
+        $handler  = new class ($response) implements RequestHandlerInterface {
+            public function __construct(
+                private readonly ResponseInterface $response,
+            ) {
+            }
 
-        $request = $this->createMock(ServerRequestInterface::class);
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return $this->response;
+            }
+        };
 
-        $request
-            ->expects(self::once())
-            ->method('getAttribute')
-            ->with(RouteResult::class, false)
-            ->willReturn(false);
+        $helper     = new UrlHelper($this->createMock(RouterInterface::class));
+        $middleware = new UrlHelperMiddleware($helper);
 
-        $this->helper
-            ->expects(self::never())
-            ->method('setRouteResult')
-            ->with(self::anything());
+        $routeResult = RouteResult::fromRouteFailure([]);
+        self::assertSame($response, $middleware->process(
+            (new ServerRequest())->withAttribute(RouteResult::class, $routeResult),
+            $handler,
+        ));
 
-        $this->helper
-            ->expects(self::once())
-            ->method('setRequest')
-            ->with($request);
+        self::assertSame($routeResult, $helper->getRouteResult());
 
-        $handler = $this->createMock(RequestHandlerInterface::class);
+        self::assertSame($response, $middleware->process(
+            new ServerRequest(),
+            $handler,
+        ));
 
-        $handler
-            ->expects(self::once())
-            ->method('handle')
-            ->with($request)
-            ->willReturn($response);
-
-        self::assertSame($response, $this->middleware->process($request, $handler));
+        self::assertNull($helper->getRouteResult());
     }
 }

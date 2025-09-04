@@ -28,37 +28,45 @@ final class UrlHelperTest extends TestCase
 
     /** @var RouterInterface&MockObject */
     private RouterInterface $router;
+    private UrlHelper $helper;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->router = $this->createMock(RouterInterface::class);
+        $this->helper = new UrlHelper($this->router);
     }
 
-    public function createHelper(): UrlHelper
+    private function createRequest(?RouteResult $routeResult): ServerRequestInterface&MockObject
     {
         $request = $this->createMock(ServerRequestInterface::class);
 
         $request
-            ->expects(self::never())
-            ->method('getQueryParams')
-            ->willReturn([]);
+            ->expects(self::any())
+            ->method('getAttribute')
+            ->with($this->identicalTo(RouteResult::class))
+            ->willReturn($routeResult);
 
-        $helper = new UrlHelper($this->router);
-        $helper->setRequest($request);
+        $request
+            ->expects(self::any())
+            ->method('withAttribute')
+            ->willReturnCallback(function (string $name, $value): ServerRequestInterface {
+                self::assertSame(RouteResult::class, $name);
+                self::assertInstanceOf(RouteResult::class, $value);
 
-        return $helper;
+                return $this->createRequest($value);
+            });
+
+        return $request;
     }
 
     public function testRaisesExceptionOnInvocationIfNoRouteProvidedAndNoResultPresent(): void
     {
-        $helper = $this->createHelper();
-
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('use matched result');
 
-        $helper();
+        ($this->helper)();
     }
 
     /**
@@ -86,13 +94,12 @@ final class UrlHelperTest extends TestCase
     public function testRaisesExceptionOnInvocationIfNoRouteProvidedAndResultIndicatesFailure(): void
     {
         $result = $this->generateRouteResult(true);
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
+        $this->helper->setRequest($this->createRequest($result));
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('routing failed');
 
-        $helper();
+        ($this->helper)();
     }
 
     public function testRaisesExceptionOnInvocationIfRouterCannotGenerateUriForRouteProvided(): void
@@ -103,11 +110,9 @@ final class UrlHelperTest extends TestCase
             ->with('foo', [], [])
             ->willThrowException(new RouterException());
 
-        $helper = $this->createHelper();
-
         $this->expectException(RouterException::class);
 
-        $helper('foo');
+        ($this->helper)('foo');
     }
 
     public function testWhenNoRouteProvidedTheHelperUsesComposedResultToGenerateUrl(): void
@@ -120,10 +125,9 @@ final class UrlHelperTest extends TestCase
             ->with('foo', ['bar' => 'baz'], [])
             ->willReturn('URL');
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
+        $this->helper->setRequest($this->createRequest($result));
 
-        self::assertSame('URL', $helper());
+        self::assertSame('URL', ($this->helper)());
     }
 
     public function testWhenNoRouteProvidedTheHelperMergesPassedParametersWithResultParametersToGenerateUrl(): void
@@ -136,10 +140,9 @@ final class UrlHelperTest extends TestCase
             ->with('foo', ['bar' => 'baz', 'baz' => 'bat'], [])
             ->willReturn('URL');
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
+        $this->helper->setRequest($this->createRequest($result));
 
-        self::assertSame('URL', $helper(null, ['baz' => 'bat']));
+        self::assertSame('URL', ($this->helper)(null, ['baz' => 'bat']));
     }
 
     public function testWhenRouteProvidedTheHelperDelegatesToTheRouterToGenerateUrl(): void
@@ -150,9 +153,7 @@ final class UrlHelperTest extends TestCase
             ->with('foo', ['bar' => 'baz'], [])
             ->willReturn('URL');
 
-        $helper = $this->createHelper();
-
-        self::assertSame('URL', $helper('foo', ['bar' => 'baz']));
+        self::assertSame('URL', ($this->helper)('foo', ['bar' => 'baz']));
     }
 
     public function testIfRouteResultRouteNameDoesNotMatchRequestedNameItWillNotMergeParamsToGenerateUri(): void
@@ -165,10 +166,9 @@ final class UrlHelperTest extends TestCase
             ->with('resource', [], [])
             ->willReturn('URL');
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
+        $this->helper->setRequest($this->createRequest($result));
 
-        self::assertSame('URL', $helper('resource'));
+        self::assertSame('URL', ($this->helper)('resource'));
     }
 
     public function testMergesRouteResultParamsWithProvidedParametersToGenerateUri(): void
@@ -181,10 +181,9 @@ final class UrlHelperTest extends TestCase
             ->with('resource', ['id' => 1, 'version' => 2], [])
             ->willReturn('URL');
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
+        $this->helper->setRequest($this->createRequest($result));
 
-        self::assertSame('URL', $helper('resource', ['version' => 2]));
+        self::assertSame('URL', ($this->helper)('resource', ['version' => 2]));
     }
 
     public function testProvidedParametersOverrideAnyPresentInARouteResultWhenGeneratingUri(): void
@@ -197,10 +196,9 @@ final class UrlHelperTest extends TestCase
             ->with('resource', ['id' => 2], [])
             ->willReturn('URL');
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
+        $this->helper->setRequest($this->createRequest($result));
 
-        self::assertSame('URL', $helper('resource', ['id' => 2]));
+        self::assertSame('URL', ($this->helper)('resource', ['id' => 2]));
     }
 
     public function testWillNotReuseRouteResultParamsIfReuseResultParamsFlagIsFalseWhenGeneratingUri(): void
@@ -213,36 +211,23 @@ final class UrlHelperTest extends TestCase
             ->with('resource', [], [])
             ->willReturn('URL');
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
+        $this->helper->setRequest($this->createRequest($result));
 
-        self::assertSame('URL', $helper('resource', [], [], null, ['reuse_result_params' => false]));
-    }
-
-    public function testCanInjectRouteResult(): void
-    {
-        $result = $this->generateRouteResult(false, '/foo', 'resource', ['id' => 1]);
-
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
-
-        self::assertAttributeSame($result, 'result', $helper);
+        self::assertSame('URL', ($this->helper)('resource', [], [], null, ['reuse_result_params' => false]));
     }
 
     public function testAllowsSettingBasePath(): void
     {
-        $helper = $this->createHelper();
-        $helper->setBasePath('/foo');
+        $this->helper->setBasePath('/foo');
 
-        self::assertAttributeEquals('/foo', 'basePath', $helper);
+        self::assertAttributeEquals('/foo', 'basePath', $this->helper);
     }
 
     public function testSlashIsPrependedWhenBasePathDoesNotHaveOne(): void
     {
-        $helper = $this->createHelper();
-        $helper->setBasePath('foo');
+        $this->helper->setBasePath('foo');
 
-        self::assertAttributeEquals('/foo', 'basePath', $helper);
+        self::assertAttributeEquals('/foo', 'basePath', $this->helper);
     }
 
     public function testBasePathIsPrependedToGeneratedPath(): void
@@ -253,10 +238,9 @@ final class UrlHelperTest extends TestCase
             ->with('foo', ['bar' => 'baz'], [])
             ->willReturn('/foo/baz');
 
-        $helper = $this->createHelper();
-        $helper->setBasePath('/prefix');
+        $this->helper->setBasePath('/prefix');
 
-        self::assertSame('/prefix/foo/baz', $helper('foo', ['bar' => 'baz']));
+        self::assertSame('/prefix/foo/baz', ($this->helper)('foo', ['bar' => 'baz']));
     }
 
     public function testBasePathIsPrependedToGeneratedPathWhenUsingRouteResult(): void
@@ -269,15 +253,14 @@ final class UrlHelperTest extends TestCase
             ->with('foo', ['bar' => 'baz'], [])
             ->willReturn('/foo/baz');
 
-        $helper = $this->createHelper();
-        $helper->setBasePath('/prefix');
-        $helper->setRouteResult($result);
+        $this->helper->setBasePath('/prefix');
+        $this->helper->setRequest($this->createRequest($result));
 
         // test with explicit params
-        self::assertSame('/prefix/foo/baz', $helper(null, ['bar' => 'baz']));
+        self::assertSame('/prefix/foo/baz', ($this->helper)(null, ['bar' => 'baz']));
 
         // test with implicit route result params
-        self::assertSame('/prefix/foo/baz', $helper());
+        self::assertSame('/prefix/foo/baz', ($this->helper)());
     }
 
     public function testGenerateAndInvokeMethodProduceTheSameResult(): void
@@ -288,10 +271,9 @@ final class UrlHelperTest extends TestCase
         $fragmentIdentifier = 'foobar';
         $options            = ['router' => ['foobar' => 'baz'], 'reuse_result_params' => false];
 
-        $helper = $this->createHelper();
         self::assertSame(
-            $helper->__invoke($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options),
-            $helper->generate($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options),
+            $this->helper->__invoke($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options),
+            $this->helper->generate($routeName, $routeParams, $queryParams, $fragmentIdentifier, $options),
         );
     }
 
@@ -309,9 +291,8 @@ final class UrlHelperTest extends TestCase
     {
         $this->expectException(TypeError::class);
 
-        $helper = $this->createHelper();
         /** @psalm-suppress MixedArgument */
-        $helper->setBasePath($basePath);
+        $this->helper->setBasePath($basePath);
     }
 
     public function testIfRouteResultIsFailureItWillNotMergeParamsToGenerateUri(): void
@@ -324,10 +305,9 @@ final class UrlHelperTest extends TestCase
             ->with('resource', [], [])
             ->willReturn('URL');
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
+        $this->helper->setRequest($this->createRequest($result));
 
-        self::assertSame('URL', $helper('resource'));
+        self::assertSame('URL', ($this->helper)('resource'));
     }
 
     public function testOptionsArePassedToRouter(): void
@@ -338,9 +318,7 @@ final class UrlHelperTest extends TestCase
             ->with('foo', [], ['bar' => 'baz'])
             ->willReturn('URL');
 
-        $helper = $this->createHelper();
-
-        self::assertSame('URL', $helper('foo', [], [], null, ['router' => ['bar' => 'baz']]));
+        self::assertSame('URL', ($this->helper)('foo', [], [], null, ['router' => ['bar' => 'baz']]));
     }
 
     /** @return array<string, array{0: array<string, mixed>, 1: string|null, 2: string}> */
@@ -369,11 +347,9 @@ final class UrlHelperTest extends TestCase
             ->with('foo', ['bar' => 'baz'], [])
             ->willReturn('/foo/baz');
 
-        $helper = $this->createHelper();
-
         self::assertSame(
             '/foo/baz' . $expected,
-            $helper('foo', ['bar' => 'baz'], $queryParams, $fragmentIdentifier),
+            ($this->helper)('foo', ['bar' => 'baz'], $queryParams, $fragmentIdentifier),
         );
     }
 
@@ -389,18 +365,17 @@ final class UrlHelperTest extends TestCase
     #[DataProvider('invalidFragmentProvider')]
     public function testRejectsInvalidFragmentIdentifier(string $fragmentIdentifier): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Fragment identifier must conform to RFC 3986');
-        $this->expectExceptionCode(400);
-
         $this->router
             ->expects(self::once())
             ->method('generateUri')
             ->with('foo', [], [])
             ->willReturn('/foo');
 
-        $helper = $this->createHelper();
-        $helper('foo', [], [], $fragmentIdentifier);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Fragment identifier must conform to RFC 3986');
+        $this->expectExceptionCode(400);
+
+        ($this->helper)('foo', [], [], $fragmentIdentifier);
     }
 
     /**
@@ -415,9 +390,7 @@ final class UrlHelperTest extends TestCase
             ->with('foo', [], [])
             ->willReturn('/foo');
 
-        $helper = $this->createHelper();
-
-        self::assertSame('/foo', $helper->generate('foo'));
+        self::assertSame('/foo', ($this->helper)->generate('foo'));
     }
 
     #[Group('42')]
@@ -431,12 +404,11 @@ final class UrlHelperTest extends TestCase
             ->with('matched-route', ['foo' => 'baz'], [])
             ->willReturn('scheme://host/path');
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
+        $this->helper->setRequest($this->createRequest($result));
 
         self::assertSame(
             'scheme://host/path?query=params&are=present#fragment/exists',
-            $helper(
+            ($this->helper)(
                 null,
                 ['foo' => 'baz'],
                 ['query' => 'params', 'are' => 'present'],
@@ -447,19 +419,16 @@ final class UrlHelperTest extends TestCase
 
     public function testGetRouteResultIfNoRouteResultSet(): void
     {
-        $helper = $this->createHelper();
-
-        self::assertNull($helper->getRouteResult());
+        self::assertNull($this->helper->getRouteResult());
     }
 
     public function testGetRouteResultWithRouteResultSet(): void
     {
         $result = $this->generateRouteResult(false);
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
+        $this->helper->setRequest($this->createRequest($result));
 
-        self::assertSame($result, $helper->getRouteResult());
+        self::assertSame($result, $this->helper->getRouteResult());
     }
 
     public function testWillNotReuseQueryParamsIfReuseQueryParamsFlagIsFalseWhenGeneratingUri(): void
@@ -478,11 +447,9 @@ final class UrlHelperTest extends TestCase
             ->expects(self::never())
             ->method('getQueryParams');
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
-        $helper->setRequest($request);
+        $this->helper->setRequest($this->createRequest($result));
 
-        self::assertSame('URL', $helper('resource', [], [], null, ['reuse_query_params' => false]));
+        self::assertSame('URL', ($this->helper)('resource', [], [], null, ['reuse_query_params' => false]));
     }
 
     public function testWillReuseQueryParamsIfReuseQueryParamsFlagIsTrueWhenGeneratingUri(): void
@@ -495,18 +462,16 @@ final class UrlHelperTest extends TestCase
             ->with('resource', [], [])
             ->willReturn('URL');
 
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createRequest($result);
 
         $request
             ->expects(self::once())
             ->method('getQueryParams')
             ->wilLReturn(['foo' => 'bar']);
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
-        $helper->setRequest($request);
+        $this->helper->setRequest($request);
 
-        self::assertSame('URL?foo=bar', $helper('resource', [], [], null, ['reuse_query_params' => true]));
+        self::assertSame('URL?foo=bar', ($this->helper)('resource', [], [], null, ['reuse_query_params' => true]));
     }
 
     public function testWillNotReuseQueryParamsIfReuseQueryParamsFlagIsMissingGeneratingUri(): void
@@ -519,17 +484,15 @@ final class UrlHelperTest extends TestCase
             ->with('resource', [], [])
             ->willReturn('URL');
 
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createRequest($result);
 
         $request
             ->expects(self::never())
             ->method('getQueryParams');
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
-        $helper->setRequest($request);
+        $this->helper->setRequest($request);
 
-        self::assertSame('URL', $helper('resource'));
+        self::assertSame('URL', ($this->helper)('resource'));
     }
 
     public function testCanOverrideRequestQueryParams(): void
@@ -542,16 +505,47 @@ final class UrlHelperTest extends TestCase
             ->with('resource', [], [])
             ->willReturn('URL');
 
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createRequest($result);
 
         $request
             ->expects(self::never())
             ->method('getQueryParams');
 
-        $helper = $this->createHelper();
-        $helper->setRouteResult($result);
-        $helper->setRequest($request);
+        $this->helper->setRequest($request);
 
-        self::assertSame('URL?foo=foo', $helper('resource', [], ['foo' => 'foo']));
+        self::assertSame('URL?foo=foo', ($this->helper)('resource', [], ['foo' => 'foo']));
+    }
+
+    public function testSetRouteResultRequireTheRequestToBePreviouslySet(): void
+    {
+        $result = $this->generateRouteResult(true);
+
+        $request = $this->createMock(ServerRequestInterface::class);
+
+        $request
+            ->expects(self::once())
+            ->method('withAttribute')
+            ->willReturnCallback(function (string $name, $value) use ($result): ServerRequestInterface {
+                self::assertSame(RouteResult::class, $name);
+                self::assertSame($result, $value);
+
+                return $this->createRequest($value);
+            });
+
+        $this->helper->setRequest($request);
+        $this->helper->setRouteResult($result);
+
+        self::assertSame($result, $this->helper->getRouteResult());
+        self::assertNotSame($request, $this->helper->getRequest());
+    }
+
+    public function testSetRouteResultApiSetsANewRequestWithAttributeSet(): void
+    {
+        $result = $this->generateRouteResult(true);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('A request must be set before using this method');
+
+        $this->helper->setRouteResult($result);
     }
 }
