@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace MezzioTest\Helper;
 
+use Laminas\Diactoros\ServerRequest;
+use Mezzio\Helper\UrlHelper;
 use Mezzio\Helper\UrlHelperInterface;
 use Mezzio\Helper\UrlHelperMiddleware;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
+use Mezzio\Router\RouterInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -102,5 +105,42 @@ final class UrlHelperMiddlewareTest extends TestCase
             ->willReturn($response);
 
         self::assertSame($response, $this->middleware->process($request, $handler));
+    }
+
+    public function testCanHandleMultipleSubsequentRequests(): void
+    {
+        $response = $this->createMock(ResponseInterface::class);
+        $handler  = new class ($response) implements RequestHandlerInterface {
+            public function __construct(
+                private readonly ResponseInterface $response,
+            ) {
+            }
+
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                return $this->response;
+            }
+        };
+
+        $helper     = new UrlHelper($this->createMock(RouterInterface::class));
+        $middleware = new UrlHelperMiddleware($helper);
+
+        $routeResult = RouteResult::fromRoute(new Route(
+            '/my-path',
+            $this->createMock(MiddlewareInterface::class),
+        ));
+        self::assertSame($response, $middleware->process(
+            (new ServerRequest())->withAttribute(RouteResult::class, $routeResult),
+            $handler,
+        ));
+
+        self::assertSame($routeResult, $helper->getRouteResult());
+
+        self::assertSame($response, $middleware->process(
+            new ServerRequest(),
+            $handler,
+        ));
+
+        self::assertNull($helper->getRouteResult());
     }
 }
