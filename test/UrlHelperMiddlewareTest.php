@@ -36,7 +36,7 @@ final class UrlHelperMiddlewareTest extends TestCase
         $this->middleware = new UrlHelperMiddleware($this->helper);
     }
 
-    public function testInvocationInjectsHelperWithRouteResultWhenPresentInRequest(): void
+    public function testInvocationInjectsHelperWithRequest(): void
     {
         $response = $this->createMock(ResponseInterface::class);
 
@@ -47,49 +47,10 @@ final class UrlHelperMiddlewareTest extends TestCase
 
         $request = $this->createMock(ServerRequestInterface::class);
 
-        $request
-            ->expects(self::once())
-            ->method('getAttribute')
-            ->with(RouteResult::class, false)
-            ->willReturn($routeResult);
-
-        $this->helper
-            ->expects(self::once())
-            ->method('setRouteResult')
-            ->with($routeResult);
-
-        $this->helper
-            ->expects(self::once())
-            ->method('setRequest')
-            ->with($request);
-
-        $handler = $this->createMock(RequestHandlerInterface::class);
-
-        $handler
-            ->expects(self::once())
-            ->method('handle')
-            ->with($request)
-            ->willReturn($response);
-
-        self::assertSame($response, $this->middleware->process($request, $handler));
-    }
-
-    public function testInvocationDoesNotInjectHelperWithRouteResultWhenAbsentInRequest(): void
-    {
-        $response = $this->createMock(ResponseInterface::class);
-
-        $request = $this->createMock(ServerRequestInterface::class);
-
-        $request
-            ->expects(self::once())
-            ->method('getAttribute')
-            ->with(RouteResult::class, false)
-            ->willReturn(false);
-
         $this->helper
             ->expects(self::never())
             ->method('setRouteResult')
-            ->with(self::anything());
+            ->with($routeResult);
 
         $this->helper
             ->expects(self::once())

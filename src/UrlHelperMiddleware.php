@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mezzio\Helper;
 
-use Mezzio\Router\RouteResult;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -30,13 +29,6 @@ class UrlHelperMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->helper->setRequest($request);
-
-        $result = $request->getAttribute(RouteResult::class, false);
-
-        if ($result instanceof RouteResult) {
-            $this->helper->setRouteResult($result);
-        }
-
         return $handler->handle($request);
     }
 }

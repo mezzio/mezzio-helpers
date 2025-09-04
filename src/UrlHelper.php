@@ -114,7 +114,7 @@ class UrlHelper implements UrlHelperInterface
      */
     public function setRouteResult(RouteResult $result): void
     {
-        $this->result = $result;
+        $this->setRequest($this->request->withAttribute(RouteResult::class, $result));
     }
 
     /**
@@ -136,6 +136,12 @@ class UrlHelper implements UrlHelperInterface
     public function setRequest(ServerRequestInterface $request): void
     {
         $this->request = $request;
+        $this->result  = null;
+
+        $result = $request->getAttribute(RouteResult::class);
+        if ($result instanceof RouteResult) {
+            $this->result = $result;
+        }
     }
 
     public function getRequest(): ?ServerRequestInterface
