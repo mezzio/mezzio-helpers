@@ -33,8 +33,6 @@ class UrlHelper implements UrlHelperInterface
 
     private string $basePath = '/';
 
-    private ?RouteResult $result = null;
-
     private ?ServerRequestInterface $request = null;
 
     public function __construct(private readonly RouterInterface $router)
@@ -131,7 +129,16 @@ class UrlHelper implements UrlHelperInterface
 
     public function getRouteResult(): ?RouteResult
     {
-        return $this->result;
+        if ($this->request === null) {
+            return null;
+        }
+
+        $result = $this->request->getAttribute(RouteResult::class);
+        if (! $result instanceof RouteResult) {
+            return null;
+        }
+
+        return $result;
     }
 
     /**
@@ -140,12 +147,6 @@ class UrlHelper implements UrlHelperInterface
     public function setRequest(ServerRequestInterface $request): void
     {
         $this->request = $request;
-        $this->result  = null;
-
-        $result = $request->getAttribute(RouteResult::class);
-        if ($result instanceof RouteResult) {
-            $this->result = $result;
-        }
     }
 
     public function getRequest(): ?ServerRequestInterface

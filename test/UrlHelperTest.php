@@ -216,15 +216,6 @@ final class UrlHelperTest extends TestCase
         self::assertSame('URL', ($this->helper)('resource', [], [], null, ['reuse_result_params' => false]));
     }
 
-    public function testCanInjectRouteResult(): void
-    {
-        $result = $this->generateRouteResult(false, '/foo', 'resource', ['id' => 1]);
-
-        $this->helper->setRequest($this->createRequest($result));
-
-        self::assertAttributeSame($result, 'result', $this->helper);
-    }
-
     public function testAllowsSettingBasePath(): void
     {
         $this->helper->setBasePath('/foo');

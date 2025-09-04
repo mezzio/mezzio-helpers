@@ -11,18 +11,10 @@
     </MixedAssignment>
   </file>
   <file src="src/UrlHelper.php">
-    <MixedAssignment>
-      <code><![CDATA[$result]]></code>
-    </MixedAssignment>
     <RedundantCastGivenDocblockType>
       <code><![CDATA[(bool) $options['reuse_query_params']]]></code>
       <code><![CDATA[(bool) $options['reuse_result_params']]]></code>
     </RedundantCastGivenDocblockType>
-  </file>
-  <file src="test/UrlHelperMiddlewareTest.php">
-    <DocblockTypeContradiction>
-      <code><![CDATA[assertNull]]></code>
-    </DocblockTypeContradiction>
   </file>
   <file src="test/UrlHelperTest.php">
     <MissingClosureParamType>
